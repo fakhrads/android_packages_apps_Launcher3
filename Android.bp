@@ -571,6 +571,7 @@ android_library {
 // Build rule for Quickstep app.
 android_app {
     name: "Launcher3QuickStep",
+    package_name: "com.google.android.apps.nexuslauncher",
     static_libs: ["Launcher3QuickStepLib"],
     optimize: {
         proguard_flags_files: [":launcher-proguard-rules"],
@@ -587,6 +588,7 @@ android_app {
     privileged: true,
     system_ext_specific: true,
     overrides: [
+        "NexusLauncherRelease",
         "Home",
         "Launcher2",
         "Launcher3",

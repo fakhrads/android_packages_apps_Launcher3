@@ -71,5 +71,16 @@
                 android:value="${packageName}.grid_control" />
         </activity>
 
+        <activity-alias
+            android:name="com.google.android.apps.nexuslauncher.NexusLauncherActivity"
+            android:targetActivity="com.android.launcher3.uioverrides.QuickstepLauncher"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER_APP" />
+            </intent-filter>
+        </activity-alias>
+
     </application>
 </manifest>
