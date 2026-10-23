@@ -88,7 +88,7 @@ public class IconPackHeaderPreference extends RadioHeaderPreference {
             return;
         }
 
-        final IconProvider iconProvider = IconProvider.INSTANCE.get(context);
+        final IconProvider iconProvider = new IconProvider(context);
         final PackageManager pm = context.getPackageManager();
         new GetLaunchableInfoTask(pm, PREVIEW_ICON_NUM, (aiList) -> {
             for (int i = 0; i < icons.length; i++) {
