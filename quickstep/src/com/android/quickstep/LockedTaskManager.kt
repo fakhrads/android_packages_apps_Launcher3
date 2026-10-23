@@ -41,7 +41,7 @@ class LockedTaskManager private constructor(context: Context) {
 
     init {
         contentResolver.registerContentObserver(
-            Settings.System.getUriFor(Settings.System.RECENTS_LOCKED_TASKS),
+            Settings.System.getUriFor(RECENTS_LOCKED_TASKS),
             /* notifyForDescendants= */ false,
             observer,
             UserHandle.USER_ALL,
@@ -67,7 +67,7 @@ class LockedTaskManager private constructor(context: Context) {
         cachedPackages = packages
         Settings.System.putStringForUser(
             contentResolver,
-            Settings.System.RECENTS_LOCKED_TASKS,
+            RECENTS_LOCKED_TASKS,
             packages.sorted().joinToString(SEPARATOR),
             UserHandle.USER_CURRENT,
         )
@@ -84,7 +84,7 @@ class LockedTaskManager private constructor(context: Context) {
     private fun readLockedPackages(): Set<String> =
         Settings.System.getStringForUser(
                 contentResolver,
-                Settings.System.RECENTS_LOCKED_TASKS,
+                RECENTS_LOCKED_TASKS,
                 UserHandle.USER_CURRENT,
             )
             ?.split(SEPARATOR)
@@ -94,6 +94,7 @@ class LockedTaskManager private constructor(context: Context) {
 
     companion object {
         private const val SEPARATOR = ","
+        private const val RECENTS_LOCKED_TASKS = "recents_locked_tasks"
 
         @Volatile private var instance: LockedTaskManager? = null
 

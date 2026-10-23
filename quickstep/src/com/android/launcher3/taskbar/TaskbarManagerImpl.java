@@ -167,19 +167,19 @@ public class TaskbarManagerImpl {
             LineageSettings.System.NAVIGATION_BAR_HINT);
 
     public static final Uri NAVBAR_LAYOUT_MODE_URI = Settings.Secure.getUriFor(
-            Settings.Secure.NAVBAR_LAYOUT_MODE);
+            "navbar_layout_mode");
 
     public static final Uri FORCE_SHOW_NAVBAR_URI = LineageSettings.System.getUriFor(
             LineageSettings.System.FORCE_SHOW_NAVBAR);
 
     public static final Uri GESTURE_NAVBAR_LENGTH_MODE_URI = Settings.System.getUriFor(
-            Settings.System.GESTURE_NAVBAR_LENGTH_MODE);
+            "gesture_navbar_length_mode");
 
     public static final Uri GESTURE_NAVBAR_HEIGHT_MODE_URI = Settings.System.getUriFor(
-            Settings.System.GESTURE_NAVBAR_HEIGHT_MODE);
+            "gesture_navbar_height_mode");
 
     public static final Uri NAVBAR_IME_SPACE_URI = Settings.Secure.getUriFor(
-            Settings.Secure.NAVBAR_IME_SPACE);
+            "navbar_ime_space");
 
     private final Context mBaseContext;
     private final int mPrimaryDisplayId;

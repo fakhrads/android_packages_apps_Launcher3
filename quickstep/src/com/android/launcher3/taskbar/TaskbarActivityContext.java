@@ -244,11 +244,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             LineageSettings.System.ENABLE_TASKBAR);
     private static final Uri URI_NAVIGATION_BAR_HINT = LineageSettings.System.getUriFor(
             LineageSettings.System.NAVIGATION_BAR_HINT);
-    private static final Uri URI_NAVBAR_LAYOUT_MODE = Secure.getUriFor(Secure.NAVBAR_LAYOUT_MODE);
+    private static final Uri URI_NAVBAR_LAYOUT_MODE = Secure.getUriFor("navbar_layout_mode");
     private static final Uri URI_FORCE_SHOW_NAVBAR = LineageSettings.System.getUriFor(
             LineageSettings.System.FORCE_SHOW_NAVBAR);
-    private static final Uri URI_NAVBAR_LENGTH_MODE = System.getUriFor(System.GESTURE_NAVBAR_LENGTH_MODE);
-    private static final Uri URI_NAVBAR_HEIGHT_MODE = System.getUriFor(System.GESTURE_NAVBAR_HEIGHT_MODE);
+    private static final Uri URI_NAVBAR_LENGTH_MODE = System.getUriFor("gesture_navbar_length_mode");
+    private static final Uri URI_NAVBAR_HEIGHT_MODE = System.getUriFor("gesture_navbar_height_mode");
 
     private static final String TAG = "TaskbarActivityContext";
 
