@@ -214,6 +214,8 @@ public abstract class AbsSwipeUpHandler<
 
     // Fraction of the scroll and transform animation in which the current task fades out
     private static final float KQS_TASK_FADE_ANIMATION_FRACTION = 0.4f;
+    private static final String ZEROENGINE_FLOATING_INTENT = "com.fakhrads.zeroengine.action.OPEN_FLOATING";
+    private static final String ZEROENGINE_PACKAGE = "com.fakhrads.zeroengine";
     private static final String LMO_FREEFORM_INTENT = "com.libremobileos.freeform.START_FREEFORM";
     private static final String LMO_FREEFORM_PACKAGE = "com.libremobileos.freeform";
     private static final String OVERVIEW_GESTURE_ACTION_SPLIT_SCREEN = "split_screen";
@@ -2945,8 +2947,6 @@ public abstract class AbsSwipeUpHandler<
     }
 
     private void startFreeformByLmoBroadcast(@NonNull TaskInfo taskInfo) {
-        Intent intent = new Intent(LMO_FREEFORM_INTENT).setPackage(LMO_FREEFORM_PACKAGE);
-
         ComponentName topActivity = taskInfo.topActivity != null
                 ? taskInfo.topActivity
                 : taskInfo.baseActivity;
@@ -2961,6 +2961,16 @@ public abstract class AbsSwipeUpHandler<
             return;
         }
 
+        // 1. Broadcast to ZeroEngine VirtualWindows
+        Intent zeroIntent = new Intent(ZEROENGINE_FLOATING_INTENT).setPackage(ZEROENGINE_PACKAGE);
+        zeroIntent.putExtra("packageName", packageName);
+        zeroIntent.putExtra("activityName", activityName);
+        zeroIntent.putExtra("userId", taskInfo.userId);
+        zeroIntent.putExtra("taskId", taskInfo.taskId);
+        mContext.sendBroadcast(zeroIntent);
+
+        // 2. Fallback to standard LMO freeform intent
+        Intent intent = new Intent(LMO_FREEFORM_INTENT).setPackage(LMO_FREEFORM_PACKAGE);
         intent.putExtra("packageName", packageName);
         intent.putExtra("activityName", activityName);
         intent.putExtra("userId", taskInfo.userId);

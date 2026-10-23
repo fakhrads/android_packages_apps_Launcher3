@@ -156,6 +156,8 @@ public final class Utilities {
 
     private static final String FREEFORM_PACKAGE = "com.libremobileos.freeform";
     private static final String FREEFORM_INTENT = "com.libremobileos.freeform.START_FREEFORM";
+    private static final String ZEROENGINE_PACKAGE = "com.fakhrads.zeroengine";
+    private static final String ZEROENGINE_FLOATING_INTENT = "com.fakhrads.zeroengine.action.OPEN_FLOATING";
 
     /**
      * Returns true if theme is dark.
@@ -1068,10 +1070,24 @@ public static boolean useAlternativeQuickspaceUI(Context context) {
 
     public static void startLmoFreeform(Context context, ComponentName activity,
             int userId, int taskId) {
+        if (activity == null) return;
+        final String pkg = activity.getPackageName();
+        final String cls = activity.getClassName();
+
+        // 1. Broadcast to ZeroEngine VirtualWindows
+        final Intent zeroIntent = new Intent(ZEROENGINE_FLOATING_INTENT)
+                .setPackage(ZEROENGINE_PACKAGE)
+                .putExtra("packageName", pkg)
+                .putExtra("activityName", cls)
+                .putExtra("userId", userId)
+                .putExtra("taskId", taskId);
+        context.sendBroadcast(zeroIntent);
+
+        // 2. Fallback to standard LMO freeform intent
         final Intent intent = new Intent(FREEFORM_INTENT)
                 .setPackage(FREEFORM_PACKAGE)
-                .putExtra("packageName", activity.getPackageName())
-                .putExtra("activityName", activity.getClassName())
+                .putExtra("packageName", pkg)
+                .putExtra("activityName", cls)
                 .putExtra("userId", userId)
                 .putExtra("taskId", taskId);
         context.sendBroadcast(intent);
