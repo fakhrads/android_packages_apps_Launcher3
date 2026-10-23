@@ -76,6 +76,8 @@ public class CustomSeekBarPreference extends Preference implements SeekBar.OnSee
             if (mDefaultValueTextExists) {
                 mDefaultValueText = defaultValueText;
             }
+            mMinValue = a.getInt(R.styleable.CustomSeekBarPreference_min, mMinValue);
+            mInterval = a.getInt(R.styleable.CustomSeekBarPreference_interval, mInterval);
         } finally {
             a.recycle();
         }
