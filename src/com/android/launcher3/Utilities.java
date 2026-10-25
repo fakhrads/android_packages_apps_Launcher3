@@ -1074,16 +1074,6 @@ public static boolean useAlternativeQuickspaceUI(Context context) {
         final String pkg = activity.getPackageName();
         final String cls = activity.getClassName();
 
-        // 1. Broadcast to ZeroEngine VirtualWindows
-        final Intent zeroIntent = new Intent(ZEROENGINE_FLOATING_INTENT)
-                .setPackage(ZEROENGINE_PACKAGE)
-                .putExtra("packageName", pkg)
-                .putExtra("activityName", cls)
-                .putExtra("userId", userId)
-                .putExtra("taskId", taskId);
-        context.sendBroadcast(zeroIntent);
-
-        // 2. Fallback to standard LMO freeform intent
         final Intent intent = new Intent(FREEFORM_INTENT)
                 .setPackage(FREEFORM_PACKAGE)
                 .putExtra("packageName", pkg)

@@ -2961,15 +2961,6 @@ public abstract class AbsSwipeUpHandler<
             return;
         }
 
-        // 1. Broadcast to ZeroEngine VirtualWindows
-        Intent zeroIntent = new Intent(ZEROENGINE_FLOATING_INTENT).setPackage(ZEROENGINE_PACKAGE);
-        zeroIntent.putExtra("packageName", packageName);
-        zeroIntent.putExtra("activityName", activityName);
-        zeroIntent.putExtra("userId", taskInfo.userId);
-        zeroIntent.putExtra("taskId", taskInfo.taskId);
-        mContext.sendBroadcast(zeroIntent);
-
-        // 2. Fallback to standard LMO freeform intent
         Intent intent = new Intent(LMO_FREEFORM_INTENT).setPackage(LMO_FREEFORM_PACKAGE);
         intent.putExtra("packageName", packageName);
         intent.putExtra("activityName", activityName);
