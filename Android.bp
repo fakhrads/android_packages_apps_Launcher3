@@ -568,9 +568,17 @@ android_library {
     },
 }
 
-// Build rule for Quickstep app.
-android_app {
+// handheld_system_ext.mk lists Launcher3QuickStep; ZeroLauncher overrides it.
+phony {
     name: "Launcher3QuickStep",
+}
+
+// Build rule for Quickstep app.
+// Named apart from Launcher3QuickStep: the GApps NexusLauncherRelease overrides Launcher3QuickStep
+// while this app overrides NexusLauncherRelease, and Make drops both modules of such a pair.
+// zerolauncher.mk adds it to PRODUCT_PACKAGES.
+android_app {
+    name: "ZeroLauncher",
     package_name: "com.google.android.apps.nexuslauncher",
     static_libs: ["Launcher3QuickStepLib"],
     optimize: {
@@ -592,6 +600,7 @@ android_app {
         "Home",
         "Launcher2",
         "Launcher3",
+        "Launcher3QuickStep",
         "QuickSearchBox",
     ],
     required: [
