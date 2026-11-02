@@ -93,4 +93,11 @@
         @android:color/system_neutral2_700</color>
 
     <color name="overview_foreground_scrim_color">@android:color/system_neutral1_1000</color>
+
+    <!-- Themed icons: AOSP colors, tinted background follows the system theme -->
+    <color name="themed_icon_color">@android:color/system_accent1_700</color>
+    <color name="themed_icon_background_color">@android:color/system_accent1_100</color>
+    <color name="themed_icon_adaptive_background_color">@android:color/system_accent1_500</color>
+    <color name="themed_badge_icon_color">@android:color/system_accent1_700</color>
+    <color name="themed_badge_icon_background_color">@android:color/system_accent1_100</color>
 </resources>
