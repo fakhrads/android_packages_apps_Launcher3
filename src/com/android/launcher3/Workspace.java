@@ -154,6 +154,7 @@ import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.OverlayEdgeEffect;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.ViewEx;
 import com.android.launcher3.util.WallpaperOffsetInterpolator;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -3879,6 +3880,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (getNextPage() != page) {
                 snapToPage(page);
             } else if (mLauncher.canOpenAllApps()) {
+                if (!mLauncher.isInState(ALL_APPS)) {
+                    VibratorWrapper.INSTANCE.get(mLauncher).vibrate(VibratorWrapper.EFFECT_CLICK);
+                }
                 mLauncher.getStateManager().goToState(ALL_APPS);
             }
         }

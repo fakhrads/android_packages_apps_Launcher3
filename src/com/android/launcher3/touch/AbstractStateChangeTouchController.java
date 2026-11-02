@@ -48,6 +48,7 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.FlingBlockCheck;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.util.VibratorWrapper;
 
 /**
  * TouchController for handling state changes
@@ -365,6 +366,9 @@ public abstract class AbstractStateChangeTouchController
         anim.setFloatValues(startProgress, endProgress);
         updateSwipeCompleteAnimation(anim, duration, targetState, velocity, fling);
         mCurrentAnimation.dispatchOnStart();
+        if (targetState == LauncherState.ALL_APPS && mStartState != ALL_APPS) {
+            VibratorWrapper.INSTANCE.get(mLauncher).vibrate(VibratorWrapper.EFFECT_CLICK);
+        }
         if (targetState == LauncherState.ALL_APPS) {
             if (mAllAppsOvershootStarted) {
                 mLauncher.getAppsView().onRelease();
