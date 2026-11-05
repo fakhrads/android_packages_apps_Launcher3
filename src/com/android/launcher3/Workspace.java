@@ -326,6 +326,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     // State related to Launcher Overlay
     private OverlayEdgeEffect mOverlayEdgeEffect;
+    // Page snap duration multiplier from the bouncy animation speed slider.
+    private float mSnapDurationScale = 1f;
     private boolean mOverlayShown = false;
     private float mOverlayProgress; // 1 -> overlay completely visible, 0 -> home visible
     private final List<LauncherOverlayCallbacks> mOverlayCallbacks = new ArrayList<>();
@@ -422,7 +424,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         setHapticFeedbackEnabled(false);
         if (BouncyAnimations.isEnabled(context)) {
-            mScroller = new OverScroller(context, BouncyAnimations.PAGE_SNAP_INTERPOLATOR);
+            mScroller = new OverScroller(context, BouncyAnimations.pageSnapInterpolator(context));
+            mSnapDurationScale = BouncyAnimations.durationScale(context);
         }
         initWorkspace();
 
@@ -1408,6 +1411,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // Inform the Launcher activity that the page transition ended so that it can react to the
         // newly visible page if it wants to.
         mLauncher.onPageEndTransition();
+    }
+
+    @Override
+    protected boolean snapToPage(int whichPage, int delta, int duration, boolean immediate) {
+        return super.snapToPage(whichPage, delta, Math.round(duration * mSnapDurationScale),
+                immediate);
     }
 
     public void setLauncherOverlay(LauncherOverlayTouchProxy overlay) {

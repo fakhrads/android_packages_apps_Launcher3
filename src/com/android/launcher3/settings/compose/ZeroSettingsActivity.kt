@@ -41,6 +41,7 @@ import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.SessionCommitReceiver
 import com.android.launcher3.allapps.AppDrawerStyle
 import com.android.launcher3.settings.compose.data.rememberBooleanPref
+import com.android.launcher3.settings.compose.data.rememberIntPref
 import com.android.launcher3.settings.compose.screens.AppDrawerSettingsScreen
 import com.android.launcher3.settings.compose.screens.HomeScreenSettingsScreen
 import com.android.launcher3.settings.compose.screens.HubScreen
@@ -151,6 +152,8 @@ class ZeroSettingsActivity : ComponentActivity() {
             LauncherPrefs.BLUR_DEPTH,
             // Edge effects and the page scroller are created with the views.
             LauncherPrefs.BOUNCY_ANIMATIONS,
+            LauncherPrefs.BOUNCY_STRENGTH,
+            LauncherPrefs.BOUNCY_SPEED,
         ).map { it.sharedPrefKey }.toSet()
     }
 }
@@ -162,9 +165,14 @@ fun ZeroSettingsApp(
 ) {
     var currentScreen by remember { mutableStateOf(initialScreen) }
     val bouncy by rememberBooleanPref("pref_bouncy_animations", false)
+    val bouncyStrength by rememberIntPref("pref_bouncy_strength", 100)
+    val bouncySpeed by rememberIntPref("pref_bouncy_speed", 100)
+    // Mirrors BouncyAnimations, read live so the sliders preview on this screen.
+    val speed = bouncySpeed / 100f
     val slideSpec = spring(
-        dampingRatio = if (bouncy) 0.7f else Spring.DampingRatioNoBouncy,
-        stiffness = Spring.StiffnessMediumLow,
+        dampingRatio = if (bouncy) (1f - 0.3f * bouncyStrength / 100f).coerceIn(0.4f, 1f)
+        else Spring.DampingRatioNoBouncy,
+        stiffness = Spring.StiffnessMediumLow * if (bouncy) speed * speed else 1f,
         visibilityThreshold = IntOffset.VisibilityThreshold
     )
 

@@ -728,12 +728,13 @@ public abstract class ArrowPopup<T extends ActivityContext> extends AbstractFloa
         if (isOpening && BouncyAnimations.isEnabled(getContext())) {
             // One spring curve replaces the scale-up plus overshoot pair.
             float[] springScale = new float[] {0.5f, 1f};
-            Animator springY = getAnimatorOfFloat(this, View.SCALE_Y,
-                    BouncyAnimations.POPUP_OPEN_DURATION, 0,
-                    BouncyAnimations.POPUP_OPEN_INTERPOLATOR, springScale);
-            Animator springX = getAnimatorOfFloat(this, View.SCALE_X,
-                    BouncyAnimations.POPUP_OPEN_DURATION, 0,
-                    BouncyAnimations.POPUP_OPEN_INTERPOLATOR, springScale);
+            int springDuration = BouncyAnimations.popupOpenDuration(getContext());
+            Interpolator springInterpolator =
+                    BouncyAnimations.popupOpenInterpolator(getContext());
+            Animator springY = getAnimatorOfFloat(this, View.SCALE_Y, springDuration, 0,
+                    springInterpolator, springScale);
+            Animator springX = getAnimatorOfFloat(this, View.SCALE_X, springDuration, 0,
+                    springInterpolator, springScale);
             animatorSet.playTogether(alpha, arrowAlpha, springY, springX);
         } else if (isOpening) {
             float[] scaleValuesOvershoot = new float[] {1.02f, 1f};

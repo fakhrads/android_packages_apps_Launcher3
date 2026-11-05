@@ -105,20 +105,19 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             property: FloatProperty<T>,
             view: T,
         ) {
-            // Bouncy mode lets the folder shape and icons overshoot when opening.
+            // Bouncy mode lets the folder shape and icons overshoot when opening, and scales the
+            // shape springs with the speed slider.
+            val bouncyShape =
+                damping == DAMPING_SHAPE_POSITION && BouncyAnimations.isEnabled(context)
             val dampingRatio =
-                if (
-                    isOpening &&
-                        damping == DAMPING_SHAPE_POSITION &&
-                        BouncyAnimations.isEnabled(context)
-                ) {
-                    BouncyAnimations.FOLDER_OPEN_DAMPING
-                } else {
-                    damping
-                }
+                if (bouncyShape && isOpening) BouncyAnimations.folderOpenDamping(context)
+                else damping
+            val springStiffness =
+                if (bouncyShape) stiffness * BouncyAnimations.stiffnessScale(context)
+                else stiffness
             val animatorBuilder =
                 SpringAnimationBuilder(context)
-                    .setStiffness(stiffness)
+                    .setStiffness(springStiffness)
                     .setDampingRatio(dampingRatio)
                     .setStartValue(if (isOpening) startValue else endValue)
                     .setEndValue(if (isOpening) endValue else startValue)

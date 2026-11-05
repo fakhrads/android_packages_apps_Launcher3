@@ -43,15 +43,23 @@ class BounceEdgeEffect(
     private var pullDistance = 0f
     private var offset = 0f
 
+    // Sliders are read once; changing them restarts the launcher.
+    private val strength = BouncyAnimations.strength(context)
+    private val stiffness = STIFFNESS * BouncyAnimations.stiffnessScale(context)
+    private val maxOffsetFraction = (MAX_OFFSET_FRACTION * strength).coerceAtMost(0.3f)
+
     private val springAnim =
         SpringAnimation(FloatValueHolder()).apply {
-            spring = SpringForce(0f).setStiffness(STIFFNESS).setDampingRatio(DAMPING)
+            spring =
+                SpringForce(0f)
+                    .setStiffness(stiffness)
+                    .setDampingRatio(BouncyAnimations.bounceDamping(context))
             addUpdateListener { _, value, _ -> setOffset(value) }
             // Report once more after the spring ends, so the owner sees isFinished() == true.
             addEndListener { _, _, _, _ -> listener.onOffsetChanged(offset) }
         }
 
-    private fun maxOffset() = max(size.asInt, 1) * MAX_OFFSET_FRACTION
+    private fun maxOffset() = max(size.asInt, 1) * maxOffsetFraction
 
     private fun offsetFor(distance: Float) =
         direction * maxOffset() * (1f - exp(-RESISTANCE * distance))
@@ -98,8 +106,8 @@ class BounceEdgeEffect(
     override fun onAbsorb(velocity: Int) {
         pullDistance = 0f
         // Peak displacement of the spring is roughly v / omega; cap it to the pull limit.
-        val maxVelocity = maxOffset() * sqrt(STIFFNESS)
-        startSpring(direction * min(abs(velocity) * ABSORB_VELOCITY_SCALE, maxVelocity))
+        val maxVelocity = maxOffset() * sqrt(stiffness)
+        startSpring(direction * min(abs(velocity) * ABSORB_VELOCITY_SCALE * strength, maxVelocity))
     }
 
     override fun onFlingVelocity(velocity: Int) {}
@@ -122,9 +130,8 @@ class BounceEdgeEffect(
     }
 
     companion object {
-        // Starting values, tune on device.
+        // Values at 100% strength and speed.
         private const val STIFFNESS = 320f
-        private const val DAMPING = 0.55f
         private const val MAX_OFFSET_FRACTION = 0.15f
         private const val RESISTANCE = 3f
         private const val ABSORB_VELOCITY_SCALE = 0.25f

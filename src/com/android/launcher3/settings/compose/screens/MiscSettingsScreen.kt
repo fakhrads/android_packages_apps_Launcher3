@@ -58,6 +58,8 @@ fun MiscSettingsScreen(
     var burnInProtection by rememberBooleanPref("pref_navbar_burn_in_protection", false)
     var burnInInterval by rememberIntPref("pref_navbar_burn_in_interval", 60)
     var bouncy by rememberBooleanPref("pref_bouncy_animations", false)
+    var bouncyStrength by rememberIntPref("pref_bouncy_strength", 100)
+    var bouncySpeed by rememberIntPref("pref_bouncy_speed", 100)
 
     var showRestartDialog by remember { mutableStateOf(false) }
 
@@ -93,6 +95,26 @@ fun MiscSettingsScreen(
                     checked = bouncy,
                     onCheckedChange = { bouncy = it },
                     icon = Icons.Rounded.Animation
+                )
+                SettingSlider(
+                    title = "Bounce strength",
+                    value = bouncyStrength,
+                    min = 25,
+                    max = 200,
+                    step = 5,
+                    unit = "%",
+                    onValueChange = { bouncyStrength = it },
+                    enabled = bouncy
+                )
+                SettingSlider(
+                    title = "Animation speed",
+                    value = bouncySpeed,
+                    min = 50,
+                    max = 200,
+                    step = 10,
+                    unit = "%",
+                    onValueChange = { bouncySpeed = it },
+                    enabled = bouncy
                 )
             }
 
