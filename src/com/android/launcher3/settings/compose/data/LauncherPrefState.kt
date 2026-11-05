@@ -19,6 +19,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.customization.IconDatabase
 
 /**
  * Reactive bridge to Launcher3's SharedPreferences ([LauncherFiles.SHARED_PREFERENCES_KEY]).
@@ -44,9 +45,7 @@ object LauncherPrefsBridge {
     }
 
     fun getIconPackSummary(context: Context): String {
-        val prefs = getPrefs(context)
-        val pack = prefs.getString("pref_icon_pack", "") ?: ""
-        return if (pack.isEmpty()) context.getString(R.string.title_font_default) else pack
+        return IconDatabase.getGlobalLabel(context)
     }
 
     fun getRecentsStyleSummary(context: Context): String {

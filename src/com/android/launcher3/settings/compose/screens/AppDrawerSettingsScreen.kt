@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Apps
+import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.Keyboard
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.Search
