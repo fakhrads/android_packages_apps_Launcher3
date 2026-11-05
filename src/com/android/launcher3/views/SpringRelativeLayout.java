@@ -25,6 +25,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.EdgeEffectFactory;
 
+import com.android.launcher3.anim.BounceEdgeEffectFactory;
+import com.android.launcher3.anim.BouncyAnimations;
+
 /**
  * View group to allow rendering overscroll effect in a child at the parent level
  */
@@ -94,6 +97,9 @@ public class SpringRelativeLayout extends RelativeLayout {
     }
 
     public EdgeEffectFactory createEdgeEffectFactory() {
+        if (BouncyAnimations.isEnabled(getContext())) {
+            return new BounceEdgeEffectFactory();
+        }
         return new ProxyEdgeEffectFactory();
     }
 

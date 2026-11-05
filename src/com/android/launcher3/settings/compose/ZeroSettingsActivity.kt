@@ -11,6 +11,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -31,11 +34,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.SessionCommitReceiver
 import com.android.launcher3.allapps.AppDrawerStyle
+import com.android.launcher3.settings.compose.data.rememberBooleanPref
 import com.android.launcher3.settings.compose.screens.AppDrawerSettingsScreen
 import com.android.launcher3.settings.compose.screens.HomeScreenSettingsScreen
 import com.android.launcher3.settings.compose.screens.HubScreen
@@ -144,6 +149,8 @@ class ZeroSettingsActivity : ComponentActivity() {
             LauncherPrefs.RECENTS_MEMINFO,
             // SettingsMisc
             LauncherPrefs.BLUR_DEPTH,
+            // Edge effects and the page scroller are created with the views.
+            LauncherPrefs.BOUNCY_ANIMATIONS,
         ).map { it.sharedPrefKey }.toSet()
     }
 }
@@ -154,6 +161,12 @@ fun ZeroSettingsApp(
     onFinish: () -> Unit
 ) {
     var currentScreen by remember { mutableStateOf(initialScreen) }
+    val bouncy by rememberBooleanPref("pref_bouncy_animations", false)
+    val slideSpec = spring(
+        dampingRatio = if (bouncy) 0.7f else Spring.DampingRatioNoBouncy,
+        stiffness = Spring.StiffnessMediumLow,
+        visibilityThreshold = IntOffset.VisibilityThreshold
+    )
 
     BackHandler {
         if (currentScreen != SettingsSubscreen.HUB) {
@@ -168,12 +181,12 @@ fun ZeroSettingsApp(
         transitionSpec = {
             if (targetState != SettingsSubscreen.HUB) {
                 // Navigate forward
-                (slideInHorizontally { width -> width / 3 } + fadeIn())
-                    .togetherWith(slideOutHorizontally { width -> -width / 3 } + fadeOut())
+                (slideInHorizontally(slideSpec) { width -> width / 3 } + fadeIn())
+                    .togetherWith(slideOutHorizontally(slideSpec) { width -> -width / 3 } + fadeOut())
             } else {
                 // Navigate back
-                (slideInHorizontally { width -> -width / 3 } + fadeIn())
-                    .togetherWith(slideOutHorizontally { width -> width / 3 } + fadeOut())
+                (slideInHorizontally(slideSpec) { width -> -width / 3 } + fadeIn())
+                    .togetherWith(slideOutHorizontally(slideSpec) { width -> width / 3 } + fadeOut())
             }
         },
         label = "settings_navigation"

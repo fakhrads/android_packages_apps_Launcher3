@@ -318,6 +318,7 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val FREEFORM_GESTURE = backedUpItem("pref_start_freeform_by_gesture", false)
         @JvmField val LPNH_FULL_WIDTH = backedUpItem("pref_lpnh_full_width", true)
         @JvmField val CORNER_SWIPE_CTS = backedUpItem("pref_corner_swipe_cts", true)
+        @JvmField val BOUNCY_ANIMATIONS = backedUpItem("pref_bouncy_animations", false)
         @JvmField val OVERVIEW_GESTURE_ACTION = backedUpItem("pref_overview_gesture_action", "freeform")
         @JvmField val FREEFORM_GESTURE_PROGRESS = backedUpItem("pref_start_freeform_progress", 20)
         @JvmField val SWIPE_DOWN_TO_LOCK = backedUpItem("pref_swipe_down_to_lock", false)

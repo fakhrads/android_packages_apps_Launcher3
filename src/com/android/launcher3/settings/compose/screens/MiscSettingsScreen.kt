@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Animation
 import androidx.compose.material.icons.rounded.BlurOn
 import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material.icons.rounded.Refresh
@@ -56,6 +57,7 @@ fun MiscSettingsScreen(
     var blurDepth by rememberIntPref("pref_blur_depth", 60)
     var burnInProtection by rememberBooleanPref("pref_navbar_burn_in_protection", false)
     var burnInInterval by rememberIntPref("pref_navbar_burn_in_interval", 60)
+    var bouncy by rememberBooleanPref("pref_bouncy_animations", false)
 
     var showRestartDialog by remember { mutableStateOf(false) }
 
@@ -80,6 +82,20 @@ fun MiscSettingsScreen(
                 .padding(bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            SettingsCard(
+                title = "Motion",
+                icon = Icons.Rounded.Animation
+            ) {
+                SettingSwitch(
+                    title = "Bouncy animations",
+                    subtitle = "Springy overscroll on home and app drawer, page snap, " +
+                        "long press menu and folders. Restarts the launcher",
+                    checked = bouncy,
+                    onCheckedChange = { bouncy = it },
+                    icon = Icons.Rounded.Animation
+                )
+            }
+
             if (suggestionsAvailable) {
                 SettingsCard(
                     title = stringResource(R.string.suggestion_pref_screen_title),

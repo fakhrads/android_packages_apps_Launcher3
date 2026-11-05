@@ -84,6 +84,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
+import android.widget.OverScroller;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -94,6 +95,7 @@ import androidx.core.view.ViewCompat;
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
+import com.android.launcher3.anim.BouncyAnimations;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.automation.AutomationRepository;
@@ -419,6 +421,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
 
         setHapticFeedbackEnabled(false);
+        if (BouncyAnimations.isEnabled(context)) {
+            mScroller = new OverScroller(context, BouncyAnimations.PAGE_SNAP_INTERPOLATOR);
+        }
         initWorkspace();
 
         // Disable multitouch across the workspace/all apps/customize tray
@@ -1408,7 +1413,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public void setLauncherOverlay(LauncherOverlayTouchProxy overlay) {
         final EdgeEffectCompat newEffect;
         if (overlay == null) {
-            newEffect = new EdgeEffectCompat(getContext());
+            newEffect = createEdgeEffect(!mIsRtl /* leftEdge */);
             mOverlayEdgeEffect = null;
         } else {
             newEffect = mOverlayEdgeEffect = new OverlayEdgeEffect(getContext(), overlay);

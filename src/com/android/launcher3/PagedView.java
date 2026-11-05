@@ -55,6 +55,8 @@ import android.widget.ScrollView;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.anim.BounceEdgeEffect;
+import com.android.launcher3.anim.BouncyAnimations;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -136,6 +138,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     protected int mPageSlop;
     private int mMaximumVelocity;
     protected boolean mAllowOverScroll = true;
+    // Content offset of the bouncy overscroll, applied when drawing the pages.
+    private float mBounceOffset;
 
     protected static final int INVALID_POINTER = -1;
 
@@ -197,8 +201,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     protected void initEdgeEffect() {
-        mEdgeGlowLeft = new EdgeEffectCompat(getContext());
-        mEdgeGlowRight = new EdgeEffectCompat(getContext());
+        mEdgeGlowLeft = createEdgeEffect(true /* leftEdge */);
+        mEdgeGlowRight = createEdgeEffect(false /* leftEdge */);
     }
 
     public void initParentViews(View parent) {
@@ -2005,6 +2009,32 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         super.draw(canvas);
         drawEdgeEffect(canvas);
         pageEndTransition();
+    }
+
+    /** Creates the overscroll effect for one edge, bouncing the pages when enabled. */
+    protected EdgeEffectCompat createEdgeEffect(boolean leftEdge) {
+        if (!BouncyAnimations.isEnabled(getContext())) {
+            return new EdgeEffectCompat(getContext());
+        }
+        return new BounceEdgeEffect(getContext(), leftEdge ? 1f : -1f,
+                () -> mOrientationHandler.getPrimaryValue(getWidth(), getHeight()),
+                offset -> {
+                    mBounceOffset = offset;
+                    invalidate();
+                });
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        if (mBounceOffset == 0f) {
+            super.dispatchDraw(canvas);
+            return;
+        }
+        final int restoreCount = canvas.save();
+        canvas.translate(mOrientationHandler.getPrimaryValue(mBounceOffset, 0f),
+                mOrientationHandler.getPrimaryValue(0f, mBounceOffset));
+        super.dispatchDraw(canvas);
+        canvas.restoreToCount(restoreCount);
     }
 
     protected void drawEdgeEffect(Canvas canvas) {

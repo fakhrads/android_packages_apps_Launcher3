@@ -36,6 +36,7 @@ import com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY
 import com.android.launcher3.LauncherAnimUtils.getScaleProperty
 import com.android.launcher3.R
 import com.android.launcher3.Utilities.isDarkTheme
+import com.android.launcher3.anim.BouncyAnimations
 import com.android.launcher3.anim.SpringAnimationBuilder
 import com.android.launcher3.apppairs.AppPairIcon
 import com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW
@@ -104,10 +105,21 @@ class FolderSpringAnimatorSet(val animatorSet: AnimatorSet) {
             property: FloatProperty<T>,
             view: T,
         ) {
+            // Bouncy mode lets the folder shape and icons overshoot when opening.
+            val dampingRatio =
+                if (
+                    isOpening &&
+                        damping == DAMPING_SHAPE_POSITION &&
+                        BouncyAnimations.isEnabled(context)
+                ) {
+                    BouncyAnimations.FOLDER_OPEN_DAMPING
+                } else {
+                    damping
+                }
             val animatorBuilder =
                 SpringAnimationBuilder(context)
                     .setStiffness(stiffness)
-                    .setDampingRatio(damping)
+                    .setDampingRatio(dampingRatio)
                     .setStartValue(if (isOpening) startValue else endValue)
                     .setEndValue(if (isOpening) endValue else startValue)
                     .setMinimumVisibleChange(minVisibleChange)

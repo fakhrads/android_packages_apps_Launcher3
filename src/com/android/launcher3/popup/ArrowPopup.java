@@ -53,6 +53,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.BouncyAnimations;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.BlurBackgroundHelper;
@@ -724,7 +725,17 @@ public abstract class ArrowPopup<T extends ActivityContext> extends AbstractFloa
                 scaleValues);
 
         final AnimatorSet animatorSet = new AnimatorSet();
-        if (isOpening) {
+        if (isOpening && BouncyAnimations.isEnabled(getContext())) {
+            // One spring curve replaces the scale-up plus overshoot pair.
+            float[] springScale = new float[] {0.5f, 1f};
+            Animator springY = getAnimatorOfFloat(this, View.SCALE_Y,
+                    BouncyAnimations.POPUP_OPEN_DURATION, 0,
+                    BouncyAnimations.POPUP_OPEN_INTERPOLATOR, springScale);
+            Animator springX = getAnimatorOfFloat(this, View.SCALE_X,
+                    BouncyAnimations.POPUP_OPEN_DURATION, 0,
+                    BouncyAnimations.POPUP_OPEN_INTERPOLATOR, springScale);
+            animatorSet.playTogether(alpha, arrowAlpha, springY, springX);
+        } else if (isOpening) {
             float[] scaleValuesOvershoot = new float[] {1.02f, 1f};
             PathInterpolator overshootInterpolator = new PathInterpolator(0.3f, 0, 0.33f, 1f);
             Animator overshootY = getAnimatorOfFloat(this, View.SCALE_Y,
