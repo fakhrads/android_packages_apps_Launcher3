@@ -17,6 +17,7 @@
 
 package com.android.quickstep.inputconsumers;
 
+import static android.app.contextualsearch.ContextualSearchManager.ENTRYPOINT_LONG_PRESS_NAV_HANDLE;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
@@ -49,6 +50,7 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 import com.android.app.animation.Interpolators;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.quickstep.BaseContainerInterface;
@@ -56,6 +58,7 @@ import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.ContextualSearchInvoker;
 import com.android.quickstep.views.RecentsViewContainer;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -94,6 +97,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private final float mSquaredSlop;
     private final Context mContext;
     private final Consumer<MotionEvent> mGestureDetector;
+    private final boolean mCornerSwipeCts;
 
     public AssistantInputConsumer(
             Context context,
@@ -105,6 +109,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         super(gestureState.getDisplayId(), delegate, inputMonitor);
         final Resources res = context.getResources();
         mContext = context;
+        mCornerSwipeCts = LauncherPrefs.CORNER_SWIPE_CTS.get(context);
         mDragDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mFlingDistThreshold = res.getDimension(R.dimen.gestures_assistant_fling_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
@@ -235,26 +240,41 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         if (!mLaunchedAssistant) {
             mLastProgress = Math.min(mDistance * 1f / mDragDistThreshold, 1) * mTimeFraction;
             if (mDistance >= mDragDistThreshold && mTimeFraction >= 1) {
-                SystemUiProxy.INSTANCE.get(mContext).onAssistantGestureCompletion(0);
-                startAssistantInternal();
+                completeGesture(0);
             } else {
                 SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(mLastProgress);
             }
         }
     }
 
+    private void completeGesture(float velocity) {
+        // Corner swipe opens Circle to Search; fall back to the assistant when it is unavailable.
+        if (mCornerSwipeCts
+                && new ContextualSearchInvoker(mContext).show(ENTRYPOINT_LONG_PRESS_NAV_HANDLE)) {
+            // Clear the assistant invocation lights started by the swipe progress.
+            SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(0f);
+            performGestureEndHaptic();
+            mLaunchedAssistant = true;
+            return;
+        }
+        SystemUiProxy.INSTANCE.get(mContext).onAssistantGestureCompletion(velocity);
+        startAssistantInternal();
+    }
+
     private void startAssistantInternal() {
         sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HOME, KeyEvent.FLAG_LONG_SWIPE);
         sendEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HOME, KeyEvent.FLAG_LONG_SWIPE);
+        performGestureEndHaptic();
+        mLaunchedAssistant = true;
+    }
 
+    private void performGestureEndHaptic() {
         RecentsViewContainer container = mContainerInterface.getCreatedContainer();
         if (container != null) {
             container.getRootView().performHapticFeedback(
                 13, // HapticFeedbackConstants.GESTURE_END
                 HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         }
-
-        mLaunchedAssistant = true;
     }
 
     /**
@@ -290,9 +310,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
                     && !mLaunchedAssistant
                     && mState != STATE_DELEGATE_ACTIVE) {
                 mLastProgress = 1;
-                SystemUiProxy.INSTANCE.get(mContext).onAssistantGestureCompletion(
-                    (float) Math.sqrt(velocityX * velocityX + velocityY * velocityY));
-                startAssistantInternal();
+                completeGesture((float) Math.sqrt(velocityX * velocityX + velocityY * velocityY));
             }
             return true;
         }

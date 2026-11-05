@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CallMade
 import androidx.compose.material.icons.rounded.CenterFocusStrong
 import androidx.compose.material.icons.rounded.DeleteSweep
 import androidx.compose.material.icons.rounded.Layers
@@ -64,6 +65,7 @@ fun RecentsSettingsScreen(
     var freeformThreshold by rememberIntPref("pref_start_freeform_progress", 20)
     var gestureAction by rememberStringPref("pref_overview_gesture_action", "freeform")
     var lpnhFullWidth by rememberBooleanPref("pref_lpnh_full_width", true)
+    var cornerSwipeCts by rememberBooleanPref("pref_corner_swipe_cts", true)
 
     val gestureActionChoices = listOf(
         ChoiceItem(
@@ -139,6 +141,13 @@ fun RecentsSettingsScreen(
                     checked = lpnhFullWidth,
                     onCheckedChange = { lpnhFullWidth = it },
                     icon = Icons.Rounded.TouchApp
+                )
+                SettingSwitch(
+                    title = "Swipe from bottom corner",
+                    subtitle = "Open Circle to Search instead of the digital assistant",
+                    checked = cornerSwipeCts,
+                    onCheckedChange = { cornerSwipeCts = it },
+                    icon = Icons.Rounded.CallMade
                 )
             }
 
