@@ -65,32 +65,16 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings_activity);
 
         Intent intent = getIntent();
-
-        if (savedInstanceState == null) {
-            Bundle args = intent.getBundleExtra(EXTRA_FRAGMENT_ARGS);
-            if (args == null) {
-                args = new Bundle();
-            }
-
-            String highlight = intent.getStringExtra(EXTRA_FRAGMENT_HIGHLIGHT_KEY);
-            if (!TextUtils.isEmpty(highlight)) {
-                args.putString(EXTRA_FRAGMENT_HIGHLIGHT_KEY, highlight);
-            }
-            String root = intent.getStringExtra(EXTRA_FRAGMENT_ROOT_KEY);
-            if (!TextUtils.isEmpty(root)) {
-                args.putString(EXTRA_FRAGMENT_ROOT_KEY, root);
-            }
-
-            final FragmentManager fm = getSupportFragmentManager();
-            final Fragment f = fm.getFragmentFactory().instantiate(getClassLoader(),
-                    getString(R.string.settings_fragment_name));
-            f.setArguments(args);
-            // Display the fragment as the main content.
-            fm.beginTransaction().replace(com.android.settingslib.collapsingtoolbar.R.id.content_frame, f).commit();
+        String root = intent != null ? intent.getStringExtra(EXTRA_FRAGMENT_ROOT_KEY) : null;
+        Intent zeroIntent = new Intent(this, com.android.launcher3.settings.compose.ZeroSettingsActivity.class);
+        if (root != null) {
+            zeroIntent.putExtra("root_key", root);
         }
+        zeroIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(zeroIntent);
+        finish();
     }
 
     private boolean startPreference(String fragment, Bundle args, String key) {
