@@ -143,12 +143,17 @@ constructor(
         if (Utilities.ATLEAST_T && useTheme && !noWrapHintSet) {
             val themeController = themeManager.themeController
             if (themeController != null) {
-                result =
+                val themed =
                     themeController.createThemedAdaptiveIcon(
                         context,
                         result,
                         if (info is ItemInfoWithIcon) info.bitmap else null,
                     ) ?: return null
+                // With no monochrome layer and no cached mono bitmap the controller hands back the
+                // untouched full color icon. Bail out so the launch and drag animations keep the
+                // themed launcher icon instead of flashing the original colors.
+                if (themed === result) return null
+                result = themed
             }
         }
 
