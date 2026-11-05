@@ -243,6 +243,18 @@
         <item name="folderBackgroundColor">@color/customColorSurfaceEffect0Fallback</item>
     </style>
 
+    <!-- Compose settings: draws its own surfaces edge to edge under transparent system bars. -->
+    <style name="ZeroSettings.Theme" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">always</item>
+    </style>
+
     <style name="HomeSettings.Theme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="android:navigationBarColor">?android:colorPrimaryDark</item>
         <item name="android:windowActionBar">false</item>
