@@ -74,6 +74,7 @@ fun HomeScreenSettingsScreen(
 
     var sleepGesture by rememberBooleanPref("pref_sleep_gesture", true)
     var sleepGestureHaptic by rememberBooleanPref("pref_sleep_gesture_haptic", true)
+    var iconTapHaptic by rememberBooleanPref("pref_icon_tap_haptic", true)
 
     var wallpaperCarousel by rememberBooleanPref("pref_wallpaper_carousel", true)
     var carouselLockscreen by rememberBooleanPref("pref_wallpaper_carousel_lockscreen", true)
@@ -185,6 +186,13 @@ fun HomeScreenSettingsScreen(
                     checked = sleepGestureHaptic,
                     onCheckedChange = { sleepGestureHaptic = it },
                     enabled = sleepGesture
+                )
+                SettingSwitch(
+                    title = "Haptic on icon tap",
+                    subtitle = "Light vibration when opening an app or folder from home, " +
+                        "dock or app drawer",
+                    checked = iconTapHaptic,
+                    onCheckedChange = { iconTapHaptic = it }
                 )
             }
 

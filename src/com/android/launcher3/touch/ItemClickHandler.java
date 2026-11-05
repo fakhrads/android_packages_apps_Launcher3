@@ -35,6 +35,7 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Process;
 import android.os.Trace;
+import android.os.VibrationEffect;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +47,7 @@ import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.apppairs.AppPairIcon;
@@ -67,6 +69,7 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ApiWrapper;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
@@ -84,6 +87,7 @@ public class ItemClickHandler {
 
     private static final String TAG = "ItemClickHandler";
     private static final boolean DEBUG = true;
+    private static final float ICON_TAP_HAPTIC_SCALE = 0.6f;
 
     /**
      * Instance used for click handling on items
@@ -139,6 +143,7 @@ public class ItemClickHandler {
         Folder folder = ((FolderIcon) v).getFolder();
         if (!folder.isOpen() && !folder.isDestroyed()) {
             // Open the requested folder
+            vibrateForLaunch(Launcher.getLauncher(v.getContext()));
             folder.animateOpen();
             StatsLogManager.newInstance(v.getContext()).logger().withItemInfo(folder.mInfo)
                     .log(LAUNCHER_FOLDER_OPEN);
@@ -185,6 +190,7 @@ public class ItemClickHandler {
 
         // Either the app pair is not disabled, or it is a disabled state that can be handled by
         // framework directly (e.g. one app is paused), so go ahead and launch.
+        vibrateForLaunch(launcher);
         launcher.launchAppPair(icon);
     }
 
@@ -404,6 +410,7 @@ public class ItemClickHandler {
         if (intent == null) {
             throw new IllegalArgumentException("Input must have a valid intent");
         }
+        vibrateForLaunch(launcher);
         if (item instanceof WorkspaceItemInfo) {
             WorkspaceItemInfo si = (WorkspaceItemInfo) item;
             if (si.hasStatusFlag(WorkspaceItemInfo.FLAG_SUPPORTS_WEB_UI)
@@ -428,6 +435,18 @@ public class ItemClickHandler {
             FloatingIconView.fetchIcon(launcher, v, item, true /* isOpening */);
         }
         launcher.startActivitySafely(v, intent, item);
+    }
+
+    /**
+     * Light click haptic when an icon opens an app or a folder (pref_icon_tap_haptic).
+     * VibratorWrapper follows the system touch feedback setting.
+     */
+    private static void vibrateForLaunch(Launcher launcher) {
+        if (LauncherPrefs.ICON_TAP_HAPTIC.get(launcher)) {
+            VibratorWrapper.INSTANCE.get(launcher).vibrate(
+                    VibrationEffect.Composition.PRIMITIVE_CLICK, ICON_TAP_HAPTIC_SCALE,
+                    VibratorWrapper.EFFECT_CLICK);
+        }
     }
 
     /**
