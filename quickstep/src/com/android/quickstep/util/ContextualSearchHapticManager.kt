@@ -62,46 +62,12 @@ internal constructor(
 
     /** Indicates that search will be invoked if the current gesture is maintained. */
     fun vibrateForSearchHint() {
-        val navbarConfig = get()
-        // Whether we should play the hint (ramp up) haptic
-        val shouldVibrate: Boolean =
-            if (
-                context
-                    .getSystemService(Vibrator::class.java)!!
-                    .areAllPrimitivesSupported(Composition.PRIMITIVE_LOW_TICK)
-            ) {
-                if (contextualSearchStateManager.shouldPlayHapticOverride.isPresent) {
-                    contextualSearchStateManager.shouldPlayHapticOverride.get()
-                } else {
-                    navbarConfig.enableSearchHapticHint
-                }
-            } else {
-                false
-            }
-
-        if (shouldVibrate) {
-            val startScale = navbarConfig.lpnhHapticHintStartScalePercent / 100f
-            val endScale = navbarConfig.lpnhHapticHintEndScalePercent / 100f
-            val scaleExponent = navbarConfig.lpnhHapticHintScaleExponent
-            val iterations = navbarConfig.lpnhHapticHintIterations
-            val delayMs = navbarConfig.lpnhHapticHintDelay
-            val composition = VibrationEffect.startComposition()
-            for (i in 0 until iterations) {
-                val t = i / (iterations - 1f)
-                val scale =
-                    ((1 - t) * startScale + t * endScale)
-                        .toDouble()
-                        .pow(scaleExponent.toDouble())
-                        .toFloat()
-                if (i == 0) {
-                    // Adds a delay before the ramp starts
-                    composition.addPrimitive(Composition.PRIMITIVE_LOW_TICK, scale, delayMs)
-                } else {
-                    composition.addPrimitive(Composition.PRIMITIVE_LOW_TICK, scale)
-                }
-            }
-            vibratorWrapper.vibrate(composition.compose())
-        }
+        // Disabled pre-trigger rapid-fire haptic hint on touch down.
+        // Firing 50 consecutive low-tick vibration primitives on raw ACTION_DOWN before gesture
+        // disambiguation causes aggressive haptic chatter ("machine-gun rattle") whenever the user
+        // performs a standard swipe-up gesture to go home or recents.
+        // Crisp haptic feedback is preserved on actual search commitment via vibrateForSearch().
+        return
     }
 
     companion object {

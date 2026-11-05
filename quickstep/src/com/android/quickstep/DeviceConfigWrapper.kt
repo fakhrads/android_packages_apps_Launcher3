@@ -95,7 +95,7 @@ class DeviceConfigWrapper private constructor(propReader: PropReader) {
     val enableSearchHapticHint =
         propReader.get(
             "ENABLE_SEARCH_HAPTIC_HINT",
-            true,
+            false,
             "Enables haptic hint while long pressing on the bottom bar nav handle."
         )
 

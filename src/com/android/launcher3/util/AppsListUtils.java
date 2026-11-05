@@ -43,6 +43,8 @@ public class AppsListUtils {
     private static final Set<String> AUDIO_PACKAGES = new HashSet<>();
     private static final Set<String> VIDEO_PACKAGES = new HashSet<>();
     private static final Set<String> IMAGE_PACKAGES = new HashSet<>();
+    private static final Set<String> GAME_PACKAGES = new HashSet<>();
+    private static final Set<String> FINANCE_PACKAGES = new HashSet<>();
     
     static {
         // Popular Productivity apps
@@ -155,6 +157,34 @@ public class AppsListUtils {
         IMAGE_PACKAGES.add("com.picsart.studio");
         IMAGE_PACKAGES.add("com.burbn.hipstamatic");
         IMAGE_PACKAGES.add("com.vsco.cam");
+
+        // Popular Game apps
+        GAME_PACKAGES.add("com.mobile.legends");
+        GAME_PACKAGES.add("com.dts.freefireth");
+        GAME_PACKAGES.add("com.tencent.ig");
+        GAME_PACKAGES.add("com.mihoyo.genshinimpact");
+        GAME_PACKAGES.add("com.pubg.krmobile");
+        GAME_PACKAGES.add("com.riotgames.league.wildrift");
+        GAME_PACKAGES.add("com.garena.game.codm");
+        GAME_PACKAGES.add("com.supercell.clashofclans");
+        GAME_PACKAGES.add("com.supercell.brawlstars");
+        GAME_PACKAGES.add("com.roblox.client");
+        GAME_PACKAGES.add("com.mojang.minecraftpe");
+        GAME_PACKAGES.add("com.epicgames.portal");
+
+        // Popular Finance & Banking apps
+        FINANCE_PACKAGES.add("id.co.bca");
+        FINANCE_PACKAGES.add("com.bankmandiri.mandiriglobal");
+        FINANCE_PACKAGES.add("com.bni.mbanking");
+        FINANCE_PACKAGES.add("id.co.bri.brimo");
+        FINANCE_PACKAGES.add("id.dana");
+        FINANCE_PACKAGES.add("com.telkom.indonesia.o2o");
+        FINANCE_PACKAGES.add("com.btpn.jago");
+        FINANCE_PACKAGES.add("com.seabank.id");
+        FINANCE_PACKAGES.add("com.binance.dev");
+        FINANCE_PACKAGES.add("com.coinbase.android");
+        FINANCE_PACKAGES.add("com.tokocrypto");
+        FINANCE_PACKAGES.add("com.indodax.mobile");
     }
 
     /**
@@ -202,7 +232,7 @@ public class AppsListUtils {
             String packageBasedCategory = getCategoryByPackage(packageName, context);
             if (packageBasedCategory != null) {
                 categoryTitle = packageBasedCategory;
-            } else if (applicationInfo != null && applicationInfo.category != 0) {
+            } else if (applicationInfo != null && applicationInfo.category != ApplicationInfo.CATEGORY_UNDEFINED) {
                 // Fall back to ApplicationInfo.category if package name didn't match
                 categoryTitle = getCategoryTitle(context, applicationInfo.category);
                 if (categoryTitle == null) {
@@ -400,6 +430,12 @@ public class AppsListUtils {
         if (IMAGE_PACKAGES.contains(lowerPackageName)) {
             return context.getString(R.string.image_category_label);
         }
+        if (GAME_PACKAGES.contains(lowerPackageName)) {
+            return context.getString(R.string.game_category_label);
+        }
+        if (FINANCE_PACKAGES.contains(lowerPackageName)) {
+            return context.getString(R.string.finance_category_label);
+        }
         
         return null;
     }
@@ -418,7 +454,10 @@ public class AppsListUtils {
         switch (category) {
             case ApplicationInfo.CATEGORY_UNDEFINED:
                 return null; // Will fall back to "Others"
+            case ApplicationInfo.CATEGORY_GAME:
+                return context.getString(R.string.game_category_label);
             case ApplicationInfo.CATEGORY_PRODUCTIVITY:
+            case ApplicationInfo.CATEGORY_MAPS:
                 return context.getString(R.string.productivity_category_label);
             case ApplicationInfo.CATEGORY_NEWS:
                 return context.getString(R.string.news_category_label);

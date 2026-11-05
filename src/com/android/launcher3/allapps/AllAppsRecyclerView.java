@@ -93,6 +93,8 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
         super(context, attrs, defStyleAttr);
         mNumAppsPerRow = LauncherAppState.getIDP(context).numColumns;
         mFastScrollHelper = new AllAppsFastScrollHelper(this);
+        setHasFixedSize(true);
+        setItemViewCacheSize(12);
     }
 
     /**
@@ -110,6 +112,8 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER, 1);
+        pool.setMaxRecycledViews(BaseAllAppsAdapter.VIEW_TYPE_ICON, 35);
+        pool.setMaxRecycledViews(BaseAllAppsAdapter.VIEW_TYPE_FOLDER, 15);
     }
 
     @Override

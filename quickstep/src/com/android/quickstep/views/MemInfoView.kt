@@ -32,7 +32,6 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import android.widget.TextView
 
-import com.android.internal.util.MemInfoReader
 
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Insettable
@@ -58,7 +57,6 @@ class MemInfoView(context: Context, attrs: AttributeSet?) :
     private val activityManager =
         context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
     private val memInfo = ActivityManager.MemoryInfo()
-    private val memInfoReader = MemInfoReader()
 
     private val multiValueAlpha =
         MultiValueAlpha(this, 2).apply { setUpdateVisibility(true) }
@@ -145,8 +143,11 @@ class MemInfoView(context: Context, attrs: AttributeSet?) :
         return knownSizes.last()
     }
 
+    private var cachedZramSize: Long = -1L
+
     private fun getZramSize(): Long {
         if (!LauncherPrefs.RECENTS_MEMINFO_ZRAM.get(context)) return 0
+        if (cachedZramSize >= 0) return cachedZramSize
 
         var zramSize = 0L
 
@@ -179,6 +180,7 @@ class MemInfoView(context: Context, attrs: AttributeSet?) :
             }
         }
 
+        cachedZramSize = zramSize
         return zramSize
     }
 
@@ -193,23 +195,6 @@ class MemInfoView(context: Context, attrs: AttributeSet?) :
             }
             context.startActivity(intent)
         }
-    }
-
-    private fun getTotalBackgroundMemory(): Long {
-        var totalBackgroundMemory = 0L
-        val runningProcesses = activityManager.runningAppProcesses ?: return 0L
-
-        val pids = IntArray(runningProcesses.size) { runningProcesses[it].pid }
-        val memoryInfos = activityManager.getProcessMemoryInfo(pids) ?: return 0L
-
-        val count = minOf(memoryInfos.size, runningProcesses.size)
-        for (i in 0 until count) {
-            val info = runningProcesses[i]
-            if (info.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND) {
-                totalBackgroundMemory += memoryInfos[i].totalPss.toLong() * 1024L
-            }
-        }
-        return totalBackgroundMemory
     }
 
     private fun startMemoryMonitoring() {
@@ -232,10 +217,8 @@ class MemInfoView(context: Context, attrs: AttributeSet?) :
             // Bail out if monitoring was stopped while this callback was queued.
             if (view.monitorHandler == null) return
 
-            view.memInfoReader.readMemInfo()
-            val freeMemory = view.memInfoReader.freeSize +
-                view.memInfoReader.cachedSize +
-                view.getTotalBackgroundMemory()
+            view.activityManager.getMemoryInfo(view.memInfo)
+            val freeMemory = view.memInfo.availMem
             val zramSize = view.getZramSize()
 
             val availResult = Formatter.formatShortFileSize(view.context, freeMemory)

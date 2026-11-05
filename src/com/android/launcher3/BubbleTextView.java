@@ -78,6 +78,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
@@ -857,6 +860,25 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                 || event.getX() < getPaddingLeft()
                 || event.getY() > getHeight() - getPaddingBottom()
                 || event.getX() > getWidth() - getPaddingRight();
+    }
+
+    private static final Interpolator PRESS_INTERPOLATOR = new DecelerateInterpolator();
+    private static final Interpolator RELEASE_INTERPOLATOR = new OvershootInterpolator(1.2f);
+
+    @Override
+    public void setPressed(boolean pressed) {
+        super.setPressed(pressed);
+        if (mIgnorePressedStateChange || mScaleForReorderBounce != 1f) {
+            return;
+        }
+        animate().cancel();
+        if (pressed) {
+            animate().scaleX(0.93f).scaleY(0.93f).setDuration(110)
+                    .setInterpolator(PRESS_INTERPOLATOR).start();
+        } else {
+            animate().scaleX(1.0f).scaleY(1.0f).setDuration(170)
+                    .setInterpolator(RELEASE_INTERPOLATOR).start();
+        }
     }
 
     void setStayPressed(boolean stayPressed) {

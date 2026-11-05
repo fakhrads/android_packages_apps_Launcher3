@@ -524,10 +524,16 @@
     <string name="audio_category_label">Audio</string>
     <string name="video_category_label">Video</string>
     <string name="image_category_label">Image</string>
+    <string name="game_category_label">Games</string>
+    <string name="finance_category_label">Finance</string>
+    <string name="shopping_category_label">Shopping</string>
+    <string name="tools_category_label">Tools</string>
 
     <!-- Drawer list preference -->
     <string name="drawer_list_title">Default list view</string>
     <string name="drawer_list_summary">Show apps in default list view instead of categorized folders</string>
+    <string name="pref_drawer_list_title">Smart Auto-Organize</string>
+    <string name="pref_drawer_list_summary">Automatically group installed apps into category folders at the top of the drawer</string>
 
     <!-- Swipe down to lock -->
     <string name="swipe_down_to_lock_title">Swipe down on task to toggle lock</string>

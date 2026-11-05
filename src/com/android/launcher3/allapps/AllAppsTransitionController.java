@@ -41,6 +41,7 @@ import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.animation.Interpolator;
+import android.view.animation.PathInterpolator;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.Nullable;
@@ -79,6 +80,8 @@ import com.google.android.msdl.data.model.MSDLToken;
 public class AllAppsTransitionController
         implements StateHandler<LauncherState>, OnDeviceProfileChangeListener {
     private static final String TAG = "AllAppsTransitionController";
+    private static final Interpolator EMPHASIZED_DECELERATE =
+            new PathInterpolator(0.05f, 0.7f, 0.1f, 1.0f);
     // This constant should match the second derivative of the animator interpolator.
     public static final float INTERP_COEFF = 1.7f;
     public static final int REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS = 200;
@@ -320,7 +323,7 @@ public class AllAppsTransitionController
 
         // need to decide depending on the release velocity
         Interpolator verticalProgressInterpolator = config.getInterpolator(ANIM_VERTICAL_PROGRESS,
-                config.isUserControlled() ? LINEAR : DECELERATE_1_7);
+                config.isUserControlled() ? LINEAR : EMPHASIZED_DECELERATE);
         Animator anim = createSpringAnimation(mProgress, targetProgress);
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
