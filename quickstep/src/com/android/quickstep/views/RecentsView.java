@@ -3946,7 +3946,7 @@ public abstract class RecentsView<
         setImportantForAccessibility(isModal() ? IMPORTANT_FOR_ACCESSIBILITY_NO
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
         recalculateTaskViewScreenEdgeIntersections();
-        if (mRecentsStyle.equals("stock") || mEnableOverlap) {
+        if (mRecentsStyle.equals("stock")) {
             doScrollScale();
         }
     }
@@ -5859,7 +5859,7 @@ public abstract class RecentsView<
         super.onScrollChanged(l, t, oldl, oldt);
         dispatchScrollChanged();
         updatePageOffsets();
-        if (mRecentsStyle.equals("stock") || mEnableOverlap) {
+        if (mRecentsStyle.equals("stock")) {
             doScrollScale();
         }
     }
