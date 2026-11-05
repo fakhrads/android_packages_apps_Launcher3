@@ -5,6 +5,8 @@
 
 package com.android.launcher3.settings.compose.screens
 
+import android.content.Intent
+import android.os.Bundle
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -23,8 +25,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.Call
 import androidx.compose.material.icons.rounded.Chat
+import androidx.compose.material.icons.rounded.Interests
 import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Palette
@@ -36,33 +40,47 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.launcher3.R
+import com.android.launcher3.customization.IconDatabase
+import com.android.launcher3.icons.pack.IconPackSettingsActivity
+import com.android.launcher3.settings.SettingsActivity
+import com.android.launcher3.settings.compose.components.NavRow
 import com.android.launcher3.settings.compose.components.ScreenScaffold
 import com.android.launcher3.settings.compose.components.SettingSlider
 import com.android.launcher3.settings.compose.components.SettingSwitch
 import com.android.launcher3.settings.compose.components.SettingsCard
 import com.android.launcher3.settings.compose.data.rememberBooleanPref
+import com.android.launcher3.settings.compose.data.LauncherPrefsBridge
 import com.android.launcher3.settings.compose.data.rememberIntPref
+import com.android.launcher3.settings.compose.data.rememberStringPref
+import com.android.launcher3.settings.compose.data.rememberThemedIconsState
 
 @Composable
 fun IconsSettingsScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
 
     var iconSize by rememberIntPref("pref_custom_icon_size", 100)
     var fontSize by rememberIntPref("pref_custom_font_size", 100)
-    var themedIcons by rememberBooleanPref("pref_grayscale_icon_map_lawn", true)
-    var notificationDots by rememberBooleanPref("pref_icon_badging", true)
+    var themedIcons by rememberThemedIconsState()
+    var lawnIcons by rememberBooleanPref("pref_grayscale_icon_map_lawn", true)
+    val iconPack by rememberStringPref(IconDatabase.KEY_ICON_PACK, IconDatabase.VALUE_DEFAULT)
+    val iconPackText = remember(iconPack) { LauncherPrefsBridge.getIconPackSummary(context) }
 
     val animatedIconScale by animateFloatAsState(
         targetValue = iconSize / 100f,
@@ -165,19 +183,43 @@ fun IconsSettingsScreen(
                 title = "Adaptive styling",
                 icon = Icons.Rounded.Palette
             ) {
+                NavRow(
+                    title = stringResource(R.string.icon_pack_title),
+                    summary = "Apply icons from an installed icon pack",
+                    icon = Icons.Rounded.Interests,
+                    onClick = {
+                        context.startActivity(Intent(context, IconPackSettingsActivity::class.java))
+                    },
+                    badgeText = iconPackText
+                )
                 SettingSwitch(
-                    title = "Monochrome themed icons",
-                    subtitle = "Generate adaptive themed icons for all apps",
+                    title = "Themed icons",
+                    subtitle = "Monochrome icons tinted with the wallpaper colors",
                     checked = themedIcons,
                     onCheckedChange = { themedIcons = it },
                     icon = Icons.Rounded.Palette
                 )
                 SettingSwitch(
-                    title = "Notification badges",
-                    subtitle = "Show notification dot indicators on app icons",
-                    checked = notificationDots,
-                    onCheckedChange = { notificationDots = it },
-                    icon = Icons.Rounded.Notifications
+                    title = stringResource(R.string.pref_grayscale_icon_map_lawn_title),
+                    subtitle = stringResource(R.string.pref_grayscale_icon_map_lawn_summary),
+                    checked = lawnIcons,
+                    onCheckedChange = { lawnIcons = it },
+                    icon = Icons.Rounded.AutoAwesome
+                )
+                NavRow(
+                    title = stringResource(R.string.notification_dots_title),
+                    summary = "Managed in system notification settings",
+                    icon = Icons.Rounded.Notifications,
+                    onClick = {
+                        // Same intent the legacy NotificationDotsPreference used.
+                        val args = Bundle().apply {
+                            putString(SettingsActivity.EXTRA_FRAGMENT_HIGHLIGHT_KEY, "notification_badging")
+                        }
+                        context.startActivity(
+                            Intent("android.settings.NOTIFICATION_SETTINGS")
+                                .putExtra(":settings:show_fragment_args", args)
+                        )
+                    }
                 )
             }
         }

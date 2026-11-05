@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -32,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,7 +46,10 @@ import com.android.launcher3.settings.compose.components.QuickToggleTile
 import com.android.launcher3.settings.compose.components.SettingsCard
 import com.android.launcher3.settings.compose.components.StatusChip
 import com.android.launcher3.settings.compose.data.LauncherPrefsBridge
+import com.android.launcher3.customization.IconDatabase
 import com.android.launcher3.settings.compose.data.rememberBooleanPref
+import com.android.launcher3.settings.compose.data.rememberStringPref
+import com.android.launcher3.settings.compose.data.rememberThemedIconsState
 
 enum class SettingsSubscreen {
     HUB,
@@ -66,17 +71,21 @@ fun HubScreen(
     // 2x2 Quick toggles
     var lockLayout by rememberBooleanPref(key = "pref_workspace_lock", defaultValue = false)
     var sleepGesture by rememberBooleanPref(key = "pref_sleep_gesture", defaultValue = true)
-    var themedIcons by rememberBooleanPref(key = "pref_grayscale_icon_map_lawn", defaultValue = true)
+    var themedIcons by rememberThemedIconsState()
     var dockSearch by rememberBooleanPref(key = "pref_dock_search", defaultValue = true)
 
-    val gridText = LauncherPrefsBridge.getGridSummary(context)
-    val iconPackText = LauncherPrefsBridge.getIconPackSummary(context)
-    val recentsText = LauncherPrefsBridge.getRecentsStyleSummary(context)
+    val iconPack by rememberStringPref(IconDatabase.KEY_ICON_PACK, IconDatabase.VALUE_DEFAULT)
+    val recentsStyle by rememberStringPref("pref_recents_style", "default")
+
+    val gridText = remember { LauncherPrefsBridge.getGridSummary(context) }
+    val iconPackText = remember(iconPack) { LauncherPrefsBridge.getIconPackSummary(context) }
+    val recentsText = LauncherPrefsBridge.getRecentsStyleSummary(recentsStyle)
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
+            .navigationBarsPadding()
             .padding(bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -178,7 +187,7 @@ fun HubScreen(
         ) {
             NavRow(
                 title = "Homescreen",
-                summary = "Grid, gestures, minus-one feed, status bar",
+                summary = "Layout, wallpaper, At A Glance, search bar, dock",
                 icon = Icons.Rounded.Home,
                 onClick = { onNavigate(SettingsSubscreen.HOMESCREEN) },
                 badgeText = gridText

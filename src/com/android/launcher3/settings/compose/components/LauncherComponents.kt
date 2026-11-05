@@ -12,6 +12,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,18 +34,21 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -66,6 +70,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.ColorUtils
 import kotlin.math.roundToInt
 
 @Composable
@@ -774,12 +779,33 @@ fun NavRow(
             }
             Spacer(modifier = Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                // The badge sits next to the title so the summary keeps the full width.
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+                    badgeText?.let {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Surface(
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f)
+                        ) {
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
+                }
                 if (!summary.isNullOrEmpty()) {
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
@@ -789,21 +815,7 @@ fun NavRow(
                     )
                 }
             }
-            badgeText?.let {
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f),
-                    modifier = Modifier.padding(end = 8.dp)
-                ) {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.width(8.dp))
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
                 contentDescription = null,
@@ -863,4 +875,154 @@ fun ScreenScaffold(
             content = content
         )
     }
+}
+
+private val ColorPresets = listOf(
+    0xFFFFFFFF, 0xFF000000, 0xFFFF0000, 0xFFF44336, 0xFFE91E63, 0xFF9C27B0,
+    0xFF673AB7, 0xFF3F51B5, 0xFF2196F3, 0xFF03A9F4, 0xFF00BCD4, 0xFF009688,
+    0xFF4CAF50, 0xFF8BC34A, 0xFFCDDC39, 0xFFFFEB3B, 0xFFFFC107, 0xFFFF9800,
+    0xFFFF5722, 0xFF795548, 0xFF9E9E9E, 0xFF607D8B, 0xFF1E1E1E, 0xFFF5F5F5
+).map { it.toInt() }
+
+/**
+ * Color setting row with a swatch; opens a palette + hex dialog. Stores ARGB ints, the same
+ * format as the legacy ColorPickerPreference.
+ */
+@Composable
+fun ColorSettingRow(
+    title: String,
+    subtitle: String?,
+    color: Int,
+    onColorChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    val haptic = rememberHaptic()
+    var showDialog by remember { mutableStateOf(false) }
+
+    Surface(
+        onClick = {
+            haptic(Haptic.CLICK)
+            showDialog = true
+        },
+        enabled = enabled,
+        modifier = modifier
+            .fillMaxWidth()
+            .alpha(if (enabled) 1f else 0.5f)
+            .squishable(enabled, scaleDown = 0.98f),
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.5f)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                if (!subtitle.isNullOrEmpty()) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            ColorSwatch(color = color, selected = false, size = 32)
+        }
+    }
+
+    if (showDialog) {
+        var pending by remember { mutableStateOf(color) }
+        var hex by remember { mutableStateOf(toHex(color)) }
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(title) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    ColorPresets.chunked(6).forEach { row ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            row.forEach { preset ->
+                                ColorSwatch(
+                                    color = preset,
+                                    selected = preset == pending,
+                                    size = 36,
+                                    onClick = {
+                                        pending = preset
+                                        hex = toHex(preset)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    OutlinedTextField(
+                        value = hex,
+                        onValueChange = { input ->
+                            hex = input.take(9)
+                            parseHex(hex)?.let { pending = it }
+                        },
+                        singleLine = true,
+                        label = { Text("Hex (#AARRGGBB)") },
+                        isError = parseHex(hex) == null,
+                        leadingIcon = { ColorSwatch(color = pending, selected = false, size = 20) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    onColorChange(pending)
+                    showDialog = false
+                }) { Text("Apply") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) { Text("Cancel") }
+            }
+        )
+    }
+}
+
+@Composable
+private fun ColorSwatch(color: Int, selected: Boolean, size: Int, onClick: (() -> Unit)? = null) {
+    val outline = MaterialTheme.colorScheme.outline
+    Box(
+        modifier = Modifier
+            .size(size.dp)
+            .clip(CircleShape)
+            .background(Color(color))
+            .border(
+                if (selected) 3.dp else 1.dp,
+                if (selected) MaterialTheme.colorScheme.primary else outline,
+                CircleShape
+            )
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
+        contentAlignment = Alignment.Center
+    ) {
+        if (selected) {
+            Icon(
+                imageVector = Icons.Rounded.Check,
+                contentDescription = null,
+                tint = if (ColorUtils.calculateLuminance(color) > 0.5) Color.Black else Color.White,
+                modifier = Modifier.size((size / 2).dp)
+            )
+        }
+    }
+}
+
+private fun toHex(color: Int) = String.format("#%08X", color)
+
+private fun parseHex(input: String): Int? {
+    val digits = input.removePrefix("#")
+    if (digits.length != 6 && digits.length != 8) return null
+    val value = digits.toLongOrNull(16) ?: return null
+    return if (digits.length == 6) (0xFF000000 or value).toInt() else value.toInt()
 }

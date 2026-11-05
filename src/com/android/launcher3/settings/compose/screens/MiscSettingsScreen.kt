@@ -5,6 +5,8 @@
 
 package com.android.launcher3.settings.compose.screens
 
+import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.BlurOn
+import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Security
 import androidx.compose.material.icons.rounded.Tune
@@ -27,7 +30,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.android.launcher3.R
 import com.android.launcher3.settings.compose.components.NavRow
 import com.android.launcher3.settings.compose.components.ScreenScaffold
 import com.android.launcher3.settings.compose.components.SettingSlider
@@ -36,6 +41,9 @@ import com.android.launcher3.settings.compose.components.SettingsCard
 import com.android.launcher3.settings.compose.data.LauncherPrefsBridge
 import com.android.launcher3.settings.compose.data.rememberBooleanPref
 import com.android.launcher3.settings.compose.data.rememberIntPref
+import com.android.systemui.shared.system.BlurUtils
+
+private const val DPS_PACKAGE = "com.google.android.as"
 
 @Composable
 fun MiscSettingsScreen(
@@ -45,11 +53,21 @@ fun MiscSettingsScreen(
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
-    var blurDepth by rememberIntPref("pref_blur_depth", 100)
-    var burnInProtection by rememberBooleanPref("pref_navbar_burn_in_protection", true)
+    var blurDepth by rememberIntPref("pref_blur_depth", 60)
+    var burnInProtection by rememberBooleanPref("pref_navbar_burn_in_protection", false)
     var burnInInterval by rememberIntPref("pref_navbar_burn_in_interval", 60)
 
     var showRestartDialog by remember { mutableStateOf(false) }
+
+    val blurSupported = remember { BlurUtils.supportsBlursOnWindows() }
+    // Suggestions are served by Device Personalization Services, like the legacy screen.
+    val suggestionsAvailable = remember {
+        try {
+            context.packageManager.getApplicationInfo(DPS_PACKAGE, 0).enabled
+        } catch (_: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
 
     ScreenScaffold(
         title = "Miscellaneous",
@@ -62,19 +80,39 @@ fun MiscSettingsScreen(
                 .padding(bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            SettingsCard(
-                title = "Visual render effects",
-                icon = Icons.Rounded.BlurOn
-            ) {
-                SettingSlider(
-                    title = "Background blur radius",
-                    value = blurDepth,
-                    min = 0,
-                    max = 175,
-                    step = 5,
-                    unit = "px",
-                    onValueChange = { blurDepth = it }
-                )
+            if (suggestionsAvailable) {
+                SettingsCard(
+                    title = stringResource(R.string.suggestion_pref_screen_title),
+                    icon = Icons.Rounded.Lightbulb
+                ) {
+                    NavRow(
+                        title = stringResource(R.string.suggestion_pref_screen_title),
+                        summary = stringResource(R.string.suggestion_pref_screen_desc),
+                        icon = Icons.Rounded.Lightbulb,
+                        onClick = {
+                            context.startActivity(
+                                Intent("android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS")
+                            )
+                        }
+                    )
+                }
+            }
+
+            if (blurSupported) {
+                SettingsCard(
+                    title = "Visual render effects",
+                    icon = Icons.Rounded.BlurOn
+                ) {
+                    SettingSlider(
+                        title = "Background blur radius",
+                        value = blurDepth,
+                        min = 0,
+                        max = 175,
+                        step = 5,
+                        unit = "px",
+                        onValueChange = { blurDepth = it }
+                    )
+                }
             }
 
             SettingsCard(
@@ -91,7 +129,7 @@ fun MiscSettingsScreen(
                     title = "Pixel shift interval",
                     value = burnInInterval,
                     min = 15,
-                    max = 180,
+                    max = 300,
                     step = 15,
                     unit = "s",
                     onValueChange = { burnInInterval = it },

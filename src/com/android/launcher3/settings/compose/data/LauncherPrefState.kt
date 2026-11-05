@@ -20,6 +20,7 @@ import com.android.launcher3.LauncherFiles
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.customization.IconDatabase
+import com.android.launcher3.graphics.ThemeManager
 
 /**
  * Reactive bridge to Launcher3's SharedPreferences ([LauncherFiles.SHARED_PREFERENCES_KEY]).
@@ -48,14 +49,39 @@ object LauncherPrefsBridge {
         return IconDatabase.getGlobalLabel(context)
     }
 
-    fun getRecentsStyleSummary(context: Context): String {
-        val prefs = getPrefs(context)
-        val style = prefs.getString("pref_recents_style", "default") ?: "default"
+    /** Short label for [style], sized to fit the hub metric tiles. */
+    fun getRecentsStyleSummary(style: String): String {
         return when (style) {
-            "ios" -> "iOS Grid"
-            "slim" -> "Slim Cards"
-            else -> "Default Stack"
+            "stock" -> "Scale"
+            "staple" -> "Kami"
+            "ios" -> "iOS"
+            "oxygen" -> "Oxygen"
+            else -> "AOSP"
         }
+    }
+}
+
+/**
+ * State holder for the monochrome themed icons toggle, the same setting that
+ * Wallpaper & style flips through the grid customization provider.
+ */
+@Suppress("DEPRECATION")
+@Composable
+fun rememberThemedIconsState(): MutableState<Boolean> {
+    val context = LocalContext.current
+    val themeManager = remember(context) { ThemeManager.INSTANCE.get(context) }
+    val state = remember(themeManager) { mutableStateOf(themeManager.isMonoThemeEnabled) }
+
+    return object : MutableState<Boolean> {
+        override var value: Boolean
+            get() = state.value
+            set(newValue) {
+                state.value = newValue
+                themeManager.isMonoThemeEnabled = newValue
+            }
+
+        override fun component1(): Boolean = value
+        override fun component2(): (Boolean) -> Unit = { value = it }
     }
 }
 

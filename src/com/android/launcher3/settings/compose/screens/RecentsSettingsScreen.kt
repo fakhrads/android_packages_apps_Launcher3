@@ -12,20 +12,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CenterFocusStrong
 import androidx.compose.material.icons.rounded.DeleteSweep
 import androidx.compose.material.icons.rounded.Layers
+import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Memory
 import androidx.compose.material.icons.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.Screenshot
 import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.ViewCarousel
+import androidx.compose.material.icons.rounded.VerticalSplit
 import androidx.compose.material.icons.rounded.ViewStream
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.android.launcher3.R
 import com.android.launcher3.settings.compose.components.ChoiceItem
 import com.android.launcher3.settings.compose.components.ChoiceList
 import com.android.launcher3.settings.compose.components.ScreenScaffold
@@ -45,32 +50,58 @@ fun RecentsSettingsScreen(
 
     var recentsStyle by rememberStringPref("pref_recents_style", "default")
     var scrollVibrate by rememberBooleanPref("pref_recents_scroll_vibrate", true)
-    var meminfoZram by rememberBooleanPref("pref_recents_meminfo_zram", true)
-    var recentsOpacity by rememberIntPref("pref_recents_opacity", 100)
-    var screenshotButton by rememberBooleanPref("pref_recents_screenshot_button", true)
-    var clearAllButton by rememberBooleanPref("pref_recents_clear_all_button", true)
+    var meminfo by rememberBooleanPref("pref_recents_meminfo", false)
+    var meminfoZram by rememberBooleanPref("pref_recents_meminfo_zram", false)
+    var recentsOpacity by rememberIntPref("pref_recents_opacity", 40)
+    var screenshotButton by rememberBooleanPref("pref_recents_screenshot", true)
+    var clearAllButton by rememberBooleanPref("pref_recents_clear_all", true)
+    var clearAllPreserveActive by rememberBooleanPref("pref_recents_clear_all_preserve_active", false)
+    var lensButton by rememberBooleanPref("pref_recents_lens", false)
+    var swipeDownToLock by rememberBooleanPref("pref_swipe_down_to_lock", false)
 
-    var freeformGesture by rememberBooleanPref("pref_start_freeform_by_gesture", true)
-    var freeformThreshold by rememberIntPref("pref_start_freeform_progress", 25)
+    var freeformGesture by rememberBooleanPref("pref_start_freeform_by_gesture", false)
+    var freeformThreshold by rememberIntPref("pref_start_freeform_progress", 20)
+    var gestureAction by rememberStringPref("pref_overview_gesture_action", "freeform")
+
+    val gestureActionChoices = listOf(
+        ChoiceItem(
+            value = "freeform",
+            title = stringResource(R.string.overview_gesture_action_freeform),
+            icon = Icons.Rounded.OpenInNew
+        ),
+        ChoiceItem(
+            value = "split_screen",
+            title = stringResource(R.string.overview_gesture_action_split_screen),
+            icon = Icons.Rounded.VerticalSplit
+        )
+    )
 
     val styleChoices = listOf(
         ChoiceItem(
             value = "default",
-            title = "Default stack",
+            title = stringResource(R.string.recents_style_default),
             summary = "AOSP horizontal scrolling task carousel",
             icon = Icons.Rounded.ViewCarousel
         ),
         ChoiceItem(
+            value = "stock",
+            title = stringResource(R.string.recents_style_stock),
+            icon = Icons.Rounded.ViewStream
+        ),
+        ChoiceItem(
+            value = "staple",
+            title = stringResource(R.string.recents_style_staple),
+            icon = Icons.Rounded.ViewStream
+        ),
+        ChoiceItem(
             value = "ios",
-            title = "iOS grid style",
-            summary = "Overlapping card layout with smooth depth transitions",
+            title = stringResource(R.string.recents_style_ios),
             icon = Icons.Rounded.Layers
         ),
         ChoiceItem(
-            value = "slim",
-            title = "Slim minimal cards",
-            summary = "Compact cards maximizing background visibility and multitasking speed",
-            icon = Icons.Rounded.ViewStream
+            value = "oxygen",
+            title = stringResource(R.string.recents_style_oxygen),
+            icon = Icons.Rounded.Layers
         )
     )
 
@@ -101,11 +132,18 @@ fun RecentsSettingsScreen(
                 icon = Icons.Rounded.Memory
             ) {
                 SettingSwitch(
-                    title = "RAM & ZRAM telemetry",
-                    subtitle = "Show memory usage in the recents bottom bar",
+                    title = "Memory info",
+                    subtitle = "Show RAM usage in the recents bottom bar",
+                    checked = meminfo,
+                    onCheckedChange = { meminfo = it },
+                    icon = Icons.Rounded.Memory
+                )
+                SettingSwitch(
+                    title = "ZRAM info",
+                    subtitle = "Add ZRAM usage to the memory info",
                     checked = meminfoZram,
                     onCheckedChange = { meminfoZram = it },
-                    icon = Icons.Rounded.Memory
+                    enabled = meminfo
                 )
                 SettingSwitch(
                     title = "Haptic feedback on scroll",
@@ -127,6 +165,27 @@ fun RecentsSettingsScreen(
                     onCheckedChange = { clearAllButton = it },
                     icon = Icons.Rounded.DeleteSweep
                 )
+                SettingSwitch(
+                    title = stringResource(R.string.recents_clear_all_preserve_active_title),
+                    subtitle = stringResource(R.string.recents_clear_all_preserve_active_summary),
+                    checked = clearAllPreserveActive,
+                    onCheckedChange = { clearAllPreserveActive = it },
+                    enabled = clearAllButton
+                )
+                SettingSwitch(
+                    title = stringResource(R.string.recents_lens_title),
+                    subtitle = null,
+                    checked = lensButton,
+                    onCheckedChange = { lensButton = it },
+                    icon = Icons.Rounded.CenterFocusStrong
+                )
+                SettingSwitch(
+                    title = stringResource(R.string.swipe_down_to_lock_title),
+                    subtitle = stringResource(R.string.swipe_down_to_lock_summary),
+                    checked = swipeDownToLock,
+                    onCheckedChange = { swipeDownToLock = it },
+                    icon = Icons.Rounded.Lock
+                )
                 SettingSlider(
                     title = "Card background opacity",
                     value = recentsOpacity,
@@ -139,18 +198,24 @@ fun RecentsSettingsScreen(
             }
 
             SettingsCard(
-                title = "Freeform window gesture",
+                title = stringResource(R.string.overview_gesture_title),
                 icon = Icons.Rounded.OpenInNew
             ) {
                 SettingSwitch(
-                    title = "Swipe up to floating window",
-                    subtitle = "Fling task card upward to launch in ZeroEngine freeform mode",
+                    title = stringResource(R.string.overview_gesture_title),
+                    subtitle = stringResource(R.string.overview_gesture_summary),
                     checked = freeformGesture,
                     onCheckedChange = { freeformGesture = it },
                     icon = Icons.Rounded.TouchApp
                 )
+                ChoiceList(
+                    choices = gestureActionChoices,
+                    selected = gestureAction,
+                    onSelect = { gestureAction = it },
+                    enabled = freeformGesture
+                )
                 SettingSlider(
-                    title = "Trigger distance threshold",
+                    title = stringResource(R.string.overview_gesture_threshold_title),
                     value = freeformThreshold,
                     min = 10,
                     max = 50,
