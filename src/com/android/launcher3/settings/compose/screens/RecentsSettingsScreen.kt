@@ -19,6 +19,7 @@ import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Memory
 import androidx.compose.material.icons.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.Screenshot
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.ViewCarousel
@@ -62,6 +63,7 @@ fun RecentsSettingsScreen(
     var freeformGesture by rememberBooleanPref("pref_start_freeform_by_gesture", false)
     var freeformThreshold by rememberIntPref("pref_start_freeform_progress", 20)
     var gestureAction by rememberStringPref("pref_overview_gesture_action", "freeform")
+    var lpnhFullWidth by rememberBooleanPref("pref_lpnh_full_width", true)
 
     val gestureActionChoices = listOf(
         ChoiceItem(
@@ -124,6 +126,19 @@ fun RecentsSettingsScreen(
                     choices = styleChoices,
                     selected = recentsStyle,
                     onSelect = { recentsStyle = it }
+                )
+            }
+
+            SettingsCard(
+                title = "Circle to Search",
+                icon = Icons.Rounded.Search
+            ) {
+                SettingSwitch(
+                    title = "Hold anywhere on the nav bar",
+                    subtitle = "Touch and hold any part of the bottom gesture bar, not only the handle",
+                    checked = lpnhFullWidth,
+                    onCheckedChange = { lpnhFullWidth = it },
+                    icon = Icons.Rounded.TouchApp
                 )
             }
 

@@ -53,6 +53,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.dagger.LauncherAppComponent;
 import com.android.launcher3.display.DisplayController;
 import com.android.launcher3.logging.StatsLogManager;
@@ -553,6 +554,8 @@ public class NavHandleLongPressInputConsumerTest {
         mContext = new SandboxContext(getApplicationContext());
         mContext.initDaggerComponent(mutatedComponentBuilder(this));
         mScreenWidth = DisplayController.INSTANCE.get(mContext).getInfo().currentSize.x;
+        // These tests cover the AOSP handle-only touch region.
+        LauncherPrefs.get(mContext).putSync(LauncherPrefs.LPNH_FULL_WIDTH.to(false));
         mUnderTest = new NavHandleLongPressInputConsumer(mContext, mDelegate, mInputMonitor,
                 mDeviceState, mNavHandle, mGestureState);
         mUnderTest.setNavHandleLongPressHandler(mNavHandleLongPressHandler);

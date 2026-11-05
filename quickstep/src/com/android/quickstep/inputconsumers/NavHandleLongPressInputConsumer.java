@@ -31,6 +31,7 @@ import android.view.ViewConfiguration;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.display.DisplayController;
 import com.android.launcher3.logging.InstanceIdSequence;
@@ -65,6 +66,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
 
     private NavHandleLongPressHandler mNavHandleLongPressHandler;
     private final float mNavHandleWidth;
+    private final boolean mFullWidthArea;
     private final float mScreenWidth;
 
     private final Runnable mTriggerLongPress = this::triggerLongPress;
@@ -131,6 +133,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         }
         mNavHandle = navHandle;
         mNavHandleWidth = navHandle.getNavHandleWidth(context);
+        mFullWidthArea = LauncherPrefs.LPNH_FULL_WIDTH.get(context);
         mNavHandleLongPressHandler = NavHandleLongPressHandler.newInstance(context);
         mStatsLogManager = StatsLogManager.newInstance(context);
         mTopTaskTracker = TopTaskTracker.INSTANCE.get(context);
@@ -302,6 +305,10 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
     }
 
     private boolean isInNavBarHorizontalArea(float x) {
+        if (mFullWidthArea) {
+            // Long press anywhere along the nav bar, not just on the handle.
+            return true;
+        }
         float areaFromMiddle = mNavHandleWidth / 2.0f;
         if (DeviceConfigWrapper.get().getCustomLpnhThresholds()) {
             areaFromMiddle += Utilities.dpToPx(
