@@ -593,6 +593,14 @@ public abstract class RecentsView<
     private boolean mEnableOverlap = false;
     private String mRecentsStyle = "default";
     private float mScrollScale = 0.85f;
+
+    // iOS recents style: the angle a card reaches once it is a full card away from the centre, how
+    // far that is in card widths, and the camera distance that keeps the perspective subtle.
+    private static final float IOS_TILT_DEGREES = 11f;
+    private static final float IOS_TILT_FULL_DISTANCE = 0.9f;
+    private static final float IOS_TILT_CAMERA_DISTANCE = 12f;
+    // A fan needs a gap between the cards; overview_page_spacing is 0dp for every other style.
+    private static final float IOS_PAGE_SPACING_DP = 12f;
     private final android.content.SharedPreferences.OnSharedPreferenceChangeListener mPrefListener =
             (prefs, key) -> {
                 if (LauncherPrefs.RECENTS_STYLE.getSharedPrefKey().equals(key)) {
@@ -1134,6 +1142,23 @@ public abstract class RecentsView<
     public void updateOverlapState() {
         mRecentsStyle = LauncherPrefs.RECENTS_STYLE.get(getContext());
         mEnableOverlap = !mRecentsStyle.equals("default");
+        updatePageSpacing();
+    }
+
+    /**
+     * The iOS style wants a real gap between the cards, otherwise the tilted fan reads as one solid
+     * stack. Every other style keeps whatever the device profile asks for.
+     */
+    private void updatePageSpacing() {
+        final int profileSpacing = mContainer == null
+                ? 0
+                : mContainer.getDeviceProfile().getOverviewProfile().getPageSpacing();
+        final int spacing = mRecentsStyle.equals("ios")
+                ? Math.round(IOS_PAGE_SPACING_DP * getResources().getDisplayMetrics().density)
+                : profileSpacing;
+        if (spacing != mPageSpacing) {
+            setPageSpacing(spacing);
+        }
     }
 
     @Override
@@ -2213,6 +2238,7 @@ public abstract class RecentsView<
         mActionsView.updateHiddenFlags(HIDDEN_ACTIONS_IN_MENU,
                 dp.getDeviceProperties().isLargeScreen());
         setPageSpacing(dp.getOverviewProfile().getPageSpacing());
+        updatePageSpacing();
 
         // Propagate DeviceProfile change event.
         runActionOnRemoteHandles(
@@ -6128,7 +6154,7 @@ public abstract class RecentsView<
         final boolean isIOS = mRecentsStyle.equals("ios");
         final boolean isOxygen = mRecentsStyle.equals("oxygen");
 
-        mScrollScale = isOxygen ? 0.92f : 0.85f;
+        mScrollScale = (isOxygen || isIOS) ? 0.92f : 0.85f;
 
         float overlapFactor = getStackStyleOverlapFactor();
         final boolean applyOverlap = (overlapFactor > 0);
@@ -6197,7 +6223,8 @@ public abstract class RecentsView<
                     applyKamiStyle(tv, child, dist, absDist, childSize, baseScale, overlapFactor);
                     styleApplied = true;
                 } else if (isIOS) {
-                    applyIOSStyle(tv, child, dist, absDist, childSize, baseScale, overlapFactor);
+                    applyIOSStyle(tv, child, dist, absDist, childSize, baseScale,
+                            overlapFactor, verticalScroll);
                     styleApplied = true;
                 } else if (isOxygen) {
                     applyOxygenStyle(tv, child, dist, absDist, childSize, baseScale, overlapFactor);
@@ -6285,47 +6312,60 @@ public abstract class RecentsView<
         }
     }
 
-    private void applyIOSStyle(TaskView tv, View child, float dist, float absDist, 
-                             float childSize, float baseScale, float overlapFactor) {
-        float currentTrans = tv.getPrimaryTaskOffsetTranslationProperty().get(tv);
+    /**
+     * iOS style: a tight, symmetric fan behind the focused card.
+     *
+     * The cards on both sides of the centre get the same treatment, nothing is dimmed, and every
+     * card is rotated around its inner edge so the row leans away from the viewer the further it
+     * sits from the centre. The old version only touched the cards on the left, pulled them behind
+     * the focused one with a log squish and tinted them 30% black, which reads as a pile rather than
+     * a fan and made the row asymmetric.
+     */
+    private void applyIOSStyle(TaskView tv, View child, float dist, float absDist,
+                             float childSize, float baseScale, float overlapFactor,
+                             boolean verticalScroll) {
+        tv.setColorTint(0f, 0);
+        // No pull-back: unlike a stack, an iOS fan keeps its cards where the pager put them.
+        if (tv.getPrimaryTaskOffsetTranslationProperty().get(tv) != 0f) {
+            tv.getPrimaryTaskOffsetTranslationProperty().set(tv, 0f);
+        }
+        if (child.getTranslationZ() != 0f) child.setTranslationZ(0f);
 
-        if (dist < 0) {
-            float stapleDistance = childSize * 0.1f;
-            if (absDist > stapleDistance) {
-                float excess = absDist - stapleDistance;
-                float squish = (float) (Math.log10(1 + excess) * 45f);
-                squish = Math.min(excess, squish);
-                float targetVisualDist = stapleDistance + squish;
-                float pullBack = absDist - targetVisualDist;
-                
-                float overlapTrans = pullBack * overlapFactor;
-
-                tv.getPrimaryTaskOffsetTranslationProperty().set(tv, currentTrans + overlapTrans);
-
-                float zOffset = -(excess / childSize) * 24f * overlapFactor;
-                if (child.getTranslationZ() != zOffset) {
-                    child.setTranslationZ(zOffset);
-                }
-
-                float depthProgress = Math.min(1f, excess / (childSize * 1.5f));
-                tv.setColorTint(0.3f * depthProgress * overlapFactor, android.graphics.Color.BLACK);
-
-                float stackScaleFactor = 1f - (depthProgress * 0.15f);
-                float finalScale = baseScale * (1f - (1f - stackScaleFactor) * overlapFactor);
-                
-                if (child.getScaleX() != finalScale) {
-                    child.setScaleX(finalScale);
-                    child.setScaleY(finalScale);
-                }
-                return;
-            }
+        final boolean vertical = verticalScroll;
+        if (absDist < 1f) {
+            if (child.getRotationY() != 0f) child.setRotationY(0f);
+            if (child.getRotationX() != 0f) child.setRotationX(0f);
+            setIOSScale(child, baseScale);
+            return;
         }
 
-        if (child.getTranslationZ() != 0f) child.setTranslationZ(0f);
-        tv.setColorTint(0f, 0);
-        if (child.getScaleX() != baseScale) {
-            child.setScaleX(baseScale);
-            child.setScaleY(baseScale);
+        // depth: 0 at the centre, 1 once a card is about one card away from it.
+        final float depth = Utilities.boundToRange(
+                absDist / (childSize * IOS_TILT_FULL_DISTANCE), 0f, 1f);
+        final float tilt = IOS_TILT_DEGREES * depth * overlapFactor;
+        final boolean after = dist > 0;
+
+        if (vertical) {
+            if (child.getRotationY() != 0f) child.setRotationY(0f);
+            child.setRotationX(after ? -tilt : tilt);
+            child.setCameraDistance(childSize * IOS_TILT_CAMERA_DISTANCE);
+            child.setPivotX(child.getWidth() / 2f);
+            child.setPivotY(after ? 0f : child.getHeight());
+        } else {
+            if (child.getRotationX() != 0f) child.setRotationX(0f);
+            child.setRotationY(after ? tilt : -tilt);
+            child.setCameraDistance(childSize * IOS_TILT_CAMERA_DISTANCE);
+            child.setPivotX(after ? 0f : child.getWidth());
+            child.setPivotY(child.getHeight() / 2f);
+        }
+
+        setIOSScale(child, baseScale);
+    }
+
+    private void setIOSScale(View child, float scale) {
+        if (child.getScaleX() != scale || child.getScaleY() != scale) {
+            child.setScaleX(scale);
+            child.setScaleY(scale);
         }
     }
 
