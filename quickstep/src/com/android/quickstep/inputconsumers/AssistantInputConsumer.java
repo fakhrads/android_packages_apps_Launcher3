@@ -103,6 +103,8 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private final Context mContext;
     private final Consumer<MotionEvent> mGestureDetector;
     private final boolean mCornerSwipeCts;
+    // Resolved when the swipe starts, so completing the gesture does not pay to resolve it.
+    private ContextualSearchInvoker mCtsInvoker;
 
     public AssistantInputConsumer(
             Context context,
@@ -146,6 +148,11 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
                 mTimeFraction = 0;
+                if (mCornerSwipeCts) {
+                    // Warm the invoker while the finger is still travelling instead of on the
+                    // frame the gesture completes.
+                    mCtsInvoker = ContextualSearchInvoker.cached(mContext);
+                }
                 break;
             }
             case ACTION_POINTER_DOWN: {
@@ -252,10 +259,17 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         }
     }
 
+    private ContextualSearchInvoker contextualSearchInvoker() {
+        if (mCtsInvoker == null) {
+            mCtsInvoker = ContextualSearchInvoker.cached(mContext);
+        }
+        return mCtsInvoker;
+    }
+
     private void completeGesture(float velocity) {
         // Corner swipe opens Circle to Search; fall back to the assistant when it is unavailable.
         if (mCornerSwipeCts
-                && new ContextualSearchInvoker(mContext).show(ENTRYPOINT_LONG_PRESS_NAV_HANDLE)) {
+                && contextualSearchInvoker().show(ENTRYPOINT_LONG_PRESS_NAV_HANDLE)) {
             // Clear the assistant invocation lights started by the swipe progress.
             SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(0f);
             performGestureEndHaptic();

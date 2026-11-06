@@ -272,6 +272,26 @@ internal constructor(
 
     companion object {
         private const val TAG = "ContextualSearchInvoker"
+
+        /**
+         * One invoker per process: the constructor resolves five launcher singletons and the
+         * Contextual Search service, and the swipe should not pay for that on the frame it
+         * completes. Only safe for the application context, which is what the callers pass.
+         */
+        @Volatile
+        private var sCached: ContextualSearchInvoker? = null
+
+        @JvmStatic
+        fun cached(context: Context): ContextualSearchInvoker {
+            sCached?.let {
+                return it
+            }
+            return synchronized(this) {
+                sCached ?: ContextualSearchInvoker(context.applicationContext).also {
+                    sCached = it
+                }
+            }
+        }
         const val SHADE_EXPANDED_SYSUI_FLAGS =
             QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED or
                 QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED
