@@ -22,10 +22,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -153,6 +156,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     /** Container for the action buttons below a focused, non-split Overview tile. */
     protected LinearLayout mActionButtons;
+    /**
+     * Full label of each chip, keyed by view id, remembered when a label is dropped so that a later
+     * layout pass can put it back once there is room again.
+     */
+    private final SparseArray<CharSequence> mChipLabels = new SparseArray<>();
     private Button mSplitButton;
     /**
      * The "save app pair" button. Currently this is the only button that is not contained in
@@ -344,6 +352,68 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             lensButton.setOnClickListener(this);
             lensButton.setVisibility(mLens && Utilities.isGSAEnabled(getContext()) ? VISIBLE : GONE);
         }
+
+        fitActionButtons();
+    }
+
+    /**
+     * Keeps the chips inside the screen. The row is a centred wrap_content LinearLayout, so once
+     * three chips are visible with long labels in a wide locale it grows past the screen and the
+     * outermost chips get clipped, which is how the clear all chip disappears from overview. Measure
+     * the row and drop labels from the trailing chips until it fits, keeping the dropped label as the
+     * content description so accessibility and long press still name the chip.
+     */
+    private void fitActionButtons() {
+        if (mActionButtons == null) {
+            return;
+        }
+        mActionButtons.post(this::resolveActionButtonFit);
+    }
+
+    private void resolveActionButtonFit() {
+        if (mActionButtons == null || getWidth() == 0) {
+            return;
+        }
+        final int available = getWidth() - getPaddingLeft() - getPaddingRight();
+        for (int i = 0; i < mActionButtons.getChildCount(); i++) {
+            final View child = mActionButtons.getChildAt(i);
+            if (!(child instanceof Button)) {
+                continue;
+            }
+            final Button chip = (Button) child;
+            final CharSequence label = mChipLabels.get(chip.getId());
+            if (label != null && TextUtils.isEmpty(chip.getText())) {
+                chip.setText(label);
+            }
+        }
+        if (actionButtonsWidth() <= available) {
+            return;
+        }
+        for (int i = mActionButtons.getChildCount() - 1; i >= 0; i--) {
+            final View child = mActionButtons.getChildAt(i);
+            if (!(child instanceof Button) || child.getVisibility() != VISIBLE) {
+                continue;
+            }
+            final Button chip = (Button) child;
+            final CharSequence label = chip.getText();
+            if (TextUtils.isEmpty(label)) {
+                continue;
+            }
+            mChipLabels.put(chip.getId(), label);
+            chip.setContentDescription(label);
+            chip.setText(null);
+            if (actionButtonsWidth() <= available) {
+                break;
+            }
+        }
+        mActionButtons.requestLayout();
+    }
+
+    private int actionButtonsWidth() {
+        mActionButtons.measure(
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        return mActionButtons.getMeasuredWidth();
     }
 
     /**
