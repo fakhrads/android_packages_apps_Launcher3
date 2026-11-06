@@ -35,6 +35,7 @@ import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.hardware.input.InputManager;
@@ -305,23 +306,42 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         if (assistant == null) {
             return false;
         }
-        final Intent intent = new Intent(Intent.ACTION_ASSIST)
-                .setComponent(assistant)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
-        if (mContext.getPackageManager().resolveActivity(intent, 0) == null) {
+        final PackageManager pm = mContext.getPackageManager();
+        // The assistant setting normally names the assistant's VoiceInteractionService, not an
+        // activity, so starting that component explicitly resolves to nothing and the gesture used to
+        // end in silence for anything that is not Circle to Search. Try the component as an activity
+        // first, then resolve ACTION_ASSIST the way the framework does, which lands on the assist
+        // activity the picked app declares.
+        final Intent explicit = newAssistIntent().setComponent(assistant);
+        Intent intent = pm.resolveActivity(explicit, 0) != null ? explicit : null;
+        if (intent == null) {
+            final Intent implicit = newAssistIntent()
+                    .putExtra(Intent.EXTRA_ASSIST_PACKAGE, assistant.getPackageName());
+            if (pm.resolveActivity(implicit, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+                intent = implicit;
+            }
+        }
+        if (intent == null) {
             Log.w(TAG, "No assist activity in the configured assistant "
                     + assistant.flattenToShortString());
             return false;
         }
         try {
             mContext.startActivity(intent);
+            Log.i(TAG, "Started the configured assistant "
+                    + assistant.flattenToShortString() + " via " + intent);
             return true;
         } catch (RuntimeException e) {
             Log.w(TAG, "Cannot start the configured assistant "
                     + assistant.flattenToShortString(), e);
             return false;
         }
+    }
+
+    private static Intent newAssistIntent() {
+        return new Intent(Intent.ACTION_ASSIST)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
     }
 
     private void startAssistantInternal() {
