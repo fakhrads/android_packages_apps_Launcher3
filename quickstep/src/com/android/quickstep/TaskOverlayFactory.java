@@ -16,6 +16,7 @@
 
 package com.android.quickstep;
 
+import static android.app.contextualsearch.ContextualSearchManager.ENTRYPOINT_LONG_PRESS_NAV_HANDLE;
 import static com.android.quickstep.views.RecentsViewContainer.containerFromContext;
 
 import android.annotation.SuppressLint;
@@ -39,6 +40,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.Snackbar;
 import com.android.quickstep.recents.domain.usecase.ThumbnailPosition;
+import com.android.quickstep.util.ContextualSearchInvoker;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.GroupedTaskView;
@@ -245,10 +247,20 @@ public class TaskOverlayFactory {
         private void launchLens() {
             final RecentsView recentsView =
                     mTaskContainer.getTaskView().getRecentsView();
-            if (recentsView != null) {
-                recentsView.startHome();
-                mImageApi.startLensActivity();
+            if (recentsView == null) {
+                return;
             }
+            // The Select chip promises selection over what is on screen: text you can copy, images
+            // you can search. Circle to Search freezes the screen and does exactly that, and it
+            // reaches its surface in about 400ms here, so try it first and keep Lens on the task
+            // snapshot as the fallback. Do not go home before CTS, or the frozen screen would be the
+            // workspace instead of the task the chip was tapped on.
+            if (ContextualSearchInvoker.cached(mApplicationContext)
+                    .show(ENTRYPOINT_LONG_PRESS_NAV_HANDLE)) {
+                return;
+            }
+            recentsView.startHome();
+            mImageApi.startLensActivity();
         }
 
         /**
