@@ -32,13 +32,17 @@ import static com.android.launcher3.Utilities.squaredHypot;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.hardware.input.InputManager;
 import android.hardware.input.InputManagerGlobal;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.os.UserHandle;
+import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -50,6 +54,7 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 import com.android.app.animation.Interpolators;
+import com.android.internal.app.AssistUtils;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.util.window.WindowManagerProxy;
@@ -257,8 +262,52 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
             mLaunchedAssistant = true;
             return;
         }
+        // The swipe promises the assistant picked in Settings > Default apps, so start that one
+        // directly. Asking SystemUI to is what used to end in nothing at all: it drops the gesture
+        // invocation when the picked assistant does not declare support for it, and it stands down
+        // for the home long press as soon as Contextual Search exists (see
+        // SystemUiProxy.setAssistantOverridesRequested), so the injected key event below lands
+        // nowhere on a device that has Contextual Search.
+        if (startConfiguredAssistant()) {
+            // Clear the assistant invocation lights started by the swipe progress.
+            SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(0f);
+            performGestureEndHaptic();
+            mLaunchedAssistant = true;
+            return;
+        }
         SystemUiProxy.INSTANCE.get(mContext).onAssistantGestureCompletion(velocity);
         startAssistantInternal();
+    }
+
+    /**
+     * Starts the assistant named by the assistant setting, the way the framework itself does when
+     * the assistant has no voice session to show.
+     *
+     * @return whether an assist activity was started
+     */
+    private boolean startConfiguredAssistant() {
+        final ComponentName assistant = new AssistUtils(mContext)
+                .getAssistComponentForUser(UserHandle.myUserId());
+        if (assistant == null) {
+            return false;
+        }
+        final Intent intent = new Intent(Intent.ACTION_ASSIST)
+                .setComponent(assistant)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+        if (mContext.getPackageManager().resolveActivity(intent, 0) == null) {
+            Log.w(TAG, "No assist activity in the configured assistant "
+                    + assistant.flattenToShortString());
+            return false;
+        }
+        try {
+            mContext.startActivity(intent);
+            return true;
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Cannot start the configured assistant "
+                    + assistant.flattenToShortString(), e);
+            return false;
+        }
     }
 
     private void startAssistantInternal() {
