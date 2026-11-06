@@ -250,17 +250,22 @@ public class TaskOverlayFactory {
             if (recentsView == null) {
                 return;
             }
-            // The Select chip promises selection over what is on screen: text you can copy, images
-            // you can search. Circle to Search freezes the screen and does exactly that, and it
-            // reaches its surface in about 400ms here, so try it first and keep Lens on the task
-            // snapshot as the fallback. Do not go home before CTS, or the frozen screen would be the
-            // workspace instead of the task the chip was tapped on.
+            recentsView.startHome();
+            mImageApi.startLensActivity();
+        }
+
+        /**
+         * Select what is on screen: text to copy, an image to search. Circle to Search freezes the
+         * screen and does exactly that, so it is handed the current task before anything navigates
+         * away, otherwise the frozen screen would be the workspace instead of the task being looked
+         * at. Lens on the task snapshot stays as the fallback.
+         */
+        private void launchSelect() {
             if (ContextualSearchInvoker.cached(mApplicationContext)
                     .show(ENTRYPOINT_LONG_PRESS_NAV_HANDLE)) {
                 return;
             }
-            recentsView.startHome();
-            mImageApi.startLensActivity();
+            launchLens();
         }
 
         /**
@@ -436,6 +441,15 @@ public class TaskOverlayFactory {
             }
 
             @Override
+            public void onSelect() {
+                if (mIsAllowedByPolicy) {
+                    endLiveTileMode(TaskOverlay.this::launchSelect);
+                } else {
+                    showBlockedByPolicyMessage();
+                }
+            }
+
+            @Override
             public void onLens() {
                 if (mIsAllowedByPolicy) {
                     endLiveTileMode(TaskOverlay.this::launchLens);
@@ -461,6 +475,9 @@ public class TaskOverlayFactory {
         void onSaveAppPair();
 
         void onClearAllTasksRequested();
+
+        /** User wants to select text or an image over the current task. */
+        void onSelect();
 
         void onLens();
     }
