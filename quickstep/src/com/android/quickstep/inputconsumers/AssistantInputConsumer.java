@@ -252,7 +252,12 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private void updateAssistantProgress() {
         if (!mLaunchedAssistant) {
             mLastProgress = Math.min(mDistance * 1f / mDragDistThreshold, 1) * mTimeFraction;
-            if (mDistance >= mDragDistThreshold && mTimeFraction >= 1) {
+            // The assistant needs the hold: its invocation animation is driven by the progress built
+            // over mTimeThreshold. Circle to Search does not, it is a surface that takes about 240ms
+            // to display on onyx by itself, so waiting out the remaining hold on top of that is
+            // exactly the lag the swipe shows. Once the finger has travelled the drag threshold the
+            // swipe has committed, so hand it over then.
+            if (mDistance >= mDragDistThreshold && (mCornerSwipeCts || mTimeFraction >= 1)) {
                 completeGesture(0);
             } else {
                 SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(mLastProgress);
