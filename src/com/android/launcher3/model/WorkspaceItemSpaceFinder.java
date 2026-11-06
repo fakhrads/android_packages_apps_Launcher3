@@ -150,6 +150,9 @@ public class WorkspaceItemSpaceFinder {
         if (!found) {
             // Still no position found. Add a new screen to the end.
             screenId = mModel.getModelDbController().getNewScreenId();
+            // The database does not have the items added in this batch yet, so a screen one of
+            // them opened would come back here once it is full. Go past the last screen in use.
+            screenId = Math.max(screenId, screenItems.keyAt(screenItems.size() - 1) + 1);
 
             // If we still can't find an empty space, then God help us all!!!
             if (!findNextAvailableIconSpaceInScreen(
