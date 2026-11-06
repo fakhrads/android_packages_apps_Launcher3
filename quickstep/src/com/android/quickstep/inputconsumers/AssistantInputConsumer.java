@@ -349,7 +349,11 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         // normalize so that angle is measured clockwise from horizontal in the bottom right corner
         // and counterclockwise from horizontal in the bottom left corner
         angle = angle > 90 ? 180 - angle : angle;
-        return (angle > mAngleThreshold && angle < 90);
+        // `angle < 90` rejected a straight up swipe from the corner: atan2 gives exactly 90 when the
+        // finger does not drift sideways, so the gesture that users actually make fell through to
+        // the home consumer. Accept vertical; the region check above already keeps this gesture
+        // inside the 48dp corner areas.
+        return (angle > mAngleThreshold && angle <= 90);
     }
 
     private boolean sendEvent(int action, int code, int flags) {

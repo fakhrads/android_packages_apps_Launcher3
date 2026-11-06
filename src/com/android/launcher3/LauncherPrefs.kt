@@ -317,8 +317,11 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val FONT_SIZE = backedUpItem("pref_custom_font_size", 100)
         @JvmField val FREEFORM_GESTURE = backedUpItem("pref_start_freeform_by_gesture", false)
         @JvmField val LPNH_FULL_WIDTH = backedUpItem("pref_lpnh_full_width", true)
-        // "assistant" (the default digital assistant app) or "cts" (Circle to Search)
-        @JvmField val CORNER_SWIPE_ACTION = backedUpItem("pref_corner_swipe_action", "assistant")
+        // "cts" (Circle to Search) or "assistant" (the default digital assistant app). Defaults to
+        // CTS because the corner swipe promise is the search surface: CTS answers in about 400 ms on
+        // onyx and falls back to the assistant when it cannot start. There is no settings UI for
+        // this pref, so the default is the only way to pick it.
+        @JvmField val CORNER_SWIPE_ACTION = backedUpItem("pref_corner_swipe_action", "cts")
         @JvmField val BOUNCY_ANIMATIONS = backedUpItem("pref_bouncy_animations", false)
         @JvmField val BOUNCY_STRENGTH = backedUpItem("pref_bouncy_strength", 100)
         @JvmField val BOUNCY_SPEED = backedUpItem("pref_bouncy_speed", 100)
