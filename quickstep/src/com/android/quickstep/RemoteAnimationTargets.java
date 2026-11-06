@@ -79,13 +79,29 @@ public class RemoteAnimationTargets {
     }
 
     public RemoteAnimationTarget findTask(int taskId) {
+        RemoteAnimationTarget task = getTask(taskId);
+        if (task != null) {
+            return task;
+        }
+        Log.e(TAG, "taskId: " + taskId + " not found. apps contains: "
+                + Arrays.stream(apps).map(target -> target.taskId).toList());
+        return null;
+    }
+
+    /**
+     * Like {@link #findTask} without logging a miss, for callers that check every task view
+     * against the targets and expect most of them to be missing.
+     */
+    public boolean hasTask(int taskId) {
+        return getTask(taskId) != null;
+    }
+
+    private RemoteAnimationTarget getTask(int taskId) {
         for (RemoteAnimationTarget target : apps) {
             if (target.taskId == taskId) {
                 return target;
             }
         }
-        Log.e(TAG, "taskId: " + taskId + " not found. apps contains: "
-                + Arrays.stream(apps).map(target -> target.taskId).toList());
         return null;
     }
 

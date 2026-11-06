@@ -6234,7 +6234,7 @@ public abstract class RecentsView<
                 RemoteAnimationTargets targets = rth.getTransformParams().getTargetSet();
                 if (targets == null) continue;
                 for (int id : taskIds) {
-                    if (targets.findTask(id) != null) {
+                    if (targets.hasTask(id)) {
                         TaskViewSimulator sim = rth.getTaskViewSimulator();
                         sim.recentsViewScale.value = primaryScale;
                         sim.taskPrimaryTranslation.value = primaryTranslation;
@@ -6381,7 +6381,7 @@ public abstract class RecentsView<
             TransformParams params = rth.getTransformParams();
             RemoteAnimationTargets targets = params.getTargetSet();
             for (int id : tv.getTaskIds()) {
-                if (targets != null && targets.findTask(id) != null) {
+                if (targets != null && targets.hasTask(id)) {
                     return getPagedOrientationHandler().getPrimaryValue(
                                 tv.getScaleX(),
                                 tv.getScaleY()
