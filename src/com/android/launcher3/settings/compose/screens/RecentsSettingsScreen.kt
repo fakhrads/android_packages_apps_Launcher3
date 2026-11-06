@@ -5,6 +5,10 @@
 
 package com.android.launcher3.settings.compose.screens
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Apps
+import androidx.compose.material.icons.rounded.Assistant
 import androidx.compose.material.icons.rounded.CallMade
 import androidx.compose.material.icons.rounded.CenterFocusStrong
 import androidx.compose.material.icons.rounded.DeleteSweep
@@ -28,13 +34,19 @@ import androidx.compose.material.icons.rounded.VerticalSplit
 import androidx.compose.material.icons.rounded.ViewStream
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.android.launcher3.R
 import com.android.launcher3.settings.compose.components.ChoiceItem
 import com.android.launcher3.settings.compose.components.ChoiceList
+import com.android.launcher3.settings.compose.components.NavRow
 import com.android.launcher3.settings.compose.components.ScreenScaffold
 import com.android.launcher3.settings.compose.components.SettingSlider
 import com.android.launcher3.settings.compose.components.SettingSwitch
@@ -65,7 +77,29 @@ fun RecentsSettingsScreen(
     var freeformThreshold by rememberIntPref("pref_start_freeform_progress", 20)
     var gestureAction by rememberStringPref("pref_overview_gesture_action", "freeform")
     var lpnhFullWidth by rememberBooleanPref("pref_lpnh_full_width", true)
-    var cornerSwipeCts by rememberBooleanPref("pref_corner_swipe_cts", true)
+    var cornerSwipeAction by rememberStringPref("pref_corner_swipe_action", "assistant")
+
+    // The digital assistant app picked in the system default apps, read again on every resume
+    // since it is changed there
+    val context = LocalContext.current
+    var assistantName by remember { mutableStateOf(defaultAssistantName(context)) }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        assistantName = defaultAssistantName(context)
+    }
+
+    val cornerSwipeChoices = listOf(
+        ChoiceItem(
+            value = "assistant",
+            title = "Digital assistant app",
+            summary = assistantName ?: "None picked in the default apps",
+            icon = Icons.Rounded.Assistant
+        ),
+        ChoiceItem(
+            value = "cts",
+            title = "Circle to Search",
+            icon = Icons.Rounded.Search
+        )
+    )
 
     val gestureActionChoices = listOf(
         ChoiceItem(
@@ -142,12 +176,27 @@ fun RecentsSettingsScreen(
                     onCheckedChange = { lpnhFullWidth = it },
                     icon = Icons.Rounded.TouchApp
                 )
-                SettingSwitch(
-                    title = "Swipe from bottom corner",
-                    subtitle = "Open Circle to Search instead of the digital assistant",
-                    checked = cornerSwipeCts,
-                    onCheckedChange = { cornerSwipeCts = it },
-                    icon = Icons.Rounded.CallMade
+            }
+
+            SettingsCard(
+                title = "Swipe from bottom corner",
+                icon = Icons.Rounded.CallMade
+            ) {
+                ChoiceList(
+                    choices = cornerSwipeChoices,
+                    selected = cornerSwipeAction,
+                    onSelect = { cornerSwipeAction = it }
+                )
+                NavRow(
+                    title = "Digital assistant app",
+                    summary = "Pick Gemini, ChatGPT, Claude or another assistant in the default apps",
+                    icon = Icons.Rounded.Apps,
+                    onClick = {
+                        context.startActivity(
+                            Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        )
+                    }
                 )
             }
 
@@ -250,5 +299,17 @@ fun RecentsSettingsScreen(
                 )
             }
         }
+    }
+}
+
+/** The label of the default digital assistant app, or null when none is set. */
+private fun defaultAssistantName(context: Context): String? {
+    val component = Settings.Secure.getString(context.contentResolver, "assistant")
+        ?.let(ComponentName::unflattenFromString) ?: return null
+    return try {
+        val pm = context.packageManager
+        pm.getApplicationInfo(component.packageName, 0).loadLabel(pm).toString()
+    } catch (e: Exception) {
+        null
     }
 }

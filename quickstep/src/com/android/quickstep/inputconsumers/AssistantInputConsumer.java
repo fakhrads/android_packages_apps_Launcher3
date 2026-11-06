@@ -109,7 +109,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         super(gestureState.getDisplayId(), delegate, inputMonitor);
         final Resources res = context.getResources();
         mContext = context;
-        mCornerSwipeCts = LauncherPrefs.CORNER_SWIPE_CTS.get(context);
+        mCornerSwipeCts = "cts".equals(LauncherPrefs.CORNER_SWIPE_ACTION.get(context));
         mDragDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mFlingDistThreshold = res.getDimension(R.dimen.gestures_assistant_fling_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
