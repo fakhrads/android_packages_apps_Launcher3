@@ -98,6 +98,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.Motion;
+import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
