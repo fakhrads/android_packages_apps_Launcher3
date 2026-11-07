@@ -77,7 +77,9 @@ fun RecentsSettingsScreen(
     var freeformThreshold by rememberIntPref("pref_start_freeform_progress", 20)
     var gestureAction by rememberStringPref("pref_overview_gesture_action", "freeform")
     var lpnhFullWidth by rememberBooleanPref("pref_lpnh_full_width", true)
-    var cornerSwipeAction by rememberStringPref("pref_corner_swipe_action", "assistant")
+    // Same default as LauncherPrefs.CORNER_SWIPE_ACTION, otherwise the row shows the
+    // assistant as selected while the preference already says cts
+    var cornerSwipeAction by rememberStringPref("pref_corner_swipe_action", "cts")
 
     // The digital assistant app picked in the system default apps, read again on every resume
     // since it is changed there

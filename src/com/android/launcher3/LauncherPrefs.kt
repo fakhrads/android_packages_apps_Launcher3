@@ -344,7 +344,11 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val ICON_SIZE = backedUpItem("pref_custom_icon_size", 100)
         @JvmField val RECENTS_CLEAR_ALL = backedUpItem("pref_recents_clear_all", true)
         @JvmField val RECENTS_CLEAR_ALL_PRESERVE_ACTIVE = backedUpItem("pref_recents_clear_all_preserve_active", false)
-        @JvmField val RECENTS_LENS = backedUpItem("pref_recents_lens", false)
+        // Lens chip in the overview action row: hands the task snapshot to Google Lens. On by
+        // default, because it is the only chip in that row that searches what is on screen; the
+        // Circle to Search chip that used to sit next to it duplicated the same gesture reachable
+        // from the nav handle, and both ended up on the same surface.
+        @JvmField val RECENTS_LENS = backedUpItem("pref_recents_lens", true)
         @JvmField val RECENTS_MEMINFO = backedUpItem("pref_recents_meminfo", false)
         @JvmField val RECENTS_MEMINFO_ZRAM = backedUpItem("pref_recents_meminfo_zram", false)
         @JvmField val RECENTS_STYLE = backedUpItem("pref_recents_style", "default")
