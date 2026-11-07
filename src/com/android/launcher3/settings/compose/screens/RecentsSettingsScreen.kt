@@ -70,7 +70,7 @@ fun RecentsSettingsScreen(
     var screenshotButton by rememberBooleanPref("pref_recents_screenshot", true)
     var clearAllButton by rememberBooleanPref("pref_recents_clear_all", true)
     var clearAllPreserveActive by rememberBooleanPref("pref_recents_clear_all_preserve_active", false)
-    var lensButton by rememberBooleanPref("pref_recents_lens", true)
+    var lensButton by rememberBooleanPref("pref_recents_lens", false)
     var swipeDownToLock by rememberBooleanPref("pref_swipe_down_to_lock", false)
 
     var freeformGesture by rememberBooleanPref("pref_start_freeform_by_gesture", false)
@@ -247,7 +247,7 @@ fun RecentsSettingsScreen(
                 )
                 SettingSwitch(
                     title = stringResource(R.string.recents_lens_title),
-                    subtitle = "Select text or images over the current screen, copy it or search it",
+                    subtitle = null,
                     checked = lensButton,
                     onCheckedChange = { lensButton = it },
                     icon = Icons.Rounded.CenterFocusStrong
