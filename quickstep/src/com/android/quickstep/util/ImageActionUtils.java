@@ -181,7 +181,14 @@ public class ImageActionUtils {
                     .setType("image/png")
                     .putExtra(Intent.EXTRA_STREAM, uri)
                     .setClipData(clipdata);
-            context.startActivity(intent);
+            try {
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                // This component is GSA's, not ours: a build can carry a Google app whose Lens
+                // entry point is named differently, and the chip must not take the launcher down
+                // with it.
+                Log.e(tag, "No Lens share activity, not opening Lens");
+            }
         });
     }
 
