@@ -599,19 +599,16 @@ public abstract class RecentsView<
     private static final float IOS_TILT_DEGREES = 11f;
     private static final float IOS_TILT_FULL_DISTANCE = 0.9f;
     private static final float IOS_TILT_CAMERA_DISTANCE = 12f;
-    // The fraction of a card's own stride that disappears under its neighbour. At 0.35 each card
-    // shows 65% of itself, which reads as a stack while every card stays recognisable. This is a
-    // constant fraction of the distance rather than a per-card ramp: a ramp grows quadratically
-    // with the card index and makes card four end up nearer the centre than card three.
-    private static final float IOS_STACK_OVERLAP = 0.35f;
+    // The fraction of a card's own offset that disappears under its neighbour. This is a constant
+    // fraction rather than a per-card ramp: a ramp grows quadratically with the card index, which
+    // makes the fourth card end up nearer the centre than the third.
+    private static final float IOS_STACK_OVERLAP = 0.18f;
     // Extra shrink per card away from the centre, on top of the scroll scale.
     private static final float IOS_DEPTH_SCALE = 0.04f;
     // How many cards deep the overlap, shrink and z-drop continue before they stop accumulating.
     private static final float IOS_MAX_DEPTH = 3f;
     // Depth drop per card, in dp, so the further cards draw underneath the nearer ones.
     private static final float IOS_DEPTH_Z_DP = 10f;
-    // A fan needs a gap between the cards; overview_page_spacing is 0dp for every other style.
-    private static final float IOS_PAGE_SPACING_DP = 12f;
     private final android.content.SharedPreferences.OnSharedPreferenceChangeListener mPrefListener =
             (prefs, key) -> {
                 if (LauncherPrefs.RECENTS_STYLE.getSharedPrefKey().equals(key)) {
@@ -1153,23 +1150,6 @@ public abstract class RecentsView<
     public void updateOverlapState() {
         mRecentsStyle = LauncherPrefs.RECENTS_STYLE.get(getContext());
         mEnableOverlap = !mRecentsStyle.equals("default");
-        updatePageSpacing();
-    }
-
-    /**
-     * The iOS style wants a real gap between the cards, otherwise the tilted fan reads as one solid
-     * stack. Every other style keeps whatever the device profile asks for.
-     */
-    private void updatePageSpacing() {
-        final int profileSpacing = mContainer == null
-                ? 0
-                : mContainer.getDeviceProfile().getOverviewProfile().getPageSpacing();
-        final int spacing = mRecentsStyle.equals("ios")
-                ? Math.round(IOS_PAGE_SPACING_DP * getResources().getDisplayMetrics().density)
-                : profileSpacing;
-        if (spacing != mPageSpacing) {
-            setPageSpacing(spacing);
-        }
     }
 
     @Override
@@ -2249,7 +2229,6 @@ public abstract class RecentsView<
         mActionsView.updateHiddenFlags(HIDDEN_ACTIONS_IN_MENU,
                 dp.getDeviceProperties().isLargeScreen());
         setPageSpacing(dp.getOverviewProfile().getPageSpacing());
-        updatePageSpacing();
 
         // Propagate DeviceProfile change event.
         runActionOnRemoteHandles(
