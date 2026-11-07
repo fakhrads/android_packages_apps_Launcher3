@@ -53,6 +53,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
+import com.android.launcher3.anim.Motion;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
@@ -322,16 +323,22 @@ public class AllAppsTransitionController
         }
 
         // need to decide depending on the release velocity
-        Interpolator verticalProgressInterpolator = config.getInterpolator(ANIM_VERTICAL_PROGRESS,
-                config.isUserControlled() ? LINEAR : EMPHASIZED_DECELERATE);
         Animator anim = createSpringAnimation(mProgress, targetProgress);
+        // The finger owns the progress while dragging; a curve there would fight it. On release the
+        // drawer gets a spring curve rather than a bezier: it is the largest surface in the
+        // launcher, and a curve that carries a little momentum reads as a panel being thrown
+        // instead of a panel sliding on rails. The duration still comes from the state, so the
+        // drawer stays in step with everything else in the same transition.
+        Interpolator verticalProgressInterpolator = config.isUserControlled()
+                ? config.getInterpolator(ANIM_VERTICAL_PROGRESS, LINEAR)
+                : Motion.interpolator(mLauncher, 0.82f, 1.45f);
+        anim.setInterpolator(verticalProgressInterpolator);
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationCancel(Animator animation) {
                 setProgress(targetProgress);
             }
         });
-        anim.setInterpolator(verticalProgressInterpolator);
         builder.add(anim);
 
         setAlphas(toState, config, builder);

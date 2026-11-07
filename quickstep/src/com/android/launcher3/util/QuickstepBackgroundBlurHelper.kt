@@ -34,6 +34,7 @@ import com.android.internal.graphics.drawable.BackgroundBlurDrawable
 import com.android.launcher3.Launcher
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
+import com.android.launcher3.anim.Motion
 import com.android.launcher3.dagger.ActivityContextSingleton
 import com.android.launcher3.folder.Folder
 import com.android.launcher3.graphics.PathWrapper
@@ -56,10 +57,16 @@ constructor(
 
     private val context = activityContext.asContext()
 
-    private val folderBlurRadius = context.resources.getDimension(R.dimen.folder_blur_radius)
+    // Both radii follow the user's blur depth setting, which until now only reached the wallpaper
+    // blur in overview. Read once per helper, like the rest of the prefs this class caches: the
+    // setting restarts the launcher when it changes.
+    private val blurScale = Motion.blurScale(context)
+
+    private val folderBlurRadius =
+        context.resources.getDimension(R.dimen.folder_blur_radius) * blurScale
 
     private val popupBlurRadius =
-        context.resources.getDimensionPixelSize(R.dimen.popup_blur_radius)
+        (context.resources.getDimensionPixelSize(R.dimen.popup_blur_radius) * blurScale).toInt()
 
     private val cornerRadius = Themes.getDialogCornerRadius(context)
     private val workspaceBlurRenderNode = RenderNode("workspaceBlur")
@@ -171,7 +178,7 @@ constructor(
         folderBlurDrawable?.setVisible(false, false)
     }
 
-    override fun isBlurEnabled(): Boolean = blurState.value
+    override fun isBlurEnabled(): Boolean = blurState.value && blurScale > 0f
 
     override fun isPopupBlurEnabled(): Boolean = isBlurEnabled() && isHomescreen()
 

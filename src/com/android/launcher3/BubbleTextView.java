@@ -48,6 +48,7 @@ import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_AP
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
@@ -86,6 +87,7 @@ import android.widget.TextView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.dynamicanimation.animation.SpringForce;
 import androidx.annotation.UiThread;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
@@ -95,6 +97,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
 import com.android.launcher3.anim.AnimatedFloat;
+import com.android.launcher3.anim.Motion;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
@@ -172,6 +175,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
 
     private float mScaleForReorderBounce = 1f;
+    /** The press spring, kept so a second press or a cancel can stop the one in flight. */
+    @Nullable private ValueAnimator mPressAnimator;
 
     private IntArray mBreakPointsIntArray;
     private CharSequence mLastOriginalText;
@@ -862,23 +867,53 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                 || event.getX() > getWidth() - getPaddingRight();
     }
 
-    private static final Interpolator PRESS_INTERPOLATOR = new DecelerateInterpolator();
-    private static final Interpolator RELEASE_INTERPOLATOR = new OvershootInterpolator(1.2f);
-
+    /** How far an icon shrinks under a finger. */
+    private static final float PRESS_SCALE = 0.93f;
+    /**
+     * Springs the icon instead of tweening it.
+     *
+     * A tween in and a different tween out is what makes a press feel like two events rather than
+     * one surface being pushed and released; a single spring carries the velocity of the finger
+     * through the release, so letting go mid-press settles from wherever it got to instead of
+     * restarting from a fixed keyframe. It also means the icon obeys the same style, speed and
+     * system animation scale as the rest of the launcher.
+     */
     @Override
     public void setPressed(boolean pressed) {
         super.setPressed(pressed);
         if (mIgnorePressedStateChange || mScaleForReorderBounce != 1f) {
             return;
         }
-        animate().cancel();
-        if (pressed) {
-            animate().scaleX(0.93f).scaleY(0.93f).setDuration(110)
-                    .setInterpolator(PRESS_INTERPOLATOR).start();
-        } else {
-            animate().scaleX(1.0f).scaleY(1.0f).setDuration(170)
-                    .setInterpolator(RELEASE_INTERPOLATOR).start();
+        if (mPressAnimator != null) {
+            mPressAnimator.cancel();
+            mPressAnimator = null;
         }
+        Context context = getContext();
+        // A system animation scale of 0 means the device asked for no animation at all.
+        if (Motion.systemScale(context) == 0f) {
+            float target = pressed ? PRESS_SCALE : 1f;
+            setScaleX(target);
+            setScaleY(target);
+            return;
+        }
+        float target = pressed ? PRESS_SCALE : 1f;
+        ValueAnimator animator = new SpringAnimationBuilder(context)
+                .setStartValue(getScaleX())
+                .setEndValue(target)
+                .setStiffness(Motion.stiffness(context, SpringForce.STIFFNESS_LOW))
+                .setDampingRatio(Motion.damping(context, pressed ? 0.85f : 0.55f))
+                .setMinimumVisibleChange(0.01f)
+                .build(this, LauncherAnimUtils.SCALE_PROPERTY);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (mPressAnimator == animation) {
+                    mPressAnimator = null;
+                }
+            }
+        });
+        mPressAnimator = animator;
+        animator.start();
     }
 
     void setStayPressed(boolean stayPressed) {

@@ -94,6 +94,7 @@ import com.android.launcher3.recyclerview.AllAppsRecyclerViewPool;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.Translucency;
 import com.android.launcher3.util.ViewEx;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.views.ActivityContext;
@@ -967,7 +968,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     protected int getHeaderColor(float blendRatio) {
-        float alpha = blendRatio * LauncherPrefs.APP_DRAWER_OPACITY.get(getContext()) / 100;
+        float alpha = blendRatio
+                * Translucency.opacity(getContext(),
+                        LauncherPrefs.APP_DRAWER_OPACITY.get(getContext())) / 100;
         return isBackgroundBlurEnabled()
                 ? ColorUtils.setAlphaComponent(mHeaderProtectionColor, (int) (alpha * 255))
                 : ColorUtils.blendARGB(getBackgroundColor(), mHeaderProtectionColor, alpha);

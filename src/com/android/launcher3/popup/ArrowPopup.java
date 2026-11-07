@@ -54,6 +54,7 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.BouncyAnimations;
+import com.android.launcher3.anim.Motion;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.BlurBackgroundHelper;
@@ -713,6 +714,16 @@ public abstract class ArrowPopup<T extends ActivityContext> extends AbstractFloa
 
         setPivotForOpenCloseAnimation();
 
+        // The popup is the launcher's most touched animation, so it is the one that should follow
+        // the user's own pacing: its phase durations are scaled here rather than at each call site,
+        // which keeps the stagger between scale, fade and the child rows intact at any speed.
+        float scale = Motion.durationScale(getContext());
+        scaleDuration = Math.round(scaleDuration * scale);
+        fadeStartDelay = Math.round(fadeStartDelay * scale);
+        fadeDuration = Math.round(fadeDuration * scale);
+        childFadeStartDelay = Math.round(childFadeStartDelay * scale);
+        childFadeDuration = Math.round(childFadeDuration * scale);
+
         float[] alphaValues = isOpening ? new float[] {0, 1} : new float[] {1, 0};
         float[] scaleValues = isOpening ? new float[] {0.5f, 1.02f} : new float[] {1f, 0.5f};
         Animator alpha = getAnimatorOfFloat(this, View.ALPHA, fadeDuration, fadeStartDelay,
@@ -725,7 +736,7 @@ public abstract class ArrowPopup<T extends ActivityContext> extends AbstractFloa
                 scaleValues);
 
         final AnimatorSet animatorSet = new AnimatorSet();
-        if (isOpening && BouncyAnimations.isEnabled(getContext())) {
+        if (isOpening && BouncyAnimations.isEnabled(getContext()) && scaleDuration > 0) {
             // One spring curve replaces the scale-up plus overshoot pair.
             float[] springScale = new float[] {0.5f, 1f};
             int springDuration = BouncyAnimations.popupOpenDuration(getContext());

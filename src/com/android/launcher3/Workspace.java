@@ -96,6 +96,7 @@ import com.android.app.animation.Interpolators;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.BouncyAnimations;
+import com.android.launcher3.anim.Motion;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.automation.AutomationRepository;
@@ -423,9 +424,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
 
         setHapticFeedbackEnabled(false);
+        // The page snap follows the motion settings even with bouncy animations off: without this,
+        // turning off the overscroll also silently turned off the user's response setting and the
+        // system animation scale for every sideways swipe on the home screen.
+        mSnapDurationScale = BouncyAnimations.isEnabled(context)
+                ? BouncyAnimations.durationScale(context)
+                : Motion.durationScale(context);
         if (BouncyAnimations.isEnabled(context)) {
             mScroller = new OverScroller(context, BouncyAnimations.pageSnapInterpolator(context));
-            mSnapDurationScale = BouncyAnimations.durationScale(context);
         }
         initWorkspace();
 

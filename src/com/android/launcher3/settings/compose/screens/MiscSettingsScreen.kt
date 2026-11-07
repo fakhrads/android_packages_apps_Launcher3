@@ -16,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Animation
 import androidx.compose.material.icons.rounded.BlurOn
+import androidx.compose.material.icons.rounded.Bolt
 import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Security
@@ -34,6 +35,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.launcher3.R
+import com.android.launcher3.settings.compose.components.ChoiceItem
+import com.android.launcher3.settings.compose.components.ChoiceList
 import com.android.launcher3.settings.compose.components.NavRow
 import com.android.launcher3.settings.compose.components.ScreenScaffold
 import com.android.launcher3.settings.compose.components.SettingSlider
@@ -42,6 +45,7 @@ import com.android.launcher3.settings.compose.components.SettingsCard
 import com.android.launcher3.settings.compose.data.LauncherPrefsBridge
 import com.android.launcher3.settings.compose.data.rememberBooleanPref
 import com.android.launcher3.settings.compose.data.rememberIntPref
+import com.android.launcher3.settings.compose.data.rememberStringPref
 import com.android.systemui.shared.system.BlurUtils
 
 private const val DPS_PACKAGE = "com.google.android.as"
@@ -57,6 +61,9 @@ fun MiscSettingsScreen(
     var blurDepth by rememberIntPref("pref_blur_depth", 60)
     var burnInProtection by rememberBooleanPref("pref_navbar_burn_in_protection", false)
     var burnInInterval by rememberIntPref("pref_navbar_burn_in_interval", 60)
+    var translucency by rememberIntPref("pref_surface_translucency", 100)
+    var motionStyle by rememberStringPref("pref_motion_style", "standard")
+    var motionResponse by rememberIntPref("pref_motion_response", 100)
     var bouncy by rememberBooleanPref("pref_bouncy_animations", false)
     var bouncyStrength by rememberIntPref("pref_bouncy_strength", 100)
     var bouncySpeed by rememberIntPref("pref_bouncy_speed", 100)
@@ -88,10 +95,46 @@ fun MiscSettingsScreen(
                 title = "Motion",
                 icon = Icons.Rounded.Animation
             ) {
+                // The style decides how much a surface is allowed to overshoot; the response
+                // decides how quickly it gets there. Both reach every spring in the launcher, so
+                // this is the one place the whole feel is set.
+                ChoiceList(
+                    choices = listOf(
+                        ChoiceItem(
+                            value = "calm",
+                            title = "Calm",
+                            summary = "Settles straight in, nothing springs back",
+                            icon = Icons.Rounded.Tune
+                        ),
+                        ChoiceItem(
+                            value = "standard",
+                            title = "Standard",
+                            summary = "A little momentum on the surfaces you throw",
+                            icon = Icons.Rounded.Animation
+                        ),
+                        ChoiceItem(
+                            value = "expressive",
+                            title = "Expressive",
+                            summary = "Pronounced springs, the drawer carries past its target",
+                            icon = Icons.Rounded.Bolt
+                        )
+                    ),
+                    selected = motionStyle,
+                    onSelect = { motionStyle = it }
+                )
+                SettingSlider(
+                    title = "Response",
+                    value = motionResponse,
+                    min = 50,
+                    max = 200,
+                    step = 10,
+                    unit = "%",
+                    onValueChange = { motionResponse = it }
+                )
                 SettingSwitch(
                     title = "Bouncy animations",
-                    subtitle = "Springy overscroll on home and app drawer, page snap, " +
-                        "long press menu and folders. Restarts the launcher",
+                    subtitle = "Rubber band overscroll when you pull past the end of the home " +
+                        "screen or the app drawer. Restarts the launcher",
                     checked = bouncy,
                     onCheckedChange = { bouncy = it },
                     icon = Icons.Rounded.Animation
@@ -151,6 +194,39 @@ fun MiscSettingsScreen(
                         onValueChange = { blurDepth = it }
                     )
                 }
+            }
+
+            SettingsCard(
+                title = "Transparency",
+                icon = Icons.Rounded.BlurOn
+            ) {
+                // One scale on top of every per-surface opacity the launcher already had, so the
+                // whole phone can be made lighter or more solid in one place without the drawer,
+                // the hotseat and recents drifting apart.
+                SettingSlider(
+                    title = "Surface translucency",
+                    value = translucency,
+                    min = 0,
+                    max = 150,
+                    step = 5,
+                    unit = "%",
+                    onValueChange = { translucency = it },
+                    valueLabel = { value ->
+                        when {
+                            value == 0 -> "Solid"
+                            value == 100 -> "Default"
+                            value < 100 -> "$value%"
+                            else -> "$value%"
+                        }
+                    }
+                )
+                Text(
+                    text = "Scales the app drawer, hotseat and recents together. Each surface " +
+                        "keeps its own opacity, so the drawer stays lighter than the hotseat.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
             }
 
             SettingsCard(

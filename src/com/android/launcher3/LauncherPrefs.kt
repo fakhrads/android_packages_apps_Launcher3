@@ -322,6 +322,12 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         // onyx and falls back to the assistant when it cannot start. There is no settings UI for
         // this pref, so the default is the only way to pick it.
         @JvmField val CORNER_SWIPE_ACTION = backedUpItem("pref_corner_swipe_action", "cts")
+        // How much the launcher is allowed to overshoot, and how fast it answers. Read through
+        // Motion, which folds both into every spring and duration the launcher runs.
+        @JvmField val MOTION_STYLE = backedUpItem("pref_motion_style", "standard")
+        @JvmField val MOTION_RESPONSE = backedUpItem("pref_motion_response", 100)
+        // One scale for every translucent surface, applied on top of each surface's own opacity.
+        @JvmField val SURFACE_TRANSLUCENCY = backedUpItem("pref_surface_translucency", 100)
         @JvmField val BOUNCY_ANIMATIONS = backedUpItem("pref_bouncy_animations", false)
         @JvmField val BOUNCY_STRENGTH = backedUpItem("pref_bouncy_strength", 100)
         @JvmField val BOUNCY_SPEED = backedUpItem("pref_bouncy_speed", 100)

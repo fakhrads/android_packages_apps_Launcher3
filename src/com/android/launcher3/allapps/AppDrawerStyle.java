@@ -28,6 +28,7 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.Translucency;
 
 /**
  * App drawer presentation styles and colors.
@@ -114,11 +115,15 @@ public final class AppDrawerStyle {
         return ColorUtils.setAlphaComponent(color, 255);
     }
 
-    /** Applies the user-selected drawer opacity to {@code color}. */
+    /**
+     * Applies the user-selected drawer opacity to {@code color}, on top of the global translucency
+     * scale so one slider in settings moves the drawer with every other surface.
+     */
     @ColorInt
     public static int applyDrawerOpacity(Context context, @ColorInt int color) {
         return ColorUtils.setAlphaComponent(color,
-                LauncherPrefs.APP_DRAWER_OPACITY.get(context) * 255 / 100);
+                Translucency.opacity(context, LauncherPrefs.APP_DRAWER_OPACITY.get(context))
+                        * 255 / 100);
     }
 
     /** Custom drawer background with the user-selected opacity applied. */

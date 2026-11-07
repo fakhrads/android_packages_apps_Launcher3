@@ -31,6 +31,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherUiState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AppDrawerStyle;
+import com.android.launcher3.anim.Motion;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.ScrimColors;
@@ -58,9 +59,13 @@ public class AllAppsState extends LauncherState {
             // TODO(b/414847564): Temporary workaround for no state transition during the swipe.
             return 100;
         }
-        return isToState
+        // The drawer is the largest surface in the launcher, so it is the one place where the
+        // motion style is felt most: 600 ms of stock open duration becomes snappier as the user
+        // raises the response setting, and follows the system animation scale with everything else.
+        int base = isToState
                 ? context.getDeviceProfile().getAllAppsProfile().getOpenDuration()
                 : context.getDeviceProfile().getAllAppsProfile().getCloseDuration();
+        return Motion.duration(context.asContext(), base);
     }
 
     @Override

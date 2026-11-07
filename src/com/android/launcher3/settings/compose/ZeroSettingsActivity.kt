@@ -150,7 +150,11 @@ class ZeroSettingsActivity : ComponentActivity() {
             LauncherPrefs.RECENTS_MEMINFO,
             // SettingsMisc
             LauncherPrefs.BLUR_DEPTH,
-            // Edge effects and the page scroller are created with the views.
+            // Edge effects and the page scroller are created with the views. The motion style and
+            // response live there too, because the page snap duration is baked into the scroller
+            // when the workspace is constructed; everything else that reads them does so live.
+            LauncherPrefs.MOTION_STYLE,
+            LauncherPrefs.MOTION_RESPONSE,
             LauncherPrefs.BOUNCY_ANIMATIONS,
             LauncherPrefs.BOUNCY_STRENGTH,
             LauncherPrefs.BOUNCY_SPEED,

@@ -45,7 +45,7 @@ class BounceEdgeEffect(
 
     // Sliders are read once; changing them restarts the launcher.
     private val strength = BouncyAnimations.strength(context)
-    private val stiffness = STIFFNESS * BouncyAnimations.stiffnessScale(context)
+    private val stiffness = Motion.stiffness(context, STIFFNESS)
     private val maxOffsetFraction = (MAX_OFFSET_FRACTION * strength).coerceAtMost(0.3f)
 
     private val springAnim =
@@ -53,7 +53,7 @@ class BounceEdgeEffect(
             spring =
                 SpringForce(0f)
                     .setStiffness(stiffness)
-                    .setDampingRatio(BouncyAnimations.bounceDamping(context))
+                    .setDampingRatio(Motion.damping(context, 0.55f))
             addUpdateListener { _, value, _ -> setOffset(value) }
             // Report once more after the spring ends, so the owner sees isFinished() == true.
             addEndListener { _, _, _, _ -> listener.onOffsetChanged(offset) }

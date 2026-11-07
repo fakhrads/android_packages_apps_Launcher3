@@ -236,6 +236,7 @@ import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.StableViewInfo;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.Translucency;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.TraceHelper;
@@ -1216,7 +1217,9 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         if (LauncherPrefs.SHOW_HOTSEAT_BG.get(this)) {
             mHotseat.setBackgroundResource(R.drawable.bkg_appseat);
-            mHotseat.getBackground().setAlpha(LauncherPrefs.HOTSEAT_OPACITY.get(this) * 255 / 100);
+            mHotseat.getBackground().setAlpha(
+                    Translucency.opacity(this, LauncherPrefs.HOTSEAT_OPACITY.get(this))
+                            * 255 / 100);
         }
 
         // Setup the drag layer

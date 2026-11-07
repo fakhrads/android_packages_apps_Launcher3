@@ -36,6 +36,7 @@ import com.android.launcher3.statemanager.BaseState.FLAG_DISABLE_RESTORE_ABSOLUT
 import com.android.launcher3.statemanager.BaseState.FLAG_DISABLE_RESTORE_EXCEPT_UI_MODE_CHANGE
 import com.android.launcher3.statemanager.BaseState.FLAG_IS_TASK_VIEW_INTERACTIVE
 import com.android.launcher3.util.Themes
+import com.android.launcher3.util.Translucency
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.ScrimColors
 import com.android.quickstep.views.RecentsView
@@ -98,7 +99,8 @@ open class RecentsState(@JvmField val ordinal: Int, private val mFlags: Int) :
                 if (hasFlag(FLAG_SCRIM))
                     ColorUtils.setAlphaComponent(
                     Themes.getAttrColor(context, R.attr.overviewScrimColor),
-                    LauncherPrefs.RECENTS_OPACITY.get(context) * 255 / 100)
+                    Translucency.opacity(context, LauncherPrefs.RECENTS_OPACITY.get(context))
+                        * 255 / 100)
                 else Color.TRANSPARENT,
             foregroundColor = Color.TRANSPARENT,
         )

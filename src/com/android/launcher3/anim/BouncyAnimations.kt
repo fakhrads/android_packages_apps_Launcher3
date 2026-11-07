@@ -56,22 +56,51 @@ object BouncyAnimations {
     fun folderOpenDamping(context: Context): Float =
         (0.8f - 0.18f * strength(context)).coerceIn(0.3f, 0.8f)
 
+    /**
+     * How long the popup spring runs.
+     *
+     * Runs through [Motion] first, so it carries the style and the system animation scale like
+     * every other surface, and then through this class's own speed slider, which stays the finer
+     * control on top of the style.
+     */
     @JvmStatic
     fun popupOpenDuration(context: Context): Int =
-        (POPUP_OPEN_DURATION / speed(context)).roundToInt()
+        (Motion.duration(context, POPUP_OPEN_DURATION) / speed(context)).roundToInt()
 
     @JvmStatic
     fun popupOpenInterpolator(context: Context): Interpolator =
-        DampedSpringInterpolator((1f - 0.5f * strength(context)).coerceIn(0.15f, 0.95f), 1.6f)
+        // Damping comes through Motion so the style can add or remove overshoot; the strength
+        // slider keeps working on top of it.
+        DampedSpringInterpolator(Motion.damping(context, 0.55f), 1.6f)
 
-    /** Home page snap; lands slightly past the target page and settles back. */
+    /**
+     * Home page snap; lands slightly past the target page and settles back.
+     *
+     * The overshoot comes from the style's bounce as well as the strength slider, and is capped:
+     * an overshoot past 25 percent of the tension reads as the page missing its target rather than
+     * as a settle.
+     */
     @JvmStatic
-    fun pageSnapInterpolator(context: Context): Interpolator =
-        OvershootInterpolator(PAGE_SNAP_TENSION * strength(context))
+    fun pageSnapInterpolator(context: Context): Interpolator {
+        val styleBounce = Motion.style(context).bounceGain
+        val tension = PAGE_SNAP_TENSION * strength(context) * styleBounce
+        return OvershootInterpolator(tension.coerceIn(0f, PAGE_SNAP_TENSION * 2.5f))
+    }
 
-    /** Multiplier for page snap durations. */
+    /**
+     * Multiplier for page snap durations.
+     *
+     * The system animation scale is applied explicitly here, unlike every other duration in the
+     * launcher: the page snap ends up in an [android.widget.OverScroller], which the framework does
+     * not scale, so this is the one place that has to do it itself.
+     *
+     * Floored above zero: the scroller reads 0 as "work out a duration from the distance" rather
+     * than "do not animate", so a system scale of 0 would make the snap slower instead of instant.
+     */
     @JvmStatic
-    fun durationScale(context: Context): Float = 1f / speed(context)
+    fun durationScale(context: Context): Float =
+        (Motion.durationScale(context) * Motion.systemScale(context) / speed(context))
+            .coerceAtLeast(0.05f)
 
     private inline fun <T> read(fallback: T, block: () -> T): T =
         try {

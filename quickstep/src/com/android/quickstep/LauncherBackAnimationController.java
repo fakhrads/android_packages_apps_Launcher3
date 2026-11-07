@@ -65,6 +65,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Motion;
 import com.android.launcher3.display.DisplayController;
 import com.android.launcher3.remoteanimations.RemoteAnimationCoordinateTransfer;
 import com.android.launcher3.taskbar.TaskbarInteractor;
@@ -94,6 +95,12 @@ import java.lang.ref.WeakReference;
  *
  */
 public class LauncherBackAnimationController {
+    /**
+     * Base duration of the scrim fade when a back gesture is committed; scaled through Motion so
+     * it matches the length of the window animation it is meant to accompany. A scrim that
+     * outlives the surface behind it is the one thing that makes a predictive back feel detached
+     * from the finger.
+     */
     private static final int SCRIM_FADE_DURATION = 233;
     private static final float MIN_WINDOW_SCALE = 0.75f;
     private static final float MAX_SCRIM_ALPHA_DARK = 0.8f;
@@ -616,7 +623,9 @@ public class LauncherBackAnimationController {
                 resetScrim();
             }
         });
-        mScrimAlphaAnimator.setDuration(SCRIM_FADE_DURATION).start();
+        mScrimAlphaAnimator
+                .setDuration(Motion.duration(mLauncher, SCRIM_FADE_DURATION))
+                .start();
         mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
         customizeStatusBarAppearance(true);
         backAnim.start(mLauncher.getStateManager());
