@@ -142,10 +142,7 @@ public class OverviewState extends LauncherState {
         if (launcherUiState.getSplitScreenUiState().isSplitSelectActive()) {
             elements &= ~CLEAR_ALL_BUTTON & ~ADD_DESK_BUTTON;
         }
-        // The iOS recents style is meant to look like the iOS switcher, which has no memory readout
-        // under the cards, so the style wins over the preference instead of showing it anyway.
-        if (dp.getLauncherPrefs().get(LauncherPrefs.RECENTS_MEMINFO)
-                && !"ios".equals(dp.getLauncherPrefs().get(LauncherPrefs.RECENTS_STYLE))) {
+        if (dp.getLauncherPrefs().get(LauncherPrefs.RECENTS_MEMINFO)) {
             elements |= MEMINFO;
         }
         return elements;
