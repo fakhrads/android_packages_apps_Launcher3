@@ -599,6 +599,17 @@ public abstract class RecentsView<
     private static final float IOS_TILT_DEGREES = 11f;
     private static final float IOS_TILT_FULL_DISTANCE = 0.9f;
     private static final float IOS_TILT_CAMERA_DISTANCE = 12f;
+    // The fraction of a card's own stride that disappears under its neighbour. At 0.35 each card
+    // shows 65% of itself, which reads as a stack while every card stays recognisable. This is a
+    // constant fraction of the distance rather than a per-card ramp: a ramp grows quadratically
+    // with the card index and makes card four end up nearer the centre than card three.
+    private static final float IOS_STACK_OVERLAP = 0.35f;
+    // Extra shrink per card away from the centre, on top of the scroll scale.
+    private static final float IOS_DEPTH_SCALE = 0.04f;
+    // How many cards deep the overlap, shrink and z-drop continue before they stop accumulating.
+    private static final float IOS_MAX_DEPTH = 3f;
+    // Depth drop per card, in dp, so the further cards draw underneath the nearer ones.
+    private static final float IOS_DEPTH_Z_DP = 10f;
     // A fan needs a gap between the cards; overview_page_spacing is 0dp for every other style.
     private static final float IOS_PAGE_SPACING_DP = 12f;
     private final android.content.SharedPreferences.OnSharedPreferenceChangeListener mPrefListener =
@@ -6313,25 +6324,49 @@ public abstract class RecentsView<
     }
 
     /**
-     * iOS style: a tight, symmetric fan behind the focused card.
+     * iOS style: a symmetric stack of tilted cards behind the focused one.
      *
-     * The cards on both sides of the centre get the same treatment, nothing is dimmed, and every
-     * card is rotated around its inner edge so the row leans away from the viewer the further it
-     * sits from the centre. The old version only touched the cards on the left, pulled them behind
-     * the focused one with a log squish and tinted them 30% black, which reads as a pile rather than
-     * a fan and made the row asymmetric.
+     * Three things have to happen together for this to read as a stack, and the previous version
+     * only did the third:
+     *
+     *  - the cards have to overlap. The pager lays them out a full width apart, so each one is
+     *    pulled back over its neighbour by a constant fraction of its own offset. Without this the
+     *    style is a row of tilted cards with gaps, which is what it looked like;
+     *  - they have to draw in the right order. Outer cards get a negative Z so the centred card sits
+     *    on top instead of the row flattening into itself;
+     *  - they have to lean. Each card rotates around the edge that faces the centre, so the fan
+     *    opens outward.
+     *
+     * All three are driven by one number, how many cards away from the centre a card sits, so the
+     * overlap, the shrink and the Z-drop can never disagree with each other.
      */
     private void applyIOSStyle(TaskView tv, View child, float dist, float absDist,
                              float childSize, float baseScale, float overlapFactor,
                              boolean verticalScroll) {
         tv.setColorTint(0f, 0);
-        // No pull-back: unlike a stack, an iOS fan keeps its cards where the pager put them.
-        if (tv.getPrimaryTaskOffsetTranslationProperty().get(tv) != 0f) {
-            tv.getPrimaryTaskOffsetTranslationProperty().set(tv, 0f);
-        }
-        if (child.getTranslationZ() != 0f) child.setTranslationZ(0f);
 
-        final boolean vertical = verticalScroll;
+        // How many cards away from the centre this one sits, capped so the tenth card is not
+        // squashed to nothing. The overlap, the shrink and the z-drop all use this one number so
+        // they stay in step with each other.
+        final float stride = Math.max(1f, childSize + mPageSpacing);
+        final float cardsAway = Math.min(absDist / stride, IOS_MAX_DEPTH);
+        final float depth = Utilities.boundToRange(
+                absDist / (childSize * IOS_TILT_FULL_DISTANCE), 0f, 1f);
+
+        // Pull the card toward the centre along the scroll axis. This is the whole difference
+        // between a fan and a row: the pager still lays the cards out a full width apart, and this
+        // brings each of them back over its neighbour.
+        final float pull = -dist * IOS_STACK_OVERLAP * overlapFactor;
+        if (tv.getPrimaryTaskOffsetTranslationProperty().get(tv) != pull) {
+            tv.getPrimaryTaskOffsetTranslationProperty().set(tv, pull);
+        }
+
+        // Negative z for the outer cards, so the centred one draws on top. ViewGroup sorts siblings
+        // by Z in hardware rendering, which is why this is enough to get real stacking.
+        final float z = -cardsAway * IOS_DEPTH_Z_DP
+                * getResources().getDisplayMetrics().density * overlapFactor;
+        if (child.getTranslationZ() != z) child.setTranslationZ(z);
+
         if (absDist < 1f) {
             if (child.getRotationY() != 0f) child.setRotationY(0f);
             if (child.getRotationX() != 0f) child.setRotationX(0f);
@@ -6339,13 +6374,10 @@ public abstract class RecentsView<
             return;
         }
 
-        // depth: 0 at the centre, 1 once a card is about one card away from it.
-        final float depth = Utilities.boundToRange(
-                absDist / (childSize * IOS_TILT_FULL_DISTANCE), 0f, 1f);
         final float tilt = IOS_TILT_DEGREES * depth * overlapFactor;
         final boolean after = dist > 0;
 
-        if (vertical) {
+        if (verticalScroll) {
             if (child.getRotationY() != 0f) child.setRotationY(0f);
             child.setRotationX(after ? -tilt : tilt);
             child.setCameraDistance(childSize * IOS_TILT_CAMERA_DISTANCE);
@@ -6355,11 +6387,14 @@ public abstract class RecentsView<
             if (child.getRotationX() != 0f) child.setRotationX(0f);
             child.setRotationY(after ? tilt : -tilt);
             child.setCameraDistance(childSize * IOS_TILT_CAMERA_DISTANCE);
+            // Pivot on the edge that faces the centred card, so the fan opens outward from it.
             child.setPivotX(after ? 0f : child.getWidth());
             child.setPivotY(child.getHeight() / 2f);
         }
 
-        setIOSScale(child, baseScale);
+        // Shrink with depth as well as with scroll, so the stack reads as going back in space.
+        final float stacked = baseScale * (1f - IOS_DEPTH_SCALE * cardsAway * overlapFactor);
+        setIOSScale(child, stacked);
     }
 
     private void setIOSScale(View child, float scale) {
@@ -6544,14 +6579,10 @@ public abstract class RecentsView<
         }
 
         if (mRecentsStyle.equals("ios")) {
-            float stapleDistance = childSize * 0.1f;
-            if (dist >= 0 || absDist <= stapleDistance) {
-                return 0f;
-            }
-            float excess = absDist - stapleDistance;
-            float squish = Math.min(excess, (float) (Math.log10(1 + excess) * 45f));
-            float pullBack = absDist - (stapleDistance + squish);
-            return pullBack * overlapFactor;
+            // Must mirror applyIOSStyle exactly. It used to keep the old asymmetric pull-back that
+            // only ever applied to the cards on the left, which meant dismissing a card reflowed
+            // it by an offset the style no longer draws - the card jumped before it flew away.
+            return -dist * IOS_STACK_OVERLAP * overlapFactor;
         }
 
         if (mRecentsStyle.equals("oxygen")) {
