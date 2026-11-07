@@ -46,15 +46,6 @@
             android:visibility="gone" />
 
         <Button
-            android:id="@+id/action_select"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="6dp"
-            android:drawableStart="@drawable/ic_select"
-            android:text="@string/recents_select_title"
-            android:visibility="gone" />
-
-        <Button
             android:id="@+id/action_lens"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

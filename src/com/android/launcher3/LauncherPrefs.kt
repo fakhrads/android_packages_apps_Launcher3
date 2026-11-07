@@ -344,14 +344,11 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val ICON_SIZE = backedUpItem("pref_custom_icon_size", 100)
         @JvmField val RECENTS_CLEAR_ALL = backedUpItem("pref_recents_clear_all", true)
         @JvmField val RECENTS_CLEAR_ALL_PRESERVE_ACTIVE = backedUpItem("pref_recents_clear_all_preserve_active", false)
-        // Lens chip in the overview action row. It hands the task snapshot to Lens, which needs a
-        // trip through the home screen first.
+        // The Select chip in the overview action row. It selects text and images over what is on
+        // screen (Circle to Search first, Lens on the task snapshot as the fallback), which is why it
+        // is on by default: Pixel ships the same chip, only wired to the closed source selection
+        // session in SystemUIGoogle.
         @JvmField val RECENTS_LENS = backedUpItem("pref_recents_lens", true)
-        // Select chip: freezes what is on screen and lets the user pick text or an image on it, the
-        // way the Pixel chip does. It is served by Circle to Search here, because the Pixel selection
-        // session itself lives in the closed source SystemUIGoogle. Kept separate from Lens so a
-        // build can offer both.
-        @JvmField val RECENTS_SELECT = backedUpItem("pref_recents_select", true)
         @JvmField val RECENTS_MEMINFO = backedUpItem("pref_recents_meminfo", false)
         @JvmField val RECENTS_MEMINFO_ZRAM = backedUpItem("pref_recents_meminfo_zram", false)
         @JvmField val RECENTS_STYLE = backedUpItem("pref_recents_style", "default")

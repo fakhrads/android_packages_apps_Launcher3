@@ -71,14 +71,13 @@ fun RecentsSettingsScreen(
     var clearAllButton by rememberBooleanPref("pref_recents_clear_all", true)
     var clearAllPreserveActive by rememberBooleanPref("pref_recents_clear_all_preserve_active", false)
     var lensButton by rememberBooleanPref("pref_recents_lens", true)
-    var selectButton by rememberBooleanPref("pref_recents_select", true)
     var swipeDownToLock by rememberBooleanPref("pref_swipe_down_to_lock", false)
 
     var freeformGesture by rememberBooleanPref("pref_start_freeform_by_gesture", false)
     var freeformThreshold by rememberIntPref("pref_start_freeform_progress", 20)
     var gestureAction by rememberStringPref("pref_overview_gesture_action", "freeform")
     var lpnhFullWidth by rememberBooleanPref("pref_lpnh_full_width", true)
-    var cornerSwipeAction by rememberStringPref("pref_corner_swipe_action", "cts")
+    var cornerSwipeAction by rememberStringPref("pref_corner_swipe_action", "assistant")
 
     // The digital assistant app picked in the system default apps, read again on every resume
     // since it is changed there
@@ -247,18 +246,11 @@ fun RecentsSettingsScreen(
                     enabled = clearAllButton
                 )
                 SettingSwitch(
-                    title = stringResource(R.string.recents_select_title),
-                    subtitle = "Freeze the screen and pick text or an image on it, then copy it or search it",
-                    checked = selectButton,
-                    onCheckedChange = { selectButton = it },
-                    icon = Icons.Rounded.CenterFocusStrong
-                )
-                SettingSwitch(
                     title = stringResource(R.string.recents_lens_title),
-                    subtitle = "Search what is on the current task with Google Lens",
+                    subtitle = "Select text or images over the current screen, copy it or search it",
                     checked = lensButton,
                     onCheckedChange = { lensButton = it },
-                    icon = Icons.Rounded.Search
+                    icon = Icons.Rounded.CenterFocusStrong
                 )
                 SettingSwitch(
                     title = stringResource(R.string.swipe_down_to_lock_title),
