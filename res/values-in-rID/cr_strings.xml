@@ -196,152 +196,108 @@
     <string name="quickspace_psa_title">Pesan random</string>
     <string name="quickspace_psa_summary">Jadikan teman Anda lebih hidup dengan pesan random</string>
     <string-array name="quickspace_psa_morning">
-        <item>Selamat Pagi</item>
-        <item>Selamat pagi, saatnya bergoyang</item>
-        <item>Hari yang indah</item>
-        <item>Semoga harimu menyenangkan</item>
-        <item>Bagaimana dengan tidur siang kecil selama 5 menit</item>
-        <item>Mari bekerja keras.</item>
-        <item>Pagi hari adalah kanvas segar untuk mahakarya harian Anda.</item>
-        <item>Rangkullah terbitnya peluang setiap pagi.</item>
-        <item>Di awal cahaya, temukan kekuatan untuk menerangi jalan Anda.</item>
-        <item>Hari Anda dimulai dengan kemungkinan yang tak terbatas.</item>
-        <item>Setiap matahari terbit adalah pengingat bahwa Anda dapat memulai hal baru.</item>
-        <item>Bangunlah dengan tujuan, taklukkan hari yang akan datang.</item>
-        <item>Pikiran Anda bisa menjadi landasan pencapaian besar.</item>
-        <item>Dunia bangkit, begitu pula potensi Anda.</item>
-        <item>Bab pertama dalam petualangan harian Anda.</item>
-        <item>Biarkan rutinitas pagi Anda menjadi landasan menuju kesuksesan.</item>
-        <item>Matahari terbit atau tidak, potensi Anda selalu meningkat.</item>
-        <item>Waktunya untuk ide segar dan tindakan berani.</item>
-        <item>Burung yang datang lebih awal akan menangkap cacing, tetapi Anda dapat menangkap impian Anda.</item>
-        <item>Temukan keberanian untuk mengejar aspirasi Anda.</item>
-        <item>Bangkit dan bersinar, karena kehebatan menanti.</item>
-        <item>Waktu terbaik untuk memulai adalah sekarang.</item>
+        <item>Selamat pagi! Kasur kangen, tapi hari ini butuh kamu.</item>
+        <item>Kopi dulu, dewasa belakangan.</item>
+        <item>Bangun dan bersinar. Atau bangun saja, bersinarnya opsional.</item>
+        <item>Alarm kamu nelpon. Katanya minta maaf.</item>
+        <item>Lima menit lagi, begitulah awal dari semua kekacauan.</item>
+        <item>Prakiraan hari ini: 100 persen kemungkinan beres. Kayaknya.</item>
+        <item>Kamu bangun. Itu sudah kemenangan.</item>
+        <item>Sarapan itu penting. Makan siang juga. Makan malam juga.</item>
+        <item>Mataharinya sudah naik, jadi kamu juga harus, sayangnya.</item>
+        <item>Selamat pagi! Mohon tunggu, otak sedang loading.</item>
+        <item>Jadilah orang yang dikira baterai hp-mu 100 persen.</item>
+        <item>Hari baru, kamu yang sama, rambut sedikit lebih rapi. Mungkin.</item>
+        <item>Gas pol, cari rezeki.</item>
+        <item>Ingat: tidak ada yang suka pagi, sebagian cuma pandai menyembunyikannya.</item>
+        <item>Regangkan badan. Tulang punggungmu bilang makasih.</item>
     </string-array>
     <string-array name="quickspace_psa_noon">
-        <item>Kejar impianmu, bukan menitnya.</item>
-        <item>Setiap saat, ada peluang baru.</item>
-        <item>Rangkullah perjalanannya, bukan hanya tujuannya.</item>
-        <item>Hari ini adalah anugerah, makanya disebut hadiah.</item>
-        <item>Biarkan senyummu mengubah dunia.</item>
-        <item>Hidup adalah sebuah cerita; membuat setiap bab berarti.</item>
-        <item>Temukan kegembiraan di momen-momen biasa.</item>
-        <item>Yang terbaik masih akan datang, pertahankan.</item>
-        <item>Kesempatan Anda untuk mengubah \'bagaimana jika\' menjadi \'apa adanya\'</item>
-        <item>Manfaatkan hari ini, mulai sekarang juga.</item>
-        <item>Kebahagiaan adalah pilihan yang bisa Anda buat kapan saja.</item>
-        <item>Percayalah pada diri sendiri, bahkan di sore hari yang mengantuk.</item>
-        <item>Biarkan tindakan Anda berbicara lebih keras daripada waktu.</item>
-        <item>Hidup Anda adalah apa yang Anda hasilkan; menjadikannya luar biasa.</item>
-        <item>Bermimpilah yang besar, bekerja keras, dan pantang menyerah.</item>
-        <item>Anda lebih kuat dari yang Anda kira.</item>
-        <item>Setiap kemunduran adalah persiapan untuk bangkit kembali.</item>
-        <item>Rangkullah perjalanannya, bukan hanya tujuannya.</item>
-        <item>Kejar tujuan Anda, bukan ketakutan Anda.</item>
-        <item>Potensi Anda tidak terbatas; membukanya.</item>
+        <item>Sudah waktunya makan siang belum? Di suatu tempat pasti sudah.</item>
+        <item>Perutmu mengajukan keluhan. Mohon ditanggapi.</item>
+        <item>Produktivitas turun 40 persen. Satu-satunya obat: camilan.</item>
+        <item>Pura-pura sibuk saja dulu, sorenya masih panjang.</item>
+        <item>Minum air putih. Kopi tidak dihitung.</item>
+        <item>Setengah hari lewat, daftar tugasmu juga. Eh, belum ya.</item>
+        <item>Tidur siang itu optimasi performa.</item>
+        <item>Kamu lebih baik dari yang dikira inbox-mu.</item>
+        <item>Satu video lagi. Dibilang setiap jam sejak pagi.</item>
+        <item>Pengingat: kamu punya kaki. Berdiri sebentar.</item>
+        <item>Istirahat makan siang: satu-satunya rapat yang tidak pernah dibolos.</item>
+        <item>Kalau tidak kebakaran, bisa menunggu sampai selesai makan.</item>
+        <item>Memuat motivasi... 99 persen... 99 persen... 99 persen...</item>
+        <item>Kamu kelihatan keren. Apa pun yang kamu lakukan, lanjutkan.</item>
+        <item>Mood hari ini: tidak di kantor, tapi badan hadir.</item>
     </string-array>
     <string-array name="quickspace_psa_early_evening">
-        <item>Rangkul lah momen saat ini, kapan pun waktunya.</item>
-        <item>Di setiap senja, temukan peluang baru.</item>
-        <item>Hidup adalah perjalanan; menikmati pemandangan sepanjang perjalanan.</item>
-        <item>Sikap Anda membentuk realitas Anda.</item>
-        <item>Kisahmu masih ditulis, bahkan saat matahari terbenam.</item>
-        <item>Abadikan keindahan dalam momen biasa.</item>
-        <item>Saatnya untuk merenung dan mengatur ulang.</item>
-        <item>Pilihlah kegembiraan, tidak peduli jam berapa pun.</item>
-        <item>Peluang tidak akan habis di malam hari.</item>
-        <item>Jadilah alasan seseorang tersenyum.</item>
-        <item>Potensi Anda tidak mengenal batas.</item>
-        <item>Momen ajaib bisa terjadi kapan saja.</item>
-        <item>Hidup Anda adalah apa yang Anda hasilkan; menjadikannya luar biasa.</item>
-        <item>Tetap penasaran, tetap bersyukur.</item>
-        <item>Jadilah perubahan yang ingin Anda lihat di dunia.</item>
-        <item>Percaya pada dirimu sendiri; kamu mampu melakukan hal-hal menakjubkan.</item>
-        <item>Satu-satunya batasan adalah batasan yang Anda tentukan sendiri.</item>
-        <item>Kesuksesan dimulai dengan satu langkah.</item>
+        <item>Hampir waktunya pulang. Sebentar lagi.</item>
+        <item>Macet itu cuma cara dunia menyuruhmu santai.</item>
+        <item>Sofamu menunggu seharian. Teman yang setia.</item>
+        <item>Saatnya pertanyaan abadi: makan malam apa?</item>
+        <item>Golden hour. Cahaya sempurna untuk foto yang tidak akan kamu posting.</item>
+        <item>Satu hari lagi terlewati. Tepuk punggungmu sendiri.</item>
+        <item>Jam ngemil, jam tidak resmi sebelum makan malam.</item>
+        <item>Baterai hp 20 persen. Kesabaranmu juga.</item>
+        <item>Plot twist: kamu sudah berbuat lebih banyak dari yang kamu kira.</item>
+        <item>Keluar lima menit. Langitnya lagi pamer.</item>
+        <item>Sekarang tidak ada yang cek emailmu. Kayaknya.</item>
+        <item>Rencana makan malam: iya, dan pakai nasi.</item>
+        <item>Kamu bukan capek, cuma buffering dengan kualitas tinggi.</item>
+        <item>Lepas sepatu. Kebebasan itu hal kecil.</item>
     </string-array>
     <string-array name="quickspace_psa_evening">
-        <item>Manfaatkan malam, karena ia menyimpan misteri tersendiri.</item>
-        <item>Dalam kesunyian malam ini, temukanlah ketenangan.</item>
-        <item>Petualangan terbesar dalam hidup bisa dimulai dalam kegelapan.</item>
-        <item>Perjalanan Anda berlanjut bahkan setelah matahari terbenam.</item>
-        <item>Biarkan malam menjadi kanvasmu; melukisnya dengan mimpi.</item>
-        <item>Dalam keheningan malam ini, temukan kedamaian batinmu.</item>
-        <item>Bintang bersinar paling terang di saat-saat paling gelap.</item>
-        <item>Bermimpilah yang besar, bahkan di pengujung hari.</item>
-        <item>Hidup Anda adalah cerita yang menunggu untuk ditulis.</item>
-        <item>Saatnya untuk refleksi dan pembaharuan.</item>
-        <item>Pikiran larut malam bisa mengarah pada wahyu di pagi hari.</item>
-        <item>Temukan kegembiraan dalam keheningan malam ini.</item>
-        <item>Langit malam adalah kanvas mimpi yang luas.</item>
-        <item>Potensi Anda tidak mengenal waktu tidur; kejar passionmu.</item>
-        <item>Tetaplah berharap, bahkan di saat-saat tergelap sekalipun.</item>
-        <item>Di tengah kekacauan, temukan ketenangan batin Anda.</item>
-        <item>Tetap positif, bekerja keras, wujudkan.</item>
+        <item>Sofa, selimut, dan tidak ada yang lain. Sempurna.</item>
+        <item>Satu episode saja. Tidak pernah ada yang bilang itu dan benar-benar maksud.</item>
+        <item>Kasurmu teman yang lebih baik daripada alarm.</item>
+        <item>Netflix tanya masih nonton? Iya. Jangan ganggu.</item>
+        <item>Tetap minum air. Iya, lagi.</item>
+        <item>Camilan tengah malam nol kalori kalau tidak ada yang lihat.</item>
+        <item>Rencana besok: dipikirkan besok.</item>
+        <item>Mode malam: tema gelap dan keputusan buruk.</item>
+        <item>Pencapaian hari ini: kamu ada. Kerja bagus.</item>
+        <item>Bisukan notifikasi. Mereka bukan bosmu.</item>
+        <item>Makan malam selesai, jadi camilan resmi menjadi makan baru.</item>
+        <item>Scroll tidak ada habisnya, tidurmu ada.</item>
+        <item>Baik-baiklah pada dirimu. Hari ini sudah cukup baik.</item>
+        <item>Ngecas hp? Jangan lupa ngecas diri sendiri juga.</item>
     </string-array>
     <string-array name="quickspace_psa_midnight">
-        <item>Malam adalah bisikan tenang tentang peluang.</item>
-        <item>Dalam keheningan malam, temukan kekuatan batinmu.</item>
-        <item>Rangkullah kegelapan, karena kegelapan menyimpan kunci impian Anda.</item>
-        <item>Dunia tertidur, namun potensi Anda tetap terjaga.</item>
-        <item>Malam mungkin sudah larut, tetapi ambisi Anda tidak lekang oleh waktu.</item>
-        <item>Tetaplah penasaran, tetap terjaga, dan biarkan malam membimbing Anda.</item>
-        <item>Temukan keberanian untuk mengejar impian Anda.</item>
-        <item>Hal-hal besar tidak pernah datang dari zona nyaman.</item>
-        <item>Anda memiliki kekuatan untuk menciptakan takdir Anda sendiri.</item>
-        <item>Kebahagiaan adalah pilihan; memilihnya setiap hari.</item>
-        <item>Hidup adalah apa yang Anda buat, jadi buatlah itu berarti.</item>
-        <item>Tetap fokus, tetap bertekad, tetap tak terhentikan.</item>
-        <item>Anda adalah penulis cerita Anda sendiri.</item>
-        <item>Berusahalah untuk kemajuan, bukan kesempurnaan.</item>
-        <item>Setiap hari adalah awal yang baru; menjadikannya sesuatu yang hebat.</item>
-        <item>Menginspirasi orang lain dengan menjadi diri-sejati Anda.</item>
-        <item>Sikap Anda menentukan arah Anda.</item>
+        <item>Tidur sana. Meme-nya masih ada besok.</item>
+        <item>Sudah malam. Dirimu di masa depan sudah kesal.</item>
+        <item>Kenapa ide terbaik selalu datang jam 2 pagi?</item>
+        <item>Bantalmu memanggil. Suaranya khawatir.</item>
+        <item>Tidur itu gratis dan upgrade terbaik yang ada.</item>
+        <item>Masih bangun? Sama. Kita senasib.</item>
+        <item>Anggap saja kamu sedang cek sesuatu yang penting.</item>
+        <item>Tidak ada hal bagus setelah jam 2 pagi, kecuali camilan.</item>
+        <item>Besok kamu bilang mau tidur cepat. Kita berdua tahu.</item>
+        <item>Lampu kulkas bukan senter, tapi ya sudahlah.</item>
+        <item>Satu scroll lagi. Kata-kata terakhir yang terkenal.</item>
+        <item>Matamu butuh istirahat. Hp-mu tidak peduli, tapi mereka iya.</item>
+        <item>Tidak semua bisa dibereskan malam ini. Salahkan jamnya.</item>
+        <item>Otak jam 3 pagi: ingat kejadian memalukan tahun 2014?</item>
     </string-array>
     <string-array name="quickspace_psa_random">
-        <item>Ketidaktahuan adalah kebahagiaan sejati</item>
-        <item>Apakah ini waktu yang tepat untuk menginstal pembaruan?</item>
-        <item>Berdamai, bukan perang</item>
-        <item>Oh hai, apa kabar?</item>
-        <item>Selamat datang di Matrix yang sesungguhnya!</item>
-        <item>Berapa banyak tangkapan layar yang kamu ambil?</item>
-        <item>Kebaikan terbuka dengan crDroid</item>
-        <item>Sebarkan cinta, bukan malapetaka</item>
-        <item>Kami tidak menyalakan api!</item>
-        <item>Waktunya mendengarkan musik</item>
-        <item>\u003C\u003C\u003C\u003C\u003C\u003C\u003C HEAD</item>
-        <item>Anda membutuhkan crDroid Premium untuk melihat ini</item>
-        <item>Ingat garis keturunan Unicorn</item>
-        <item>Nikmati daya tahan baterai yang bertambah</item>
-        <item>Dimulai dari paling nol</item>
-        <item>Kami mencintaimu 3000</item>
-        <item>Lezat bahkan tanpa Sushi</item>
-        <item>Lakukan sesuatu yang baik hari ini</item>
-        <item>Inilah pengalaman Pixel yang terbaik, betul tidak?</item>
-        <item>Tidak ada ilusi, selamat datang ke kenyataan!</item>
-        <item>Terima kasih atas dukungan anda</item>
-        <item>Tidak ada festival untuk kebodohan - hanya kesempurnaan!</item>
-        <item>Salah satu pilihan terbaik Buildbot</item>
-        <item>Sanitas untuk Paranoia Anda</item>
-        <item>Bangkit dalam damai</item>
-        <item>Benar-benar pengalaman yang menyenangkan, bukan?</item>
-        <item>Evolusi adalah mitos, bukan?</item>
-        <item>Anda adalah apa yang Anda flash, jangan menjadi Kentang</item>
-        <item>Apa yang ada di pikiran Anda?</item>
-        <item>Harapkan Patronum</item>
-        <item>Sulih Suara Wubba Lubba</item>
-        <item>Menang Menang ....?</item>
-        <item>rm -rf \/</item>
-        <item>Pringles sebenarnya bukan keripik kentang..</item>
-        <item>Ingatlah untuk memeriksa level baterai perangkat!</item>
-        <item>Periksa email/pesan Anda.</item>
-        <item>Periksa daftar tugasmu jika kamu memilikinya.</item>
-        <item>Kamu dapat menonaktifkan quickspace melalui setelan beranda.</item>
-        <item>Suka dengan yang kami kerjakan? Berikan kami segelas bir</item>
-        <item>Rom terbaik yang pernah ada.</item>
-        <item>Sampaikan salam kepada kami di Telegram</item>
-        <item>Kami mencintaimu 3000x</item>
+        <item>Eh halo, lagi ngapain?</item>
+        <item>Sudah waktunya flash update lagi?</item>
+        <item>Jujur, berapa banyak screenshot yang kamu ambil?</item>
+        <item>Waktunya dengerin lagu bagus.</item>
+        <item>Sudah coba matikan lalu nyalakan lagi?</item>
+        <item>Aku launcher, bukan psikolog, tapi silakan cerita.</item>
+        <item>Cek baterai ya. Atau tidak, hidup itu berbahaya.</item>
+        <item>Celoteh ini bisa dimatikan di pengaturan home. Tapi kenapa?</item>
+        <item>Memuat pesan lucu... mohon tunggu... masih memuat...</item>
+        <item>Pesan ini dipersembahkan oleh hp-mu sendiri.</item>
+        <item>Backup datamu. Serius. Sekarang.</item>
+        <item>Tidak, aku tidak akan kasih tahu screen time-mu.</item>
+        <item>Hp-mu punya 99 masalah dan tidak ada yang soal baterai. Eh.</item>
+        <item>Fakta unik: kamu baru saja melihat hp lagi.</item>
+        <item>Berbuat baiklah hari ini. Atau minimal untuk camilanmu.</item>
+        <item>Sapa kami di Telegram.</item>
+        <item>Mungkinkah AI mengambil pekerjaanmu? Belum, sebelum belajar suka nasi.</item>
+        <item>Jangan makan hp-mu. Itu bukan camilan.</item>
+        <item>Bug? Itu fitur. Laporkan dengan baik.</item>
+        <item>Semua baik-baik saja. ROM-nya baik. Kamu baik.</item>
     </string-array>
     <string name="intent_no_app_clock_found">Tidak dapat menemukan aktivitas kalender atau jam</string>
     <!-- QuickSpace: QuickEvent: Weather -->

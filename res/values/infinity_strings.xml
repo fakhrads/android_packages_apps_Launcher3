@@ -264,137 +264,108 @@
     <string name="quickspace_psa_summary">Make your companion more lively with random messages</string>
 
     <string-array name="quickspace_psa_morning">
-        <item>Good morning!</item>
-        <item>Good morning, time to rock!</item>
-        <item>What a beautiful day!</item>
-        <item>Have a nice day!</item>
-        <item>What about a small 5 minutes nap?</item>
+        <item>Good morning! The bed misses you, but the day needs you.</item>
+        <item>Coffee first, adulting second.</item>
+        <item>Rise and shine. Or just rise, shining is optional.</item>
+        <item>Your alarm called. It wants an apology.</item>
+        <item>Five more minutes is how this whole mess started.</item>
+        <item>Today\'s forecast: 100 percent chance of getting things done. Probably.</item>
+        <item>You woke up. That\'s already a win.</item>
+        <item>Breakfast is the most important meal. So is lunch. And dinner.</item>
+        <item>The sun is up, so unfortunately you have to be too.</item>
+        <item>Good morning! Please hold while your brain loads.</item>
+        <item>Be the person your phone\'s battery thinks you are at 100 percent.</item>
+        <item>New day, same you, slightly better hair. Maybe.</item>
         <item>Let\'s get this bread.</item>
-        <item>Mornings are a fresh canvas for your daily masterpiece.</item>
-        <item>Embrace the sunrise of opportunity each morning.</item>
-        <item>In the early light, find the power to illuminate your path.</item>
-        <item>Your day begins with endless possibilities.</item>
-        <item>Every sunrise is a reminder that you can start anew.</item>
-        <item>Awake with purpose, conquer the day ahead.</item>
-        <item>Your thoughts can be the foundation of great achievements.</item>
-        <item>The world awakens, and so does your potential.</item>
-        <item>The first chapter in your daily adventure.</item>
-        <item>Let your morning routine be the launchpad for success.</item>
-        <item>Sunrise or not, your potential is always on the rise.</item>
-        <item>It\'s time for fresh ideas and bold actions.</item>
-        <item>The early bird catches the worm, but you can catch your dreams.</item>
-        <item>Find the courage to chase your aspirations.</item>
-        <item>Rise and shine, for greatness awaits.</item>
-        <item>The best time to start is now.</item>
+        <item>Remember: nobody is a morning person, some just hide it well.</item>
+        <item>Stretch. Your spine says thanks.</item>
     </string-array>
     <string-array name="quickspace_psa_noon">
-        <item>Chase your dreams, not the minutes.</item>
-        <item>In every moment, a new opportunity.</item>
-        <item>Embrace the journey, not just the destination.</item>
-        <item>Today is a gift, that\'s why it\'s called the present.</item>
-        <item>Let your smile change the world.</item>
-        <item>Life is a story; make each chapter count.</item>
-        <item>Find joy in the ordinary moments.</item>
-        <item>The best is yet to come, keep it up.</item>
-        <item>Your chance to turn \'what if\' into \'what is.\'</item>
-        <item>Seize the day, starting right now.</item>
-        <item>Happiness is a choice you can make any time.</item>
-        <item>Believe in yourself, even on a sleepy afternoon.</item>
-        <item>Let your actions speak louder than the clock.</item>
-        <item>Your life is what you make of it; make it amazing.</item>
-        <item>Dream big, work hard, and never give up.</item>
-        <item>You are stronger than you think.</item>
-        <item>Every setback is a setup for a comeback.</item>
-        <item>Embrace the journey, not just the destination.</item>
-        <item>Chase your goals, not your fears.</item>
-        <item>Your potential is endless; unlock it.</item>
+        <item>Is it lunch yet? It\'s always lunch somewhere.</item>
+        <item>Your stomach filed a complaint. Please respond.</item>
+        <item>Productivity is down 40 percent. Snacks are the only known fix.</item>
+        <item>Pretend you\'re busy, the afternoon is long.</item>
+        <item>Drink some water. Coffee does not count.</item>
+        <item>Half the day is gone and so is your to-do list. Wait, no.</item>
+        <item>A nap now is a performance optimization.</item>
+        <item>You\'re doing better than your inbox thinks.</item>
+        <item>Just one more video. Said every hour since morning.</item>
+        <item>Reminder: you have legs. Stand up for a minute.</item>
+        <item>Lunch break: the only meeting you never skip.</item>
+        <item>If it\'s not on fire, it can wait until after lunch.</item>
+        <item>Buffering motivation... 99 percent... 99 percent... 99 percent...</item>
+        <item>You look great. Whatever you did, keep doing it.</item>
+        <item>Today\'s mood: out of office, but physically present.</item>
     </string-array>
     <string-array name="quickspace_psa_early_evening">
-        <item>Embrace the present moment, no matter the hour.</item>
-        <item>In every dusk, find a new dawn of opportunity.</item>
-        <item>Life is a journey; enjoy the scenery along the way.</item>
-        <item>Your attitude shapes your reality.</item>
-        <item>Your story is still being written, even as the sun sets.</item>
-        <item>Capture the beauty in the ordinary moments.</item>
-        <item>It\'s time to reflect and reset.</item>
-        <item>Choose joy, no matter the time on the clock.</item>
-        <item>Opportunities don\'t clock out in the evening.</item>
-        <item>Be the reason someone smiles.</item>
-        <item>Your potential knows no bounds.</item>
-        <item>Moments of magic can happen at any hour.</item>
-        <item>Your life is what you make of it; make it extraordinary.</item>
-        <item>Stay curious, stay grateful.</item>
-        <item>Be the change you wish to see in the world.</item>
-        <item>Believe in yourself; you are capable of amazing things.</item>
-        <item>The only limit is the one you set for yourself.</item>
-        <item>Success begins with a single step.</item>
+        <item>Almost home time. Hold on a little longer.</item>
+        <item>Traffic is just everybody telling you to take it slow.</item>
+        <item>Your couch has been waiting all day. Loyal friend.</item>
+        <item>Time to ask the eternal question: what\'s for dinner?</item>
+        <item>Golden hour. Perfect lighting for a photo you\'ll never post.</item>
+        <item>Another day survived. Pat yourself on the back.</item>
+        <item>Snack o\'clock, the unofficial hour before dinner.</item>
+        <item>Your phone is at 20 percent. So is your patience.</item>
+        <item>Plot twist: you did more today than you think.</item>
+        <item>Go outside for five minutes. The sky is showing off.</item>
+        <item>Nobody is checking your email now. Probably.</item>
+        <item>Dinner plans: yes, please, and with rice.</item>
+        <item>You\'re not tired, you\'re just buffering in high quality.</item>
+        <item>Take off your shoes. Freedom is a small thing.</item>
     </string-array>
     <string-array name="quickspace_psa_evening">
-        <item>Seize the night, for it holds its own mysteries.</item>
-        <item>In the quiet of this evening, find serenity.</item>
-        <item>Life\'s greatest adventures can start in the darkness.</item>
-        <item>Your journey continues even after the sun has set.</item>
-        <item>Let the night be your canvas; paint it with dreams.</item>
-        <item>In the stillness of this evening, find your inner peace.</item>
-        <item>Stars shine brightest in the darkest hours.</item>
-        <item>Dream big, even in the late hours of the day.</item>
-        <item>Your life is a story waiting to be written.</item>
-        <item>It\'s time for reflection and renewal.</item>
-        <item>Late night thoughts can lead to early morning revelations.</item>
-        <item>Find joy in the stillness of this evening.</item>
-        <item>The night sky is a vast canvas of dreams.</item>
-        <item>Your potential knows no bedtime; pursue your passions.</item>
-        <item>Stay hopeful, even in the darkest hours.</item>
-        <item>In the midst of chaos, find your inner calm.</item>
-        <item>Stay positive, work hard, make it happen.</item>
+        <item>The couch, the blanket, and nothing else. Perfect.</item>
+        <item>Just one episode. Said nobody ever, and meant it.</item>
+        <item>Your bed is a better friend than your alarm.</item>
+        <item>Netflix asks if you\'re still watching. Yes. Leave us alone.</item>
+        <item>Stay hydrated. Yes, again.</item>
+        <item>Late night snacks have zero calories if nobody sees them.</item>
+        <item>Plan for tomorrow: figure it out tomorrow.</item>
+        <item>Evening mode: dark theme and bad decisions.</item>
+        <item>Today\'s achievements: you exist. Great job.</item>
+        <item>Silence your notifications. They are not your boss.</item>
+        <item>Dinner is over, so snacks are legally a new meal.</item>
+        <item>The scroll is endless, but your sleep isn\'t.</item>
+        <item>Be kind to yourself. You did fine today.</item>
+        <item>Charging your phone? Don\'t forget to charge yourself too.</item>
     </string-array>
     <string-array name="quickspace_psa_midnight">
-        <item>Nights are the quiet whispers of opportunity.</item>
-        <item>In the stillness of the night, find your inner strength.</item>
-        <item>Embrace the darkness, for it holds the keys to your dreams.</item>
-        <item>The world sleeps, but your potential is wide awake.</item>
-        <item>The night may be late, but your ambitions are timeless.</item>
-        <item>Stay curious, stay awake, and let nights guide you.</item>
-        <item>Find the courage to chase your dreams.</item>
-        <item>Great things never come from comfort zones.</item>
-        <item>You have the power to create your own destiny.</item>
-        <item>Happiness is a choice; choose it every day.</item>
-        <item>Life is what you make it, so make it count.</item>
-        <item>Stay focused, stay determined, stay unstoppable.</item>
-        <item>You are the author of your own story.</item>
-        <item>Strive for progress, not perfection.</item>
-        <item>Every day is a new beginning; make it a great one.</item>
-        <item>Inspire others by being your authentic self.</item>
-        <item>Your attitude determines your direction.</item>
+        <item>Go to sleep. The memes will still be there tomorrow.</item>
+        <item>It\'s late. Your future self is already annoyed.</item>
+        <item>Why is it that the best ideas arrive at 2 AM?</item>
+        <item>Your pillow has been calling you. It sounds worried.</item>
+        <item>Sleep is free and the best upgrade you can get.</item>
+        <item>Still awake? Same. We\'re in this together.</item>
+        <item>Let\'s pretend you\'re checking something important.</item>
+        <item>Nothing good happens after 2 AM, except snacks.</item>
+        <item>Tomorrow you\'ll say you\'ll sleep early. We both know.</item>
+        <item>The fridge light is not a flashlight, but here we are.</item>
+        <item>Just one more scroll. Famous last words.</item>
+        <item>Your eyes need rest. Your phone doesn\'t care, but they do.</item>
+        <item>You can\'t fix everything tonight. Blame the hour.</item>
+        <item>Brain at 3 AM: remember that thing from 2014?</item>
     </string-array>
     <string-array name="quickspace_psa_random">
-        <item>Is it time to flash another update already?</item>
-        <item>Make war, not peace</item>
         <item>Oh hey, what\'s up?</item>
-        <item>Focus on your tasks</item>
-        <item>How many screenshots do you take?</item>
-        <item>You\'re literally inside Infinity!</item>
-        <item>Time for some good music</item>
-        <item>Starting from the ground zero</item>
-        <item>So you finally dived into INFINITY!</item>
-        <item>Welcome to Infinity-X</item>
-        <item>Do something nice today</item>
-        <item>No illusions, welcome to reality!</item>
-        <item>Thank you for your support</item>
-        <item>What a lovely experience, isn\'t it?</item>
-        <item>What\'s on your mind?</item>
-        <item>Expecto Patronum</item>
-        <item>Infinite Love!</item>
-        <item>Infinity Approaching</item>
-        <item>rm -rf \/</item>
-        <item>Remember to check device\'s battery level!</item>
-        <item>Check your email/messages.</item>
-        <item>Check your to-do list if you have one.</item>
-        <item>You can disable quickspace via home settings.</item>
-        <item>Loving us? Send us a beer</item>
-        <item>Best Rom Ever.</item>
-        <item>Say hi to us on Telegram</item>
-        <item>Could AI wipe humanity?</item>
+        <item>Is it time to flash another update already?</item>
+        <item>How many screenshots do you take, honestly?</item>
+        <item>Time for some good music.</item>
+        <item>Have you tried turning it off and on again?</item>
+        <item>I\'m a launcher, not a therapist, but go on.</item>
+        <item>Remember to check your battery. Or don\'t, live dangerously.</item>
+        <item>You can disable this chatter in home settings. But why would you?</item>
+        <item>Loading witty message... please wait... still loading...</item>
+        <item>This message is brought to you by your own phone.</item>
+        <item>Back up your data. Seriously. Do it now.</item>
+        <item>No, I will not tell you your screen time.</item>
+        <item>Your phone has 99 problems and none of them are battery. Wait.</item>
+        <item>Fun fact: you just looked at your phone again.</item>
+        <item>Do something nice for someone today. Or at least for your snacks.</item>
+        <item>Say hi to us on Telegram.</item>
+        <item>Could AI take your job? Not before it learns to like rice.</item>
+        <item>Please do not eat your phone. It is not a snack.</item>
+        <item>Bug? That\'s a feature. Report it kindly.</item>
+        <item>Everything is fine. The ROM is fine. You are fine.</item>
     </string-array>
     <string name="intent_no_app_clock_found">Unable to find calendar or clock activity</string>
 
