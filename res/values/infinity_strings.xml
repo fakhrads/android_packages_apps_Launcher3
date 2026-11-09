@@ -279,6 +279,9 @@
         <item>Let\'s get this bread.</item>
         <item>Remember: nobody is a morning person, some just hide it well.</item>
         <item>Stretch. Your spine says thanks.</item>
+        <item>Woke up and chose to miss someone. Anyone, really.</item>
+        <item>Good morning to everyone except the one who left me on read.</item>
+        <item>Another sunrise, another day of not getting a reply.</item>
     </string-array>
     <string-array name="quickspace_psa_noon">
         <item>Is it lunch yet? It\'s always lunch somewhere.</item>
@@ -296,6 +299,9 @@
         <item>Buffering motivation... 99 percent... 99 percent... 99 percent...</item>
         <item>You look great. Whatever you did, keep doing it.</item>
         <item>Today\'s mood: out of office, but physically present.</item>
+        <item>Still checking if they replied. Spoiler: no.</item>
+        <item>Lunch for one, hope for none.</item>
+        <item>Your crush saw your story and said nothing. Classic.</item>
     </string-array>
     <string-array name="quickspace_psa_early_evening">
         <item>Almost home time. Hold on a little longer.</item>
@@ -312,6 +318,9 @@
         <item>Dinner plans: yes, please, and with rice.</item>
         <item>You\'re not tired, you\'re just buffering in high quality.</item>
         <item>Take off your shoes. Freedom is a small thing.</item>
+        <item>Sunset looks better when someone is not ignoring you.</item>
+        <item>Evening is when the feelings start to wake up.</item>
+        <item>Not sad, just professionally nostalgic.</item>
     </string-array>
     <string-array name="quickspace_psa_evening">
         <item>The couch, the blanket, and nothing else. Perfect.</item>
@@ -328,6 +337,9 @@
         <item>The scroll is endless, but your sleep isn\'t.</item>
         <item>Be kind to yourself. You did fine today.</item>
         <item>Charging your phone? Don\'t forget to charge yourself too.</item>
+        <item>Playing sad songs and calling it self-care.</item>
+        <item>Typed a long message. Deleted it. Typed it again. Deleted it again.</item>
+        <item>They are online, but not for you. Breathe.</item>
     </string-array>
     <string-array name="quickspace_psa_midnight">
         <item>Go to sleep. The memes will still be there tomorrow.</item>
@@ -344,6 +356,10 @@
         <item>Your eyes need rest. Your phone doesn\'t care, but they do.</item>
         <item>You can\'t fix everything tonight. Blame the hour.</item>
         <item>Brain at 3 AM: remember that thing from 2014?</item>
+        <item>It\'s 2 AM and you\'re thinking about that one text from last year.</item>
+        <item>Who needs sleep when you have unresolved feelings?</item>
+        <item>Their last seen says it all, and it says nothing.</item>
+        <item>Midnight thoughts: why did I say that in 2019?</item>
     </string-array>
     <string-array name="quickspace_psa_random">
         <item>Oh hey, what\'s up?</item>
@@ -366,6 +382,11 @@
         <item>Please do not eat your phone. It is not a snack.</item>
         <item>Bug? That\'s a feature. Report it kindly.</item>
         <item>Everything is fine. The ROM is fine. You are fine.</item>
+        <item>Galau is just a feeling with a really bad Wi-Fi signal.</item>
+        <item>I\'m fine. Totally fine. Please don\'t check my playlist.</item>
+        <item>Heartbreak is temporary. Screenshots are forever.</item>
+        <item>Left on read, but the launcher still replies. Hi.</item>
+        <item>Not single, just in a long-distance relationship with the ones who never text back.</item>
     </string-array>
     <string name="intent_no_app_clock_found">Unable to find calendar or clock activity</string>
 

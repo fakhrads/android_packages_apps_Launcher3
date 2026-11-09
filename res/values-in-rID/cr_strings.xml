@@ -211,6 +211,9 @@
         <item>Gas pol, cari rezeki.</item>
         <item>Ingat: tidak ada yang suka pagi, sebagian cuma pandai menyembunyikannya.</item>
         <item>Regangkan badan. Tulang punggungmu bilang makasih.</item>
+        <item>Bangun tidur langsung kangen. Siapa saja, terserah.</item>
+        <item>Selamat pagi untuk semua, kecuali yang cuma centang dua tanpa balas.</item>
+        <item>Matahari terbit lagi, chat belum dibalas lagi.</item>
     </string-array>
     <string-array name="quickspace_psa_noon">
         <item>Sudah waktunya makan siang belum? Di suatu tempat pasti sudah.</item>
@@ -228,6 +231,9 @@
         <item>Memuat motivasi... 99 persen... 99 persen... 99 persen...</item>
         <item>Kamu kelihatan keren. Apa pun yang kamu lakukan, lanjutkan.</item>
         <item>Mood hari ini: tidak di kantor, tapi badan hadir.</item>
+        <item>Masih ngecek dia sudah balas atau belum. Spoiler: belum.</item>
+        <item>Makan siang sendiri, harapan juga sendiri.</item>
+        <item>Gebetan lihat story-mu tapi diam saja. Klasik.</item>
     </string-array>
     <string-array name="quickspace_psa_early_evening">
         <item>Hampir waktunya pulang. Sebentar lagi.</item>
@@ -244,6 +250,9 @@
         <item>Rencana makan malam: iya, dan pakai nasi.</item>
         <item>Kamu bukan capek, cuma buffering dengan kualitas tinggi.</item>
         <item>Lepas sepatu. Kebebasan itu hal kecil.</item>
+        <item>Senja lebih indah kalau tidak lagi di-ghosting.</item>
+        <item>Sore adalah saat perasaan mulai bangun.</item>
+        <item>Bukan sedih, cuma nostalgia secara profesional.</item>
     </string-array>
     <string-array name="quickspace_psa_evening">
         <item>Sofa, selimut, dan tidak ada yang lain. Sempurna.</item>
@@ -260,6 +269,9 @@
         <item>Scroll tidak ada habisnya, tidurmu ada.</item>
         <item>Baik-baiklah pada dirimu. Hari ini sudah cukup baik.</item>
         <item>Ngecas hp? Jangan lupa ngecas diri sendiri juga.</item>
+        <item>Muter lagu sedih sambil bilang self-care.</item>
+        <item>Ngetik pesan panjang. Hapus. Ketik lagi. Hapus lagi.</item>
+        <item>Dia online, tapi bukan buat kamu. Tarik napas.</item>
     </string-array>
     <string-array name="quickspace_psa_midnight">
         <item>Tidur sana. Meme-nya masih ada besok.</item>
@@ -276,6 +288,10 @@
         <item>Matamu butuh istirahat. Hp-mu tidak peduli, tapi mereka iya.</item>
         <item>Tidak semua bisa dibereskan malam ini. Salahkan jamnya.</item>
         <item>Otak jam 3 pagi: ingat kejadian memalukan tahun 2014?</item>
+        <item>Jam 2 pagi dan kamu masih mikirin chat tahun lalu.</item>
+        <item>Siapa butuh tidur kalau punya perasaan yang belum selesai?</item>
+        <item>Last seen-nya bilang segalanya, dan tidak bilang apa-apa.</item>
+        <item>Pikiran tengah malam: kenapa dulu aku bilang begitu ya?</item>
     </string-array>
     <string-array name="quickspace_psa_random">
         <item>Eh halo, lagi ngapain?</item>
@@ -298,6 +314,11 @@
         <item>Jangan makan hp-mu. Itu bukan camilan.</item>
         <item>Bug? Itu fitur. Laporkan dengan baik.</item>
         <item>Semua baik-baik saja. ROM-nya baik. Kamu baik.</item>
+        <item>Galau itu cuma perasaan dengan sinyal Wi-Fi yang jelek.</item>
+        <item>Aku baik-baik saja. Beneran. Jangan cek playlist-ku.</item>
+        <item>Patah hati sementara, screenshot selamanya.</item>
+        <item>Dibaca doang, tapi launcher ini masih membalas. Halo.</item>
+        <item>Bukan jomblo, cuma LDR sama yang tidak pernah balas chat.</item>
     </string-array>
     <string name="intent_no_app_clock_found">Tidak dapat menemukan aktivitas kalender atau jam</string>
     <!-- QuickSpace: QuickEvent: Weather -->
