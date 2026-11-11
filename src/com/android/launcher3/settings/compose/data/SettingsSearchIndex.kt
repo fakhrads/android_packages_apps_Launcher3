@@ -168,7 +168,7 @@ object SettingsSearchIndex {
             "Touch and hold any part of the bottom gesture bar, not only the handle",
             "circle to search lens handle")
         add(recents, "Swipe from bottom corner", "Swipe from bottom corner",
-            "Digital assistant app, Gemini app or Circle to Search", "assistant gemini corner")
+            "Assistant overlay or Circle to Search", "assistant gemini corner")
         add(recents, "Swipe from bottom corner", "Digital assistant app",
             "Pick Gemini, ChatGPT, Claude or another assistant in the default apps",
             "assistant default")

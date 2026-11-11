@@ -18,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.material.icons.rounded.Assistant
-import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.CallMade
 import androidx.compose.material.icons.rounded.CenterFocusStrong
 import androidx.compose.material.icons.rounded.DeleteSweep
@@ -94,15 +93,10 @@ fun RecentsSettingsScreen(
     val cornerSwipeChoices = listOf(
         ChoiceItem(
             value = "assistant",
-            title = "Digital assistant app",
-            summary = assistantName ?: "None picked in the default apps",
+            title = "Assistant overlay",
+            summary = assistantName?.let { "$it, shown over the current app" }
+                ?: "None picked in the default apps",
             icon = Icons.Rounded.Assistant
-        ),
-        ChoiceItem(
-            value = "gemini",
-            title = "Gemini app",
-            summary = "Opens the full app, not the assistant popup. Falls back to the assistant when it is not installed",
-            icon = Icons.Rounded.AutoAwesome
         ),
         ChoiceItem(
             value = "cts",
@@ -194,7 +188,8 @@ fun RecentsSettingsScreen(
             ) {
                 ChoiceList(
                     choices = cornerSwipeChoices,
-                    selected = cornerSwipeAction,
+                    // "gemini" was a choice of a short lived build, it behaves as the assistant
+                    selected = if (cornerSwipeAction == "gemini") "assistant" else cornerSwipeAction,
                     onSelect = { cornerSwipeAction = it }
                 )
                 NavRow(
