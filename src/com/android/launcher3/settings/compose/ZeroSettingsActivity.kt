@@ -168,6 +168,8 @@ fun ZeroSettingsApp(
     onFinish: () -> Unit
 ) {
     var currentScreen by remember { mutableStateOf(initialScreen) }
+    // Kept here, not in the hub, so it is still there after opening a result and coming back
+    var searchQuery by remember { mutableStateOf("") }
     val bouncy by rememberBooleanPref("pref_bouncy_animations", false)
     val bouncyStrength by rememberIntPref("pref_bouncy_strength", 100)
     val bouncySpeed by rememberIntPref("pref_bouncy_speed", 100)
@@ -183,6 +185,8 @@ fun ZeroSettingsApp(
     BackHandler {
         if (currentScreen != SettingsSubscreen.HUB) {
             currentScreen = SettingsSubscreen.HUB
+        } else if (searchQuery.isNotEmpty()) {
+            searchQuery = ""
         } else {
             onFinish()
         }
@@ -207,6 +211,8 @@ fun ZeroSettingsApp(
             SettingsSubscreen.HUB -> {
                 HubScreen(
                     onNavigate = { currentScreen = it },
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = { searchQuery = it },
                     modifier = Modifier
                         .windowInsetsPadding(
                             WindowInsets.safeDrawing.only(

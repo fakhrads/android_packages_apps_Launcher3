@@ -63,6 +63,8 @@ enum class SettingsSubscreen {
 @Composable
 fun HubScreen(
     onNavigate: (SettingsSubscreen) -> Unit,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -89,6 +91,14 @@ fun HubScreen(
             .padding(bottom = 32.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        SettingsSearchBar(query = searchQuery, onQueryChange = onSearchQueryChange)
+
+        // A query replaces the hub with what it found, clearing it brings the hub back
+        if (searchQuery.isNotBlank()) {
+            SettingsSearchResults(query = searchQuery, onNavigate = onNavigate)
+            return@Column
+        }
+
         // 1. Bento Hero Card: System Overview + Telemetry + Quick Restart
         HeroOverviewCard(
             title = "ZeroLauncher",
