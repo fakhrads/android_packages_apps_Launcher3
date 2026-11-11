@@ -317,10 +317,10 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val FONT_SIZE = backedUpItem("pref_custom_font_size", 100)
         @JvmField val FREEFORM_GESTURE = backedUpItem("pref_start_freeform_by_gesture", false)
         @JvmField val LPNH_FULL_WIDTH = backedUpItem("pref_lpnh_full_width", true)
-        // "cts" (Circle to Search) or "assistant" (the default digital assistant app). Defaults to
-        // CTS because the corner swipe promise is the search surface: CTS answers in about 400 ms on
-        // onyx and falls back to the assistant when it cannot start. There is no settings UI for
-        // this pref, so the default is the only way to pick it.
+        // "cts" (Circle to Search), "assistant" (the default digital assistant app) or "gemini" (the
+        // standalone Gemini app, the assistant when it is missing). Defaults to CTS because the corner
+        // swipe promise is the search surface: CTS answers in about 400 ms on onyx and falls back to
+        // the assistant when it cannot start. Picked in Recents settings, Swipe from bottom corner.
         @JvmField val CORNER_SWIPE_ACTION = backedUpItem("pref_corner_swipe_action", "cts")
         // How much the launcher is allowed to overshoot, and how fast it answers. Read through
         // Motion, which folds both into every spring and duration the launcher runs.

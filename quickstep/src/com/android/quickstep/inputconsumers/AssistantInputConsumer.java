@@ -58,6 +58,7 @@ import com.android.app.animation.Interpolators;
 import com.android.internal.app.AssistUtils;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.GestureState;
@@ -104,6 +105,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private final Context mContext;
     private final Consumer<MotionEvent> mGestureDetector;
     private final boolean mCornerSwipeCts;
+    private final boolean mCornerSwipeGemini;
     // Resolved when the swipe starts, so completing the gesture does not pay to resolve it.
     private ContextualSearchInvoker mCtsInvoker;
 
@@ -117,7 +119,9 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         super(gestureState.getDisplayId(), delegate, inputMonitor);
         final Resources res = context.getResources();
         mContext = context;
-        mCornerSwipeCts = "cts".equals(LauncherPrefs.CORNER_SWIPE_ACTION.get(context));
+        final String cornerSwipeAction = LauncherPrefs.CORNER_SWIPE_ACTION.get(context);
+        mCornerSwipeCts = "cts".equals(cornerSwipeAction);
+        mCornerSwipeGemini = "gemini".equals(cornerSwipeAction);
         mDragDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mFlingDistThreshold = res.getDimension(R.dimen.gestures_assistant_fling_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
@@ -256,8 +260,10 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
             // over mTimeThreshold. Circle to Search does not, it is a surface that takes about 240ms
             // to display on onyx by itself, so waiting out the remaining hold on top of that is
             // exactly the lag the swipe shows. Once the finger has travelled the drag threshold the
-            // swipe has committed, so hand it over then.
-            if (mDistance >= mDragDistThreshold && (mCornerSwipeCts || mTimeFraction >= 1)) {
+            // swipe has committed, so hand it over then. The Gemini app is a plain app launch with
+            // no invocation animation either.
+            if (mDistance >= mDragDistThreshold
+                    && (mCornerSwipeCts || mCornerSwipeGemini || mTimeFraction >= 1)) {
                 completeGesture(0);
             } else {
                 SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(mLastProgress);
@@ -282,6 +288,15 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
             mLaunchedAssistant = true;
             return;
         }
+        // The Gemini app is not what the assistant setting names: that is the Google app, whose
+        // assist activity shows the Gemini overlay. Fall through to the picked assistant when the
+        // app is not there.
+        if (mCornerSwipeGemini && startGeminiApp()) {
+            SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(0f);
+            performGestureEndHaptic();
+            mLaunchedAssistant = true;
+            return;
+        }
         // The swipe promises the assistant picked in Settings > Default apps, so start that one
         // directly. Asking SystemUI to is what used to end in nothing at all: it drops the gesture
         // invocation when the picked assistant does not declare support for it, and it stands down
@@ -297,6 +312,29 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         }
         SystemUiProxy.INSTANCE.get(mContext).onAssistantGestureCompletion(velocity);
         startAssistantInternal();
+    }
+
+    /**
+     * Opens the standalone Gemini app through its launcher activity.
+     *
+     * @return whether the app was found and started
+     */
+    private boolean startGeminiApp() {
+        final Intent intent = mContext.getPackageManager()
+                .getLaunchIntentForPackage(Utilities.GEMINI_PACKAGE);
+        if (intent == null) {
+            Log.w(TAG, "Gemini app " + Utilities.GEMINI_PACKAGE + " has no launcher activity");
+            return false;
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            mContext.startActivity(intent);
+            Log.i(TAG, "Started the Gemini app via " + intent);
+            return true;
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Cannot start the Gemini app", e);
+            return false;
+        }
     }
 
     /**

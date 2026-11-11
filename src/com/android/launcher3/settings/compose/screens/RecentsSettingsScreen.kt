@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.material.icons.rounded.Assistant
+import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.CallMade
 import androidx.compose.material.icons.rounded.CenterFocusStrong
 import androidx.compose.material.icons.rounded.DeleteSweep
@@ -95,6 +96,12 @@ fun RecentsSettingsScreen(
             title = "Digital assistant app",
             summary = assistantName ?: "None picked in the default apps",
             icon = Icons.Rounded.Assistant
+        ),
+        ChoiceItem(
+            value = "gemini",
+            title = "Gemini app",
+            summary = "Opens the full app, not the assistant popup. Falls back to the assistant when it is not installed",
+            icon = Icons.Rounded.AutoAwesome
         ),
         ChoiceItem(
             value = "cts",
