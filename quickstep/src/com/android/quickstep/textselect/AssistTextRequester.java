@@ -183,7 +183,10 @@ public final class AssistTextRequester {
         if (node == null || depth > MAX_DEPTH || out.size() >= MAX_WORDS) {
             return;
         }
-        if (node.getVisibility() != View.VISIBLE || node.getAlpha() == 0f) {
+        // The root is the window's decor view and ActivityThread makes it INVISIBLE once the app
+        // is stopped, which it is by the time it sits in recents. Its own flag says nothing about
+        // what the snapshot shows, so only the views below it are judged on theirs.
+        if (depth > 0 && (node.getVisibility() != View.VISIBLE || node.getAlpha() == 0f)) {
             return;
         }
         final int left = offsetX + node.getLeft();
