@@ -22,11 +22,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.Call
+import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.Chat
 import androidx.compose.material.icons.rounded.Interests
 import androidx.compose.material.icons.rounded.Language
@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -56,7 +57,10 @@ import com.android.launcher3.R
 import com.android.launcher3.customization.IconDatabase
 import com.android.launcher3.icons.pack.IconPackSettingsActivity
 import com.android.launcher3.settings.SettingsActivity
+import com.android.launcher3.settings.compose.components.ICON_SHAPE_PREF_KEY
+import com.android.launcher3.settings.compose.components.IconShapePicker
 import com.android.launcher3.settings.compose.components.NavRow
+import com.android.launcher3.settings.compose.components.iconShapeForKey
 import com.android.launcher3.settings.compose.components.ScreenScaffold
 import com.android.launcher3.settings.compose.components.SettingSlider
 import com.android.launcher3.settings.compose.components.SettingSwitch
@@ -80,6 +84,8 @@ fun IconsSettingsScreen(
     var themedIcons by rememberThemedIconsState()
     var lawnIcons by rememberBooleanPref("pref_grayscale_icon_map_lawn", true)
     val iconPack by rememberStringPref(IconDatabase.KEY_ICON_PACK, IconDatabase.VALUE_DEFAULT)
+    var iconShapeKey by rememberStringPref(ICON_SHAPE_PREF_KEY, "")
+    val previewShape = remember(iconShapeKey) { iconShapeForKey(iconShapeKey) }
     val iconPackText = remember(iconPack) { LauncherPrefsBridge.getIconPackSummary(context) }
 
     val animatedIconScale by animateFloatAsState(
@@ -132,24 +138,37 @@ fun IconsSettingsScreen(
                             icon = Icons.Rounded.Call,
                             scale = animatedIconScale,
                             themed = themedIcons,
-                            fontSizePercent = fontSize
+                            fontSizePercent = fontSize,
+                            shape = previewShape
                         )
                         PreviewIconItem(
                             label = "Messages",
                             icon = Icons.Rounded.Chat,
                             scale = animatedIconScale,
                             themed = themedIcons,
-                            fontSizePercent = fontSize
+                            fontSizePercent = fontSize,
+                            shape = previewShape
                         )
                         PreviewIconItem(
                             label = "Browser",
                             icon = Icons.Rounded.Language,
                             scale = animatedIconScale,
                             themed = themedIcons,
-                            fontSizePercent = fontSize
+                            fontSizePercent = fontSize,
+                            shape = previewShape
                         )
                     }
                 }
+            }
+
+            SettingsCard(
+                title = "Icon shape",
+                icon = Icons.Rounded.Category
+            ) {
+                IconShapePicker(
+                    selected = iconShapeKey,
+                    onSelect = { iconShapeKey = it }
+                )
             }
 
             // Section: Scaling Controls
@@ -232,7 +251,8 @@ private fun PreviewIconItem(
     icon: ImageVector,
     scale: Float,
     themed: Boolean,
-    fontSizePercent: Int
+    fontSizePercent: Int,
+    shape: Shape
 ) {
     val colors = MaterialTheme.colorScheme
     val containerBg = if (themed) colors.surfaceContainerLowest else colors.primaryContainer
@@ -249,7 +269,7 @@ private fun PreviewIconItem(
                     scaleX = scale
                     scaleY = scale
                 }
-                .clip(CircleShape)
+                .clip(shape)
                 .background(containerBg),
             contentAlignment = Alignment.Center
         ) {

@@ -120,6 +120,8 @@ object SettingsSearchIndex {
         add(home, "Dock", s(R.string.background_opacity_title), null, "hotseat transparency")
 
         val icons = SettingsSubscreen.ICONS
+        add(icons, "Icon shape", "Icon shape", "Circle, squircle, teardrop and more",
+            "mask squircle circle rounded square teardrop")
         add(icons, "Scale & dimensions", "Icon size", null, "scale")
         add(icons, "Scale & dimensions", "Label font size", null, "text scale")
         add(icons, "Adaptive styling", s(R.string.icon_pack_title),
