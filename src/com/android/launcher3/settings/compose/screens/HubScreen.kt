@@ -57,8 +57,25 @@ enum class SettingsSubscreen {
     ICONS,
     APP_DRAWER,
     RECENTS,
-    MISC
+    MISC,
+    HIDDEN_APPS
 }
+
+/** The screen back goes to: the hidden apps list sits under the app drawer settings. */
+val SettingsSubscreen.parent: SettingsSubscreen
+    get() = when (this) {
+        SettingsSubscreen.HUB -> SettingsSubscreen.HUB
+        SettingsSubscreen.HIDDEN_APPS -> SettingsSubscreen.APP_DRAWER
+        else -> SettingsSubscreen.HUB
+    }
+
+/** How deep a screen is, to slide forward or back between two of them. */
+val SettingsSubscreen.depth: Int
+    get() = when (this) {
+        SettingsSubscreen.HUB -> 0
+        SettingsSubscreen.HIDDEN_APPS -> 2
+        else -> 1
+    }
 
 @Composable
 fun HubScreen(

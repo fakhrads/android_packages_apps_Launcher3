@@ -44,11 +44,14 @@ import com.android.launcher3.settings.compose.data.rememberBooleanPref
 import com.android.launcher3.settings.compose.data.rememberIntPref
 import com.android.launcher3.settings.compose.screens.AppDrawerSettingsScreen
 import com.android.launcher3.settings.compose.screens.HomeScreenSettingsScreen
+import com.android.launcher3.settings.compose.screens.HiddenAppsScreen
 import com.android.launcher3.settings.compose.screens.HubScreen
 import com.android.launcher3.settings.compose.screens.IconsSettingsScreen
 import com.android.launcher3.settings.compose.screens.MiscSettingsScreen
 import com.android.launcher3.settings.compose.screens.RecentsSettingsScreen
 import com.android.launcher3.settings.compose.screens.SettingsSubscreen
+import com.android.launcher3.settings.compose.screens.depth
+import com.android.launcher3.settings.compose.screens.parent
 import com.android.launcher3.settings.compose.theme.ZeroLauncherTheme
 
 /**
@@ -109,6 +112,7 @@ class ZeroSettingsActivity : ComponentActivity() {
             "app_drawer", "drawer" -> SettingsSubscreen.APP_DRAWER
             "recents", "overview" -> SettingsSubscreen.RECENTS
             "misc", "miscellaneous" -> SettingsSubscreen.MISC
+            "hidden_apps" -> SettingsSubscreen.HIDDEN_APPS
             else -> SettingsSubscreen.HUB
         }
     }
@@ -185,7 +189,7 @@ fun ZeroSettingsApp(
 
     BackHandler {
         if (currentScreen != SettingsSubscreen.HUB) {
-            currentScreen = SettingsSubscreen.HUB
+            currentScreen = currentScreen.parent
         } else if (searchQuery.isNotEmpty()) {
             searchQuery = ""
         } else {
@@ -196,7 +200,7 @@ fun ZeroSettingsApp(
     AnimatedContent(
         targetState = currentScreen,
         transitionSpec = {
-            if (targetState != SettingsSubscreen.HUB) {
+            if (targetState.depth > initialState.depth) {
                 // Navigate forward
                 (slideInHorizontally(slideSpec) { width -> width / 3 } + fadeIn())
                     .togetherWith(slideOutHorizontally(slideSpec) { width -> -width / 3 } + fadeOut())
@@ -235,7 +239,13 @@ fun ZeroSettingsApp(
             }
             SettingsSubscreen.APP_DRAWER -> {
                 AppDrawerSettingsScreen(
-                    onBack = { currentScreen = SettingsSubscreen.HUB }
+                    onBack = { currentScreen = SettingsSubscreen.HUB },
+                    onOpenHiddenApps = { currentScreen = SettingsSubscreen.HIDDEN_APPS }
+                )
+            }
+            SettingsSubscreen.HIDDEN_APPS -> {
+                HiddenAppsScreen(
+                    onBack = { currentScreen = SettingsSubscreen.APP_DRAWER }
                 )
             }
             SettingsSubscreen.RECENTS -> {

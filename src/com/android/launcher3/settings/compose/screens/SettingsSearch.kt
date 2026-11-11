@@ -45,6 +45,7 @@ private fun screenIcon(screen: SettingsSubscreen): ImageVector = when (screen) {
     SettingsSubscreen.APP_DRAWER -> Icons.Rounded.Apps
     SettingsSubscreen.RECENTS -> Icons.Rounded.Layers
     SettingsSubscreen.MISC -> Icons.Rounded.Tune
+    SettingsSubscreen.HIDDEN_APPS -> Icons.Rounded.Apps
     SettingsSubscreen.HUB -> Icons.Rounded.Settings
 }
 

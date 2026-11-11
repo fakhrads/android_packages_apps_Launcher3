@@ -438,6 +438,10 @@
     <string name="rename_app_label">Rename app</string>
     <string name="rename_app_reset">Reset</string>
 
+    <!-- Hide app shortcut -->
+    <string name="hide_app_label">Hide app</string>
+    <string name="hide_app_toast">%1$s is hidden. Show it again in ZeroLauncher settings, App drawer, Hidden apps</string>
+
     <!-- Custom icon -->
     <string name="app_info_custom_icon_title">Custom icon</string>
     <string name="app_info_custom_icon_summary">Pick any icon from any icon pack</string>

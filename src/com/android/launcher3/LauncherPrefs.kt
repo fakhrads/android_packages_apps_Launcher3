@@ -371,6 +371,8 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val SHOW_QUICKSPACE_PSONALITY = backedUpItem("pref_quickspace_psonality", true)
         @JvmField val SHOW_QUICKSPACE_NOWPLAYING = backedUpItem("pref_quickspace_np", true)
         @JvmField val SHOW_QUICKSPACE_GOOGLE = backedUpItem("pref_quickspace_google", true)
+        /** Apps hidden from the app drawer and its search, as flattened component names. */
+        @JvmField val HIDDEN_APPS = backedUpItem("pref_hidden_apps", emptySet<String>())
         @JvmField val SHOW_QUICKSPACE_WEATHER = backedUpItem("pref_quickspace_weather", true)
         @JvmField val SHOW_QUICKSPACE_WEATHER_CITY = backedUpItem("pref_quickspace_weather_city", false)
         @JvmField val SHOW_QUICKSPACE_WEATHER_TEXT = backedUpItem("pref_quickspace_weather_text", true)

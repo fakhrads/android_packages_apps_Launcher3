@@ -21,6 +21,7 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material.icons.rounded.Sort
 import androidx.compose.material.icons.rounded.Tune
+import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -29,10 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.R
 import com.android.launcher3.settings.compose.components.ChoiceItem
 import com.android.launcher3.settings.compose.components.ColorSettingRow
 import com.android.launcher3.settings.compose.components.ChoiceList
+import com.android.launcher3.settings.compose.components.NavRow
 import com.android.launcher3.settings.compose.components.ScreenScaffold
 import com.android.launcher3.settings.compose.components.SettingSlider
 import com.android.launcher3.settings.compose.components.SettingSwitch
@@ -45,6 +48,7 @@ import com.android.launcher3.settings.compose.data.rememberStringPref
 @Composable
 fun AppDrawerSettingsScreen(
     onBack: () -> Unit,
+    onOpenHiddenApps: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -161,6 +165,14 @@ fun AppDrawerSettingsScreen(
                     subtitle = stringResource(R.string.pref_icon_customization_summary),
                     checked = iconCustomization,
                     onCheckedChange = { iconCustomization = it }
+                )
+                val hiddenCount = LauncherPrefs.get(context).get(LauncherPrefs.HIDDEN_APPS).size
+                NavRow(
+                    title = "Hidden apps",
+                    summary = if (hiddenCount == 0) "Keep apps out of the app drawer and its search"
+                    else "$hiddenCount hidden from the app drawer and its search",
+                    icon = Icons.Rounded.Visibility,
+                    onClick = onOpenHiddenApps
                 )
             }
 

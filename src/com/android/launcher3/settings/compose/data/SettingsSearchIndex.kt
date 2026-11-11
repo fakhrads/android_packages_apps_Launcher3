@@ -34,6 +34,7 @@ object SettingsSearchIndex {
         SettingsSubscreen.APP_DRAWER -> "App drawer"
         SettingsSubscreen.RECENTS -> "Recents & multitasking"
         SettingsSubscreen.MISC -> "System & miscellaneous"
+        SettingsSubscreen.HIDDEN_APPS -> "Hidden apps"
         SettingsSubscreen.HUB -> "ZeroLauncher"
     }
 
@@ -139,6 +140,8 @@ object SettingsSearchIndex {
         add(drawer, "Organization & layout", "Smart Auto-Organize",
             "Group apps into smart category folders (Games, Social, Media, Tools) at the top",
             "categories folders")
+        add(SettingsSubscreen.HIDDEN_APPS, "Hidden apps", "Hidden apps",
+            "Keep apps out of the app drawer and its search", "hide apps private invisible")
         add(drawer, "Organization & layout", s(R.string.pref_icon_customization_title),
             s(R.string.pref_icon_customization_summary), "edit icon")
         add(drawer, "App sorting", "Alphabetical (A–Z)", "Standard application listing sorted by name",

@@ -46,6 +46,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherPrefs;
+import com.android.launcher3.AppFilter;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.CellLayout;
@@ -1008,6 +1009,33 @@ public abstract class SystemShortcut<T extends ActivityContext> extends ItemInfo
             dismissTaskMenuView();
             new Dialog<>(mTarget,
                     HomeScreenFilesRenameDialogViewModel.forApp(mTarget, mItemInfo)).show();
+        }
+    }
+
+    /** Hides an app of the app drawer; the hidden apps list in settings shows it again. */
+    public static final Factory<ActivityContext> HIDE_APP =
+            (activity, itemInfo, originalView) -> {
+                if (!itemInfo.isInAllApps()
+                        || itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                        || itemInfo.getTargetComponent() == null) {
+                    return null;
+                }
+                return new HideApp<>(activity, itemInfo, originalView);
+            };
+
+    public static class HideApp<T extends ActivityContext> extends SystemShortcut<T> {
+        public HideApp(T target, ItemInfo itemInfo, @NonNull View originalView) {
+            super(R.drawable.ic_visibility_off, R.string.hide_app_label, target,
+                    itemInfo, originalView);
+        }
+
+        @Override
+        public void onClick(View view) {
+            dismissTaskMenuView();
+            Context context = mTarget.asContext();
+            AppFilter.setAppHidden(context, mItemInfo.getTargetComponent(), true);
+            Toast.makeText(context, context.getString(R.string.hide_app_toast, mItemInfo.title),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
