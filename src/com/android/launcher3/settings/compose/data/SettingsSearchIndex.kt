@@ -54,6 +54,8 @@ object SettingsSearchIndex {
         val home = SettingsSubscreen.HOMESCREEN
         add(home, "Desktop layout", "Lock desktop layout",
             "Prevent moving or dropping icons and widgets", "lock layout freeze")
+        add(home, "Desktop layout", s(R.string.landscape_mode_title),
+            "Keep the home screen in landscape with its own layout", "rotation rotate fixed")
         add(home, "Desktop layout", s(R.string.auto_add_shortcuts_label),
             s(R.string.auto_add_shortcuts_description), "new apps install home")
         add(home, "Desktop layout", "Show status bar", "Display system icons on the top",

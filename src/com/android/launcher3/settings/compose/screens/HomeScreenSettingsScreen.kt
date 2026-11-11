@@ -18,6 +18,7 @@ import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.Dashboard
 import androidx.compose.material.icons.rounded.Feed
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.ScreenRotation
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.TouchApp
 import androidx.compose.material.icons.rounded.ViewDay
@@ -63,6 +64,7 @@ fun HomeScreenSettingsScreen(
     }
 
     var lockLayout by rememberBooleanPref("pref_workspace_lock", false)
+    var fixedLandscape by rememberBooleanPref("pref_fixed_landscape_mode", false)
     var addIconToHome by rememberBooleanPref("pref_add_icon_to_home", true)
     var showStatusBar by rememberBooleanPref("pref_show_statusbar", true)
     var darkStatusBar by rememberBooleanPref("pref_dark_status_bar", false)
@@ -126,6 +128,16 @@ fun HomeScreenSettingsScreen(
                     checked = lockLayout,
                     onCheckedChange = { lockLayout = it },
                     icon = Icons.Rounded.Lock
+                )
+                // AOSP's fixed landscape mode: its own 8 x 3 grid, and the portrait grid comes
+                // back when it is turned off (InvariantDeviceProfile keeps its name)
+                SettingSwitch(
+                    title = stringResource(R.string.landscape_mode_title),
+                    subtitle = "Keep the home screen in landscape with its own layout. " +
+                        "Your portrait layout comes back when this is off",
+                    checked = fixedLandscape,
+                    onCheckedChange = { fixedLandscape = it },
+                    icon = Icons.Rounded.ScreenRotation
                 )
                 SettingSwitch(
                     title = stringResource(R.string.auto_add_shortcuts_label),
