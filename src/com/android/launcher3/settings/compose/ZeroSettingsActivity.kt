@@ -132,6 +132,7 @@ class ZeroSettingsActivity : ComponentActivity() {
             LauncherPrefs.QUICKSPACE_CLOCK_COLOR,
             LauncherPrefs.SHOW_QUICKSPACE_PSONALITY,
             LauncherPrefs.SHOW_QUICKSPACE_NOWPLAYING,
+            LauncherPrefs.SHOW_QUICKSPACE_GOOGLE,
             LauncherPrefs.SHOW_QUICKSPACE_WEATHER,
             LauncherPrefs.SHOW_QUICKSPACE_WEATHER_CITY,
             LauncherPrefs.SHOW_QUICKSPACE_WEATHER_TEXT,

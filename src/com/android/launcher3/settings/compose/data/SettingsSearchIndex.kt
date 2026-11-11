@@ -95,6 +95,9 @@ object SettingsSearchIndex {
             s(R.string.quickspace_psa_summary), "messages personality")
         add(home, quickspace, s(R.string.quickspace_now_playing_title),
             s(R.string.quickspace_now_playing_summary), "music song")
+        add(home, quickspace, "At a Glance from Google",
+            "Calendar, timers, weather and more from Android System Intelligence",
+            "smartspace pixel google events")
         add(home, quickspace, s(R.string.weather_settings_title),
             s(R.string.weather_settings_summary), "location provider")
         add(home, quickspace, s(R.string.quick_event_ambient_weather_title),

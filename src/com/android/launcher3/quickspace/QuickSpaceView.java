@@ -121,7 +121,8 @@ public class QuickSpaceView extends FrameLayout implements OnDataListener {
             }
         }
         if (mIsQuickEvent && (LauncherPrefs.SHOW_QUICKSPACE_PSONALITY.get(getContext()) ||
-                        mController.getEventController().isNowPlaying())) {
+                        mController.getEventController().isNowPlaying() ||
+                        mController.getEventController().isGoogleEvent())) {
             maybeSetMarquee(mEventTitle);
             mEventTitle.setOnClickListener(mController.getEventController().getAction());
             mEventTitleSub.setVisibility(View.VISIBLE);
@@ -181,7 +182,8 @@ public class QuickSpaceView extends FrameLayout implements OnDataListener {
         Drawable icon = mController.getEventController().getActionIcon();
         if (icon != null) {
             mEventSubIcon.setVisibility(View.VISIBLE);
-            mEventSubIcon.setImageTintList(mController.getEventController().isNowPlaying() ? null : mColorStateList);
+            mEventSubIcon.setImageTintList(
+                    mController.getEventController().shouldTintActionIcon() ? mColorStateList : null);
             
             // Only update drawable if it changed to prevent memory churn
             if (icon != mLastEventIcon) {

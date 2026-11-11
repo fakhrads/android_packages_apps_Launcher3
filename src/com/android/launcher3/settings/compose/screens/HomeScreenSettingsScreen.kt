@@ -89,6 +89,7 @@ fun HomeScreenSettingsScreen(
     var quickspaceClockColor by rememberIntPref("pref_quickspace_clock_color", 0xFFFF0000.toInt())
     var quickspacePsa by rememberBooleanPref("pref_quickspace_psonality", true)
     var quickspaceNowPlaying by rememberBooleanPref("pref_quickspace_np", true)
+    var quickspaceGoogle by rememberBooleanPref("pref_quickspace_google", true)
     var weather by rememberBooleanPref("pref_quickspace_weather", true)
     var weatherCity by rememberBooleanPref("pref_quickspace_weather_city", false)
     var weatherText by rememberBooleanPref("pref_quickspace_weather_text", true)
@@ -282,6 +283,14 @@ fun HomeScreenSettingsScreen(
                     subtitle = stringResource(R.string.quickspace_now_playing_summary),
                     checked = quickspaceNowPlaying,
                     onCheckedChange = { quickspaceNowPlaying = it },
+                    enabled = quickspace
+                )
+                SettingSwitch(
+                    title = "At a Glance from Google",
+                    subtitle = "Calendar, timers, weather and more from Android System " +
+                        "Intelligence, as on Pixel. Falls back to the items above without it",
+                    checked = quickspaceGoogle,
+                    onCheckedChange = { quickspaceGoogle = it },
                     enabled = quickspace
                 )
                 weatherIntent?.let { intent ->

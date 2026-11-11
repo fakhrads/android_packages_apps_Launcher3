@@ -47,7 +47,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class QuickspaceController implements OmniJawsClient.OmniJawsObserver,
-        MediaSessionTrackHelper.MediaMetadataListener {
+        MediaSessionTrackHelper.MediaMetadataListener, GoogleSmartspaceClient.Callback {
 
     private static final String TAG = "Launcher3:QuickspaceController";
 
@@ -61,6 +61,7 @@ public class QuickspaceController implements OmniJawsClient.OmniJawsObserver,
     private volatile OmniJawsClient.WeatherInfo mWeatherInfo;
     private volatile Drawable mConditionImage;
     private volatile boolean mOmniJawsEnabled;
+    private final GoogleSmartspaceClient mGoogleSmartspace;
 
     private final Handler mBgHandler = UI_HELPER_EXECUTOR.getHandler();
 
@@ -112,6 +113,26 @@ public class QuickspaceController implements OmniJawsClient.OmniJawsObserver,
         mEventsController = new QuickEventsController(context);
         mWeatherClient = OmniJawsClient.get();
         mMediaSessionHelper = MediaSessionTrackHelper.getInstance(context);
+        mGoogleSmartspace = new GoogleSmartspaceClient(context, this);
+    }
+
+    private boolean isGoogleSmartspaceEnabled() {
+        return LauncherPrefs.SHOW_QUICKSPACE_GOOGLE.get(mContext);
+    }
+
+    /** Google's weather line, when At a Glance from Google is on and the service sent one. */
+    private GoogleSmartspaceClient.Card getGoogleWeather() {
+        if (!isGoogleSmartspaceEnabled()
+                || !LauncherPrefs.SHOW_QUICKSPACE_WEATHER.get(mContext)) return null;
+        return mGoogleSmartspace.getWeather();
+    }
+
+    @Override
+    public void onSmartspaceUpdated() {
+        if (mEventsController == null) return;
+        mEventsController.setGoogleEvent(mGoogleSmartspace.getEvent());
+        mEventsController.updateQuickEvents();
+        notifyListeners();
     }
 
     private void addWeatherProvider() {
@@ -124,6 +145,7 @@ public class QuickspaceController implements OmniJawsClient.OmniJawsObserver,
         mListeners.add(listener);
         addWeatherProvider();
         mMediaSessionHelper.addMediaMetadataListener(this);
+        if (isGoogleSmartspaceEnabled()) mGoogleSmartspace.start();
         listener.onDataUpdated();
     }
 
@@ -137,6 +159,7 @@ public class QuickspaceController implements OmniJawsClient.OmniJawsObserver,
             }
             mMediaSessionHelper.removeMediaMetadataListener(this);
             mOmniJawsEnabled = false;
+            mGoogleSmartspace.setShown(false);
         }
     }
 
@@ -149,14 +172,23 @@ public class QuickspaceController implements OmniJawsClient.OmniJawsObserver,
     }
 
     public boolean isWeatherAvailable() {
-        return mWeatherClient != null && mOmniJawsEnabled;
+        return getGoogleWeather() != null || (mWeatherClient != null && mOmniJawsEnabled);
     }
 
     public Drawable getWeatherIcon() {
+        final GoogleSmartspaceClient.Card google = getGoogleWeather();
+        if (google != null) return google.icon;
         return mConditionImage;
     }
 
     public String getWeatherTemp() {
+        final GoogleSmartspaceClient.Card google = getGoogleWeather();
+        if (google != null) {
+            // The weather target carries the temperature as its subtitle, or as its only text
+            final CharSequence temp = !TextUtils.isEmpty(google.subtitle)
+                    ? google.subtitle : google.title;
+            return temp == null ? null : temp.toString();
+        }
         final OmniJawsClient.WeatherInfo info = mWeatherInfo;
         if (info == null) return null;
 
@@ -226,6 +258,13 @@ public class QuickspaceController implements OmniJawsClient.OmniJawsObserver,
     }
 
     public void onResume() {
+        if (isGoogleSmartspaceEnabled()) {
+            mGoogleSmartspace.start();
+            mGoogleSmartspace.setShown(true);
+        } else {
+            mGoogleSmartspace.stop();
+            mEventsController.setGoogleEvent(null);
+        }
         mEventsController.onResume();
         updateMediaController();
         notifyListeners();
@@ -233,6 +272,7 @@ public class QuickspaceController implements OmniJawsClient.OmniJawsObserver,
 
     private void cancelListeners() {
         mBgHandler.removeCallbacks(mWeatherRunnable);
+        mGoogleSmartspace.setShown(false);
         if (mEventsController != null) {
             mEventsController.onPause();
         }
@@ -250,6 +290,7 @@ public class QuickspaceController implements OmniJawsClient.OmniJawsObserver,
 
     public void onDestroy() {
         cancelListeners();
+        mGoogleSmartspace.stop();
         mBgHandler.removeCallbacks(mWeatherRunnable);
         // Aggressively clean up all drawable and bitmap references
         if (mConditionImage != null) {

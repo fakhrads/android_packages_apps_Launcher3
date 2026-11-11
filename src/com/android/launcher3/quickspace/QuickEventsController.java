@@ -89,6 +89,10 @@ public class QuickEventsController {
     private OnClickListener mLaunchMediaApp = null;
     private boolean mPlayingActive = false;
 
+    // At a Glance from Google (GoogleSmartspaceClient)
+    private GoogleSmartspaceClient.Card mGoogleCard;
+    private boolean mEventGoogle = false;
+
     public QuickEventsController(Context context) {
         mContext = context;
         mResources = context.getResources();
@@ -120,7 +124,49 @@ public class QuickEventsController {
         if (!mRegistered) return;
         nowPlayingEvent();
         initNowPlayingEvent();
+        googleEvent();
         psonalityEvent();
+    }
+
+    public void setGoogleEvent(GoogleSmartspaceClient.Card card) {
+        mGoogleCard = card;
+    }
+
+    /**
+     * Google's card takes the two lines when nothing plays: its title on top and its subtitle
+     * with the icon below. A card with one text keeps the date on top.
+     */
+    private void googleEvent() {
+        mEventGoogle = false;
+        final GoogleSmartspaceClient.Card card = mGoogleCard;
+        if (mEventNowPlaying || card == null) return;
+        final boolean hasTitle = !TextUtils.isEmpty(card.title);
+        final boolean hasSubtitle = !TextUtils.isEmpty(card.subtitle);
+        if (!hasTitle && !hasSubtitle) return;
+        if (hasTitle && hasSubtitle) {
+            mEventTitle = card.title.toString();
+            mEventTitleSub = card.subtitle.toString();
+        } else {
+            mEventTitle = formatDateTime(mContext);
+            mEventTitleSub = (hasTitle ? card.title : card.subtitle).toString();
+        }
+        mGreetings = mEventTitle;
+        mClockExt = "";
+        mEventSubIcon = card.icon;
+        mEventTitleSubAction = card.action;
+        mIsQuickEvent = true;
+        mEventGoogle = true;
+    }
+
+    public boolean isGoogleEvent() {
+        return mEventGoogle;
+    }
+
+    /** Whether the icon of the second line takes the text color; media and some Google icons keep theirs. */
+    public boolean shouldTintActionIcon() {
+        if (mEventNowPlaying) return false;
+        if (mEventGoogle) return mGoogleCard != null && mGoogleCard.tintIcon;
+        return true;
     }
 
     private void nowPlayingEvent() {
@@ -165,7 +211,7 @@ public class QuickEventsController {
     }
 
     private void psonalityEvent() {
-        if (mEventNowPlaying) return;
+        if (mEventNowPlaying || mEventGoogle) return;
 
 	    mEventTitle = formatDateTime(mContext);
         mEventTitleSubAction = new View.OnClickListener() {
@@ -348,6 +394,7 @@ public class QuickEventsController {
         mNowPlayingTitle = null;
         mNowPlayingArtist = null;
         mPSAStr = null;
+        mGoogleCard = null;
     }
 
     private String[] getCachedArray(int resId) {

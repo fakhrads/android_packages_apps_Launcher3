@@ -370,6 +370,7 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val QUICKSPACE_CLOCK_COLOR = backedUpItem("pref_quickspace_clock_color", 0xffff0000.toInt())
         @JvmField val SHOW_QUICKSPACE_PSONALITY = backedUpItem("pref_quickspace_psonality", true)
         @JvmField val SHOW_QUICKSPACE_NOWPLAYING = backedUpItem("pref_quickspace_np", true)
+        @JvmField val SHOW_QUICKSPACE_GOOGLE = backedUpItem("pref_quickspace_google", true)
         @JvmField val SHOW_QUICKSPACE_WEATHER = backedUpItem("pref_quickspace_weather", true)
         @JvmField val SHOW_QUICKSPACE_WEATHER_CITY = backedUpItem("pref_quickspace_weather_city", false)
         @JvmField val SHOW_QUICKSPACE_WEATHER_TEXT = backedUpItem("pref_quickspace_weather_text", true)
