@@ -381,6 +381,10 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val SINGLE_PAGE_CENTER = backedUpItem("pref_single_page_center", false)
         @JvmField val SLEEP_GESTURE = backedUpItem("pref_sleep_gesture", true)
         @JvmField val SLEEP_GESTURE_HAPTIC = backedUpItem("pref_sleep_gesture_haptic", true)
+        /** What double tapping blank home screen space does, when SLEEP_GESTURE is on. */
+        @JvmField val DOUBLE_TAP_ACTION = backedUpItem("pref_double_tap_action", "sleep")
+        /** What pinching in on blank home screen space does ("none" leaves pinches alone). */
+        @JvmField val PINCH_ACTION = backedUpItem("pref_pinch_action", "none")
         @JvmField val NAVBAR_BURN_IN_PROTECTION = backedUpItem("pref_navbar_burn_in_protection", false)
         @JvmField val NAVBAR_BURN_IN_INTERVAL = backedUpItem("pref_navbar_burn_in_interval", 60)
         @JvmField

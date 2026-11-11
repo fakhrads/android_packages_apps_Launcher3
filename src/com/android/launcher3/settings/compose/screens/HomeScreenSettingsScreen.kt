@@ -17,7 +17,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cloud
 import androidx.compose.material.icons.rounded.Dashboard
 import androidx.compose.material.icons.rounded.Feed
+import androidx.compose.material.icons.rounded.Apps
+import androidx.compose.material.icons.rounded.Bedtime
+import androidx.compose.material.icons.rounded.Block
+import androidx.compose.material.icons.rounded.Layers
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.ScreenRotation
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.TouchApp
@@ -35,6 +41,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.touch.HomeGestureActions
+import com.android.launcher3.settings.compose.components.ChoiceItem
+import com.android.launcher3.settings.compose.components.ChoiceList
 import com.android.launcher3.settings.compose.components.ColorSettingRow
 import com.android.launcher3.settings.compose.components.NavRow
 import com.android.launcher3.settings.compose.components.ScreenScaffold
@@ -76,6 +85,8 @@ fun HomeScreenSettingsScreen(
 
     var sleepGesture by rememberBooleanPref("pref_sleep_gesture", true)
     var sleepGestureHaptic by rememberBooleanPref("pref_sleep_gesture_haptic", true)
+    var doubleTapAction by rememberStringPref("pref_double_tap_action", "sleep")
+    var pinchAction by rememberStringPref("pref_pinch_action", "none")
     var iconTapHaptic by rememberBooleanPref("pref_icon_tap_haptic", true)
 
     var wallpaperCarousel by rememberBooleanPref("pref_wallpaper_carousel", true)
@@ -188,14 +199,20 @@ fun HomeScreenSettingsScreen(
                 icon = Icons.Rounded.TouchApp
             ) {
                 SettingSwitch(
-                    title = "Double tap to sleep",
-                    subtitle = "Turn off screen by double tapping blank workspace",
+                    title = "Double tap",
+                    subtitle = "Double tap blank home screen space to run the action below",
                     checked = sleepGesture,
                     onCheckedChange = { sleepGesture = it }
                 )
+                ChoiceList(
+                    choices = homeGestureChoices(withNone = false),
+                    selected = doubleTapAction,
+                    onSelect = { doubleTapAction = it },
+                    enabled = sleepGesture
+                )
                 SettingSwitch(
-                    title = "Vibrate on sleep gesture",
-                    subtitle = "Provide tactile feedback when sleep trigger activates",
+                    title = "Vibrate on double tap",
+                    subtitle = "Provide tactile feedback when the double tap runs",
                     checked = sleepGestureHaptic,
                     onCheckedChange = { sleepGestureHaptic = it },
                     enabled = sleepGesture
@@ -206,6 +223,17 @@ fun HomeScreenSettingsScreen(
                         "dock or app drawer",
                     checked = iconTapHaptic,
                     onCheckedChange = { iconTapHaptic = it }
+                )
+            }
+
+            SettingsCard(
+                title = "Pinch in",
+                icon = Icons.Rounded.TouchApp
+            ) {
+                ChoiceList(
+                    choices = homeGestureChoices(withNone = true),
+                    selected = pinchAction,
+                    onSelect = { pinchAction = it }
                 )
             }
 
@@ -415,4 +443,21 @@ fun HomeScreenSettingsScreen(
             }
         }
     }
+}
+
+/** Actions of HomeGestureActions, for the double tap and the pinch. */
+private fun homeGestureChoices(withNone: Boolean): List<ChoiceItem<String>> {
+    val choices = ArrayList<ChoiceItem<String>>()
+    if (withNone) {
+        choices.add(ChoiceItem(HomeGestureActions.NONE, "Nothing", icon = Icons.Rounded.Block))
+    }
+    choices.add(ChoiceItem(HomeGestureActions.SLEEP, "Sleep", "Turn the screen off",
+        Icons.Rounded.Bedtime))
+    choices.add(ChoiceItem(HomeGestureActions.NOTIFICATIONS, "Notifications",
+        icon = Icons.Rounded.Notifications))
+    choices.add(ChoiceItem(HomeGestureActions.QUICK_SETTINGS, "Quick settings",
+        icon = Icons.Rounded.Tune))
+    choices.add(ChoiceItem(HomeGestureActions.APP_DRAWER, "App drawer", icon = Icons.Rounded.Apps))
+    choices.add(ChoiceItem(HomeGestureActions.RECENTS, "Recents", icon = Icons.Rounded.Layers))
+    return choices
 }

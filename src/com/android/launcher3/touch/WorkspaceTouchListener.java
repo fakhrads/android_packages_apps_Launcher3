@@ -36,6 +36,7 @@ import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.InputDevice;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
@@ -83,6 +84,13 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
     private final GestureDetector mGestureDetector;
     private final BoxSelectionHelper mBoxSelectionHelper;
 
+    // Pinch in on blank space: the scale it has to drop below, once per gesture
+    private static final float PINCH_IN_SCALE = 0.7f;
+    private final ScaleGestureDetector mScaleDetector;
+    private float mPinchScale = 1f;
+    private boolean mPinchHandled;
+    private MotionEvent mCurrentEvent;
+
     public WorkspaceTouchListener(Launcher launcher, Workspace<?> workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
@@ -93,6 +101,38 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
         mBoxSelectionHelper = enableWorkspaceSelection()
                 ? new BoxSelectionHelper(launcher, workspace)
                 : null;
+        mScaleDetector = new ScaleGestureDetector(workspace.getContext(),
+                new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                    @Override
+                    public boolean onScaleBegin(ScaleGestureDetector detector) {
+                        mPinchScale = 1f;
+                        return !mPinchHandled && canHandleLongPress();
+                    }
+
+                    @Override
+                    public boolean onScale(ScaleGestureDetector detector) {
+                        mPinchScale *= detector.getScaleFactor();
+                        if (!mPinchHandled && mPinchScale < PINCH_IN_SCALE) {
+                            mPinchHandled = true;
+                            onPinchIn();
+                        }
+                        return true;
+                    }
+                });
+    }
+
+    private void onPinchIn() {
+        // The workspace may have started a page scroll with the first finger: settle it
+        MotionEvent cancel = MotionEvent.obtain(mCurrentEvent);
+        cancel.setAction(ACTION_CANCEL);
+        mWorkspace.onTouchEvent(cancel);
+        cancel.recycle();
+        mLongPressState = STATE_COMPLETED;
+        Context context = mWorkspace.getContext();
+        if (HomeGestureActions.perform(mLauncher, LauncherPrefs.PINCH_ACTION.get(context),
+                mCurrentEvent)) {
+            mWorkspace.performHapticFeedback(HapticFeedbackConstants.GESTURE_END);
+        }
     }
 
     @Override
@@ -105,6 +145,15 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
         mGestureDetector.onTouchEvent(ev);
 
         int action = ev.getActionMasked();
+        if (action == ACTION_DOWN) {
+            mPinchHandled = false;
+        }
+        if (!HomeGestureActions.NONE.equals(
+                LauncherPrefs.PINCH_ACTION.get(mWorkspace.getContext()))) {
+            mCurrentEvent = ev;
+            mScaleDetector.onTouchEvent(ev);
+            mCurrentEvent = null;
+        }
         if (action == ACTION_DOWN) {
             // Check if we can handle long press.
             boolean handleLongPress = canHandleLongPress();
@@ -171,7 +220,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
             result = isInAllAppsBottomSheet && action != ACTION_CANCEL && action != ACTION_UP;
         }
 
-        if (action == ACTION_UP || action == ACTION_POINTER_UP) {
+        if ((action == ACTION_UP || action == ACTION_POINTER_UP) && !mPinchHandled) {
             if (!mWorkspace.isHandlingTouch()) {
                 final CellLayout currentPage =
                         (CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage());
@@ -243,12 +292,17 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
     @Override
     public boolean onDoubleTap(MotionEvent event) {
         Context context = mWorkspace.getContext();
-        if (LauncherPrefs.SLEEP_GESTURE.get(context)) {
-            if (LauncherPrefs.SLEEP_GESTURE_HAPTIC.get(context))
-                VibratorWrapper.INSTANCE.get(context).vibrate(VibratorWrapper.EFFECT_CLICK);
-            mLauncher.onSleepEvent(event);
-            return true;
+        // SLEEP_GESTURE switches the double tap on; DOUBLE_TAP_ACTION picks what it does
+        if (!LauncherPrefs.SLEEP_GESTURE.get(context)) {
+            return false;
         }
-        return false;
+        String action = LauncherPrefs.DOUBLE_TAP_ACTION.get(context);
+        if (HomeGestureActions.NONE.equals(action)) {
+            return false;
+        }
+        if (LauncherPrefs.SLEEP_GESTURE_HAPTIC.get(context)) {
+            VibratorWrapper.INSTANCE.get(context).vibrate(VibratorWrapper.EFFECT_CLICK);
+        }
+        return HomeGestureActions.perform(mLauncher, action, event);
     }
 }

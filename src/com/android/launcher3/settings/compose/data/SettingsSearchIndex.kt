@@ -67,10 +67,14 @@ object SettingsSearchIndex {
             "Display text under app icons on workspace", "names text")
         add(home, "Desktop layout", s(R.string.auto_hide_dots), s(R.string.auto_hide_dots_summary),
             "page indicator")
-        add(home, "Gestures", "Double tap to sleep",
-            "Turn off screen by double tapping blank workspace", "lock screen off")
-        add(home, "Gestures", "Vibrate on sleep gesture",
-            "Provide tactile feedback when sleep trigger activates", "haptic")
+        add(home, "Gestures", "Double tap",
+            "Double tap blank home screen space to run an action",
+            "sleep lock screen off notifications quick settings drawer recents")
+        add(home, "Gestures", "Vibrate on double tap",
+            "Provide tactile feedback when the double tap runs", "haptic")
+        add(home, "Pinch in", "Pinch in",
+            "Pinch in on blank home screen space to run an action",
+            "gesture zoom sleep notifications quick settings drawer recents")
         add(home, "Gestures", "Haptic on icon tap",
             "Light vibration when opening an app or folder from home", "vibrate")
         add(home, "Wallpaper", s(R.string.wallpaper_carousel_title),
