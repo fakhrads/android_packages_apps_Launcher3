@@ -21,6 +21,7 @@
         <permission name="android.permission.INTERACT_ACROSS_USERS_FULL"/>
         <permission name="android.permission.ACCESS_CONTEXTUAL_SEARCH"/>
         <permission name="android.permission.GET_TOP_ACTIVITY_INFO"/>
+        <permission name="android.permission.ACCESS_VOICE_INTERACTION_SERVICE"/>
         <permission name="android.permission.QUERY_USERS"/>
         <permission name="android.permission.FORCE_STOP_PACKAGES"/>
         <permission name="android.permission.REGISTER_STATS_PULL_ATOM"/>
@@ -35,6 +36,7 @@
         <permission name="android.permission.INTERACT_ACROSS_USERS_FULL"/>
         <permission name="android.permission.ACCESS_CONTEXTUAL_SEARCH"/>
         <permission name="android.permission.GET_TOP_ACTIVITY_INFO"/>
+        <permission name="android.permission.ACCESS_VOICE_INTERACTION_SERVICE"/>
         <permission name="android.permission.QUERY_USERS"/>
         <permission name="android.permission.FORCE_STOP_PACKAGES"/>
         <permission name="android.permission.REGISTER_STATS_PULL_ATOM"/>

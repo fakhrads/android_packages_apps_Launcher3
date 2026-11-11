@@ -54,6 +54,8 @@
     <uses-permission android:name="android.permission.ACCESS_CONTEXTUAL_SEARCH" />
     <!-- Select in overview reads the text of a task through requestAssistDataForTask -->
     <uses-permission android:name="android.permission.GET_TOP_ACTIVITY_INFO" />
+    <!-- Lets the corner swipe show the assistant's own session, as SystemUI's assist gesture does -->
+    <uses-permission android:name="android.permission.ACCESS_VOICE_INTERACTION_SERVICE" />
     <uses-permission android:name="android.permission.QUERY_USERS" />
     <uses-permission android:name="android.permission.INJECT_EVENTS" />
     <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />

@@ -43,6 +43,7 @@ import android.hardware.input.InputManagerGlobal;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.UserHandle;
+import android.service.voice.VoiceInteractionSession;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -59,6 +60,7 @@ import com.android.internal.app.AssistUtils;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.quickstep.BaseContainerInterface;
 import com.android.quickstep.GestureState;
@@ -338,17 +340,59 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     }
 
     /**
-     * Starts the assistant named by the assistant setting, the way the framework itself does when
-     * the assistant has no voice session to show.
+     * Starts the assistant named by the assistant setting: its voice session when it is a voice
+     * interaction service, else its assist activity.
      *
-     * @return whether an assist activity was started
+     * @return whether the assistant was started, or is being started in the background
      */
     private boolean startConfiguredAssistant() {
-        final ComponentName assistant = new AssistUtils(mContext)
-                .getAssistComponentForUser(UserHandle.myUserId());
+        final AssistUtils assistUtils = new AssistUtils(mContext);
+        final ComponentName assistant = assistUtils.getAssistComponentForUser(UserHandle.myUserId());
         if (assistant == null) {
             return false;
         }
+        // An assistant that is a voice interaction service (the Google app with Gemini, for one)
+        // shows its own session over the current app: the "Ask Gemini" pill, not an app. That is
+        // what SystemUI does for the gesture, so do the same instead of starting its assist
+        // activity, which opens the app.
+        if (assistant.equals(assistUtils.getActiveServiceComponentName())) {
+            showAssistantSession(assistUtils, assistant);
+            return true;
+        }
+        return startAssistActivity(assistant);
+    }
+
+    /**
+     * Shows the voice session of the active assistant the way SystemUI's AssistManager does for the
+     * assist gesture. The binder call goes off the touch thread, and when the system does not show a
+     * session (the service is not running, or is disabled for now) the assist activity is started
+     * instead, so the swipe never ends in nothing.
+     */
+    private void showAssistantSession(AssistUtils assistUtils, ComponentName assistant) {
+        final Bundle args = new Bundle();
+        args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
+        args.putLong("invocation_time_ms", SystemClock.elapsedRealtime());
+        args.putInt(Intent.EXTRA_ASSIST_DISPLAY_ID, mContext.getDisplayId());
+        Executors.UI_HELPER_EXECUTOR.execute(() -> {
+            boolean shown = false;
+            try {
+                shown = assistUtils.showSessionForActiveService(args,
+                        VoiceInteractionSession.SHOW_SOURCE_ASSIST_GESTURE,
+                        mContext.getAttributionTag(), null, null);
+            } catch (RuntimeException e) {
+                Log.w(TAG, "Cannot show the session of " + assistant.flattenToShortString(), e);
+            }
+            if (shown) {
+                Log.i(TAG, "Showed the assistant session of " + assistant.flattenToShortString());
+            } else {
+                Log.w(TAG, "No session shown for " + assistant.flattenToShortString()
+                        + ", starting its assist activity");
+                startAssistActivity(assistant);
+            }
+        });
+    }
+
+    private boolean startAssistActivity(ComponentName assistant) {
         final PackageManager pm = mContext.getPackageManager();
         // The assistant setting normally names the assistant's VoiceInteractionService, not an
         // activity, so starting that component explicitly resolves to nothing and the gesture used to
