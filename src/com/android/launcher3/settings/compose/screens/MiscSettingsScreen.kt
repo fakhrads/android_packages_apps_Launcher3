@@ -5,6 +5,9 @@
 
 package com.android.launcher3.settings.compose.screens
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +22,8 @@ import androidx.compose.material.icons.rounded.BlurOn
 import androidx.compose.material.icons.rounded.Bolt
 import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material.icons.rounded.Refresh
+import androidx.compose.material.icons.rounded.Restore
+import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Security
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.AlertDialog
@@ -43,6 +48,7 @@ import com.android.launcher3.settings.compose.components.SettingSlider
 import com.android.launcher3.settings.compose.components.SettingSwitch
 import com.android.launcher3.settings.compose.components.SettingsCard
 import com.android.launcher3.settings.compose.data.LauncherPrefsBridge
+import com.android.launcher3.settings.compose.data.LayoutBackup
 import com.android.launcher3.settings.compose.data.rememberBooleanPref
 import com.android.launcher3.settings.compose.data.rememberIntPref
 import com.android.launcher3.settings.compose.data.rememberStringPref
@@ -69,6 +75,7 @@ fun MiscSettingsScreen(
     var bouncySpeed by rememberIntPref("pref_bouncy_speed", 100)
 
     var showRestartDialog by remember { mutableStateOf(false) }
+    var showRestoreDialog by remember { mutableStateOf(false) }
 
     val blurSupported = remember { BlurUtils.supportsBlursOnWindows() }
     // Suggestions are served by Device Personalization Services, like the legacy screen.
@@ -256,12 +263,53 @@ fun MiscSettingsScreen(
                 icon = Icons.Rounded.Tune
             ) {
                 NavRow(
+                    title = "Back up layout & settings",
+                    summary = "Save the home screen layout and every ZeroLauncher setting to a file",
+                    icon = Icons.Rounded.Save,
+                    onClick = { context.findActivity()?.let { LayoutBackup.pickBackupFile(it) } }
+                )
+                NavRow(
+                    title = "Restore from a backup",
+                    summary = "Replace the layout and settings with a saved backup",
+                    icon = Icons.Rounded.Restore,
+                    onClick = { showRestoreDialog = true }
+                )
+                NavRow(
                     title = "Restart ZeroLauncher",
                     summary = "Reinitialize workspace, reload icon caches, and flush memory",
                     icon = Icons.Rounded.Refresh,
                     onClick = { showRestartDialog = true }
                 )
             }
+        }
+
+        if (showRestoreDialog) {
+            AlertDialog(
+                onDismissRequest = { showRestoreDialog = false },
+                title = { Text("Restore a backup?") },
+                text = {
+                    Text(
+                        "The current home screen layout and settings are replaced by the " +
+                            "backup you pick, then ZeroLauncher restarts.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showRestoreDialog = false
+                            context.findActivity()?.let { LayoutBackup.pickRestoreFile(it) }
+                        }
+                    ) {
+                        Text("Pick a backup", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showRestoreDialog = false }) {
+                        Text("Cancel")
+                    }
+                }
+            )
         }
 
         if (showRestartDialog) {
@@ -292,4 +340,13 @@ fun MiscSettingsScreen(
             )
         }
     }
+}
+
+private fun Context.findActivity(): Activity? {
+    var context: Context? = this
+    while (context != null) {
+        if (context is Activity) return context
+        context = (context as? ContextWrapper)?.baseContext
+    }
+    return null
 }

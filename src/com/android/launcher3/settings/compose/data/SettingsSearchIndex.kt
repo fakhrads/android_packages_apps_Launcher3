@@ -225,6 +225,11 @@ object SettingsSearchIndex {
             "Micro-shift navbar pill pixels periodically to prevent OLED image retention",
             "oled pill")
         add(misc, "OLED hardware care", "Pixel shift interval", null, "burn-in oled")
+        add(misc, "Maintenance", "Back up layout & settings",
+            "Save the home screen layout and every ZeroLauncher setting to a file",
+            "backup export save")
+        add(misc, "Maintenance", "Restore from a backup",
+            "Replace the layout and settings with a saved backup", "restore import load")
         add(misc, "Maintenance", "Restart ZeroLauncher",
             "Reinitialize workspace, reload icon caches, and flush memory", "reload reboot")
         return list

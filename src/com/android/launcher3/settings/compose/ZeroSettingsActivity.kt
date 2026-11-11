@@ -5,6 +5,7 @@
 
 package com.android.launcher3.settings.compose
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -40,6 +41,7 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.SessionCommitReceiver
 import com.android.launcher3.allapps.AppDrawerStyle
+import com.android.launcher3.settings.compose.data.LayoutBackup
 import com.android.launcher3.settings.compose.data.rememberBooleanPref
 import com.android.launcher3.settings.compose.data.rememberIntPref
 import com.android.launcher3.settings.compose.screens.AppDrawerSettingsScreen
@@ -97,6 +99,13 @@ class ZeroSettingsActivity : ComponentActivity() {
                     )
                 }
             }
+        }
+    }
+
+    @Deprecated("The file pickers of LayoutBackup use startActivityForResult")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (!LayoutBackup.onActivityResult(this, requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
