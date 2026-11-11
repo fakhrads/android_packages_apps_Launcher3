@@ -11,4 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/apps_divider_view" />
+
+    <!-- Below the divider: AppsDividerView shows its "All apps" label when any row above it
+         draws, which is meant for the suggestions -->
+    <com.android.launcher3.allapps.DrawerTabsRowView
+        android:id="@+id/drawer_tabs_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </merge>

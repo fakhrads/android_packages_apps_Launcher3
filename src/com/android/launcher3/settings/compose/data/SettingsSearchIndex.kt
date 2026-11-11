@@ -35,6 +35,8 @@ object SettingsSearchIndex {
         SettingsSubscreen.RECENTS -> "Recents & multitasking"
         SettingsSubscreen.MISC -> "System & miscellaneous"
         SettingsSubscreen.HIDDEN_APPS -> "Hidden apps"
+        SettingsSubscreen.DRAWER_TABS -> "Drawer tabs"
+        SettingsSubscreen.DRAWER_TAB_APPS -> "Drawer tabs"
         SettingsSubscreen.HUB -> "ZeroLauncher"
     }
 
@@ -148,6 +150,12 @@ object SettingsSearchIndex {
             "categories folders")
         add(SettingsSubscreen.HIDDEN_APPS, "Hidden apps", "Hidden apps",
             "Keep apps out of the app drawer and its search", "hide apps private invisible")
+        add(SettingsSubscreen.DRAWER_TABS, "Tabs", "Show tabs",
+            "A row of tabs under the app drawer search bar", "drawer tabs groups filter")
+        add(SettingsSubscreen.DRAWER_TABS, "Tabs", "Category tabs",
+            "One more tab per app category", "drawer tabs categories games social")
+        add(SettingsSubscreen.DRAWER_TABS, "Your tabs", "Add a tab",
+            "Name it, then pick its apps", "drawer tabs custom new create")
         add(drawer, "Organization & layout", s(R.string.pref_icon_customization_title),
             s(R.string.pref_icon_customization_summary), "edit icon")
         add(drawer, "App sorting", "Alphabetical (A–Z)", "Standard application listing sorted by name",

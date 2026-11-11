@@ -20,6 +20,7 @@ import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SearchOff
 import androidx.compose.material.icons.rounded.Sort
+import androidx.compose.material.icons.rounded.Tab
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.runtime.Composable
@@ -49,6 +50,7 @@ import com.android.launcher3.settings.compose.data.rememberStringPref
 fun AppDrawerSettingsScreen(
     onBack: () -> Unit,
     onOpenHiddenApps: () -> Unit,
+    onOpenDrawerTabs: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -173,6 +175,14 @@ fun AppDrawerSettingsScreen(
                     else "$hiddenCount hidden from the app drawer and its search",
                     icon = Icons.Rounded.Visibility,
                     onClick = onOpenHiddenApps
+                )
+                val tabsOn = LauncherPrefs.get(context).get(LauncherPrefs.DRAWER_TABS)
+                NavRow(
+                    title = "Drawer tabs",
+                    summary = if (tabsOn) "On: your own tabs and app categories above the list"
+                    else "Off: group apps into tabs above the list",
+                    icon = Icons.Rounded.Tab,
+                    onClick = onOpenDrawerTabs
                 )
             }
 

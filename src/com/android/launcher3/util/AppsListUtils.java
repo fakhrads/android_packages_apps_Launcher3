@@ -26,7 +26,9 @@ import java.util.TreeMap;
  */
 public class AppsListUtils {
 
-    private static final Map<String, ApplicationInfo> sPackageInfoCache = new java.util.HashMap<>();
+    // Concurrent: the drawer tabs categorize apps off the main thread
+    private static final Map<String, ApplicationInfo> sPackageInfoCache =
+            new java.util.concurrent.ConcurrentHashMap<>();
     
     /**
      * Clears the package info cache. Should be called when apps are updated/installed

@@ -373,6 +373,12 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val SHOW_QUICKSPACE_GOOGLE = backedUpItem("pref_quickspace_google", true)
         /** Apps hidden from the app drawer and its search, as flattened component names. */
         @JvmField val HIDDEN_APPS = backedUpItem("pref_hidden_apps", emptySet<String>())
+        /** Tabs above the app drawer list (see DrawerTabs). */
+        @JvmField val DRAWER_TABS = backedUpItem("pref_drawer_tabs", false)
+        /** One more tab per app category, next to the user's own tabs. */
+        @JvmField val DRAWER_TABS_AUTO = backedUpItem("pref_drawer_tabs_auto", true)
+        /** The user's own drawer tabs as a JSON array of {id, name, apps}. */
+        @JvmField val DRAWER_CUSTOM_TABS = backedUpItem("pref_drawer_custom_tabs", "[]")
         @JvmField val SHOW_QUICKSPACE_WEATHER = backedUpItem("pref_quickspace_weather", true)
         @JvmField val SHOW_QUICKSPACE_WEATHER_CITY = backedUpItem("pref_quickspace_weather_city", false)
         @JvmField val SHOW_QUICKSPACE_WEATHER_TEXT = backedUpItem("pref_quickspace_weather_text", true)

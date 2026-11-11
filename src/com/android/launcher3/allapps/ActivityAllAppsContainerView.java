@@ -1810,6 +1810,17 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         return mAH.get(WORK).mAppsList;
     }
 
+    /** Shows only the apps of a drawer tab (see {@link DrawerTabs}), or all of them for null. */
+    public void setDrawerTabFilter(@Nullable Predicate<ItemInfo> tabFilter) {
+        mAH.get(MAIN).mAppsList.setTabFilter(tabFilter);
+        mAH.get(WORK).mAppsList.setTabFilter(tabFilter);
+        if (mOneUiPagedView != null) {
+            // The paged style builds its pages from the A-Z list
+            removeCallbacks(mRefreshOneUiAppsRunnable);
+            post(mRefreshOneUiAppsRunnable);
+        }
+    }
+
     public FloatingHeaderView getFloatingHeaderView() {
         return mHeader;
     }

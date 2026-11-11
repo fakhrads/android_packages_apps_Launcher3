@@ -119,6 +119,9 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     private int mNumAppsPerRowAllApps;
     private int mNumAppRowsInAdapter;
     private Predicate<ItemInfo> mItemFilter;
+    // The selected drawer tab (see DrawerTabs), null for all apps
+    @Nullable
+    private Predicate<ItemInfo> mTabFilter;
 
     public AlphabeticalAppsList(ActivityContext activityContext, @Nullable AllAppsStore appsStore,
             WorkProfileManager workProfileManager, PrivateProfileManager privateProfileManager) {
@@ -152,6 +155,15 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     public void updateItemFilter(Predicate<ItemInfo> itemFilter) {
         this.mItemFilter = itemFilter;
+        onAppsUpdated();
+    }
+
+    /** Shows only the apps of a drawer tab, or every app for null. */
+    public void setTabFilter(@Nullable Predicate<ItemInfo> tabFilter) {
+        if (mTabFilter == tabFilter) {
+            return;
+        }
+        mTabFilter = tabFilter;
         onAppsUpdated();
     }
 
@@ -263,6 +275,9 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                         .filter(mPrivateProviderManager.getItemInfoMatcher());
             }
         }
+        if (!hasSearchResults() && mTabFilter != null) {
+            appSteam = appSteam.filter(mTabFilter);
+        }
         appSteam = appSteam.sorted(mAppNameComparator);
         privateAppStream = privateAppStream.sorted(mAppNameComparator);
 
@@ -337,7 +352,8 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                     position = addAppsHybrid(mApps, position);
                 }
             }
-            if (Flags.enablePrivateSpace()) {
+            // A drawer tab shows only its own apps, without the private space section
+            if (Flags.enablePrivateSpace() && mTabFilter == null) {
                 position = addPrivateSpaceItems(position);
             }
             if (!mFastScrollerSections.isEmpty()) {

@@ -45,6 +45,8 @@ import com.android.launcher3.settings.compose.data.LayoutBackup
 import com.android.launcher3.settings.compose.data.rememberBooleanPref
 import com.android.launcher3.settings.compose.data.rememberIntPref
 import com.android.launcher3.settings.compose.screens.AppDrawerSettingsScreen
+import com.android.launcher3.settings.compose.screens.DrawerTabAppsScreen
+import com.android.launcher3.settings.compose.screens.DrawerTabsScreen
 import com.android.launcher3.settings.compose.screens.HomeScreenSettingsScreen
 import com.android.launcher3.settings.compose.screens.HiddenAppsScreen
 import com.android.launcher3.settings.compose.screens.HubScreen
@@ -122,6 +124,7 @@ class ZeroSettingsActivity : ComponentActivity() {
             "recents", "overview" -> SettingsSubscreen.RECENTS
             "misc", "miscellaneous" -> SettingsSubscreen.MISC
             "hidden_apps" -> SettingsSubscreen.HIDDEN_APPS
+            "drawer_tabs" -> SettingsSubscreen.DRAWER_TABS
             else -> SettingsSubscreen.HUB
         }
     }
@@ -184,6 +187,8 @@ fun ZeroSettingsApp(
     var currentScreen by remember { mutableStateOf(initialScreen) }
     // Kept here, not in the hub, so it is still there after opening a result and coming back
     var searchQuery by remember { mutableStateOf("") }
+    // The drawer tab DRAWER_TAB_APPS shows
+    var editingTabId by remember { mutableStateOf("") }
     val bouncy by rememberBooleanPref("pref_bouncy_animations", false)
     val bouncyStrength by rememberIntPref("pref_bouncy_strength", 100)
     val bouncySpeed by rememberIntPref("pref_bouncy_speed", 100)
@@ -249,7 +254,23 @@ fun ZeroSettingsApp(
             SettingsSubscreen.APP_DRAWER -> {
                 AppDrawerSettingsScreen(
                     onBack = { currentScreen = SettingsSubscreen.HUB },
-                    onOpenHiddenApps = { currentScreen = SettingsSubscreen.HIDDEN_APPS }
+                    onOpenHiddenApps = { currentScreen = SettingsSubscreen.HIDDEN_APPS },
+                    onOpenDrawerTabs = { currentScreen = SettingsSubscreen.DRAWER_TABS }
+                )
+            }
+            SettingsSubscreen.DRAWER_TABS -> {
+                DrawerTabsScreen(
+                    onBack = { currentScreen = SettingsSubscreen.APP_DRAWER },
+                    onEditTab = { id ->
+                        editingTabId = id
+                        currentScreen = SettingsSubscreen.DRAWER_TAB_APPS
+                    }
+                )
+            }
+            SettingsSubscreen.DRAWER_TAB_APPS -> {
+                DrawerTabAppsScreen(
+                    tabId = editingTabId,
+                    onBack = { currentScreen = SettingsSubscreen.DRAWER_TABS }
                 )
             }
             SettingsSubscreen.HIDDEN_APPS -> {

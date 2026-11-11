@@ -58,14 +58,18 @@ enum class SettingsSubscreen {
     APP_DRAWER,
     RECENTS,
     MISC,
-    HIDDEN_APPS
+    HIDDEN_APPS,
+    DRAWER_TABS,
+    DRAWER_TAB_APPS
 }
 
-/** The screen back goes to: the hidden apps list sits under the app drawer settings. */
+/** The screen back goes to: hidden apps and drawer tabs sit under the app drawer settings. */
 val SettingsSubscreen.parent: SettingsSubscreen
     get() = when (this) {
         SettingsSubscreen.HUB -> SettingsSubscreen.HUB
         SettingsSubscreen.HIDDEN_APPS -> SettingsSubscreen.APP_DRAWER
+        SettingsSubscreen.DRAWER_TABS -> SettingsSubscreen.APP_DRAWER
+        SettingsSubscreen.DRAWER_TAB_APPS -> SettingsSubscreen.DRAWER_TABS
         else -> SettingsSubscreen.HUB
     }
 
@@ -74,6 +78,8 @@ val SettingsSubscreen.depth: Int
     get() = when (this) {
         SettingsSubscreen.HUB -> 0
         SettingsSubscreen.HIDDEN_APPS -> 2
+        SettingsSubscreen.DRAWER_TABS -> 2
+        SettingsSubscreen.DRAWER_TAB_APPS -> 3
         else -> 1
     }
 

@@ -48,23 +48,24 @@ import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.settings.compose.components.ScreenScaffold
 import java.text.Collator
 
-private class HiddenAppEntry(val info: LauncherActivityInfo, val label: String) {
+/** A launchable app of the personal profile, for the app lists of the settings. */
+internal class LauncherAppEntry(val info: LauncherActivityInfo, val label: String) {
     val component: ComponentName = info.componentName
     val key: String = component.flattenToShortString()
 }
 
-private fun loadApps(context: Context): List<HiddenAppEntry> {
+internal fun loadLauncherApps(context: Context): List<LauncherAppEntry> {
     val launcherApps = context.getSystemService(LauncherApps::class.java)
     val collator = Collator.getInstance()
-    val apps = ArrayList<HiddenAppEntry>()
+    val apps = ArrayList<LauncherAppEntry>()
     for (info in launcherApps.getActivityList(null, Process.myUserHandle())) {
-        apps.add(HiddenAppEntry(info, info.label.toString()))
+        apps.add(LauncherAppEntry(info, info.label.toString()))
     }
     apps.sortWith { a, b -> collator.compare(a.label, b.label) }
     return apps
 }
 
-private fun iconBitmap(info: LauncherActivityInfo, sizePx: Int): ImageBitmap {
+internal fun appIconBitmap(info: LauncherActivityInfo, sizePx: Int): ImageBitmap {
     val drawable = info.getIcon(0)
     val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
     drawable.setBounds(0, 0, sizePx, sizePx)
@@ -79,7 +80,7 @@ fun HiddenAppsScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val apps = remember { loadApps(context) }
+    val apps = remember { loadLauncherApps(context) }
     var hidden by remember { mutableStateOf(LauncherPrefs.get(context).get(LauncherPrefs.HIDDEN_APPS)) }
     val iconSizePx = with(LocalDensity.current) { 40.dp.roundToPx() }
 
@@ -103,7 +104,7 @@ fun HiddenAppsScreen(
             }
             items(apps, key = { it.key }) { app ->
                 val isHidden = hidden.contains(app.key)
-                val icon = remember(app.key) { iconBitmap(app.info, iconSizePx) }
+                val icon = remember(app.key) { appIconBitmap(app.info, iconSizePx) }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
