@@ -20,6 +20,7 @@ import static com.android.quickstep.views.RecentsViewContainer.containerFromCont
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.Matrix;
@@ -27,6 +28,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +41,9 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.Snackbar;
 import com.android.quickstep.recents.domain.usecase.ThumbnailPosition;
+import com.android.quickstep.textselect.AssistTextRequester;
+import com.android.quickstep.textselect.SelectSession;
+import com.android.quickstep.textselect.SelectTextActivity;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.GroupedTaskView;
@@ -252,6 +257,47 @@ public class TaskOverlayFactory {
         }
 
         /**
+         * Reads the text of the task from the app and opens the Select screen on the frozen
+         * snapshot. Overview stays open while the text is asked for and closes only once there is
+         * text to show, so a task without any leaves everything as it was.
+         */
+        private void startSelect(Task task) {
+            final Bitmap thumbnail = getThumbnail();
+            if (thumbnail == null) {
+                showNoTextMessage();
+                return;
+            }
+            // Own copy, the recents cache is free to recycle its bitmap once overview is closed
+            final Bitmap snapshot = thumbnail.copy(Bitmap.Config.ARGB_8888, false);
+            if (snapshot == null) {
+                showNoTextMessage();
+                return;
+            }
+            AssistTextRequester.request(mApplicationContext, task.key.id, snapshot, session -> {
+                if (session == null) {
+                    showNoTextMessage();
+                    return;
+                }
+                SelectSession.put(session);
+                // Same hand-off as Lens: close overview first, then open the screen
+                endLiveTileMode(() -> {
+                    try {
+                        mApplicationContext.startActivity(new Intent(mApplicationContext,
+                                SelectTextActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                        | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    } catch (RuntimeException e) {
+                        SelectSession.clear();
+                        showNoTextMessage();
+                    }
+                });
+            });
+        }
+
+        private void showNoTextMessage() {
+            Toast.makeText(mApplicationContext, R.string.select_no_text, Toast.LENGTH_SHORT).show();
+        }
+
+        /**
          * Called when the overlay is no longer used.
          */
         public void reset() {
@@ -424,6 +470,15 @@ public class TaskOverlayFactory {
             }
 
             @Override
+            public void onSelect() {
+                if (mIsAllowedByPolicy) {
+                    startSelect(mTask);
+                } else {
+                    showBlockedByPolicyMessage();
+                }
+            }
+
+            @Override
             public void onLens() {
                 if (mIsAllowedByPolicy) {
                     endLiveTileMode(TaskOverlay.this::launchLens);
@@ -451,5 +506,8 @@ public class TaskOverlayFactory {
         void onClearAllTasksRequested();
 
         void onLens();
+
+        /** User wants to pick text from the current task. */
+        void onSelect();
     }
 }

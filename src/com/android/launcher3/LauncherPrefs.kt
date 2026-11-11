@@ -349,6 +349,9 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         // Circle to Search chip that used to sit next to it duplicated the same gesture reachable
         // from the nav handle, and both ended up on the same surface.
         @JvmField val RECENTS_LENS = backedUpItem("pref_recents_lens", true)
+        // Select chip: freezes the task snapshot and lets the user pick the text on it, from the
+        // text the app itself reports (AssistStructure), so nothing is sent off the device.
+        @JvmField val RECENTS_SELECT = backedUpItem("pref_recents_select", true)
         @JvmField val RECENTS_MEMINFO = backedUpItem("pref_recents_meminfo", false)
         @JvmField val RECENTS_MEMINFO_ZRAM = backedUpItem("pref_recents_meminfo_zram", false)
         @JvmField val RECENTS_STYLE = backedUpItem("pref_recents_style", "default")

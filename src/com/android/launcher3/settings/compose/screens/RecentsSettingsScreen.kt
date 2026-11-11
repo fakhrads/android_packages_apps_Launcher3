@@ -72,6 +72,7 @@ fun RecentsSettingsScreen(
     var clearAllButton by rememberBooleanPref("pref_recents_clear_all", true)
     var clearAllPreserveActive by rememberBooleanPref("pref_recents_clear_all_preserve_active", false)
     var lensButton by rememberBooleanPref("pref_recents_lens", false)
+    var selectButton by rememberBooleanPref("pref_recents_select", true)
     var swipeDownToLock by rememberBooleanPref("pref_swipe_down_to_lock", false)
 
     var freeformGesture by rememberBooleanPref("pref_start_freeform_by_gesture", false)
@@ -253,6 +254,13 @@ fun RecentsSettingsScreen(
                     checked = clearAllPreserveActive,
                     onCheckedChange = { clearAllPreserveActive = it },
                     enabled = clearAllButton
+                )
+                SettingSwitch(
+                    title = stringResource(R.string.recents_select_title),
+                    subtitle = "Freeze the screen and pick its text, then copy, share or search it. Images and games have no text to pick",
+                    checked = selectButton,
+                    onCheckedChange = { selectButton = it },
+                    icon = Icons.Rounded.TouchApp
                 )
                 SettingSwitch(
                     title = stringResource(R.string.recents_lens_title),

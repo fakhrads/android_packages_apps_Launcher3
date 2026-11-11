@@ -160,6 +160,14 @@
     <string name="recents_screenshot_title">Tangkapan layar</string>
     <string name="recents_clear_all_title">Bersihkan semua</string>
     <string name="recents_lens_title">Lensa</string>
+    <string name="recents_select_title">Pilih</string>
+    <string name="select_no_text">Tidak ada teks yang bisa dipilih di layar ini</string>
+    <string name="select_copy">Salin</string>
+    <string name="select_share">Bagikan</string>
+    <string name="select_search">Cari</string>
+    <string name="select_all">Pilih semua</string>
+    <string name="select_copied">Tersalin</string>
+    <string name="select_hint">Sentuh kata, geser untuk memilih lebih banyak</string>
     <!-- Parallax -->
     <string name="short_parallax_title">Izinkan paralaks pendek</string>
     <string name="short_parallax_summary">Aktifkan efek gulir wallpaper penuh pada sejumlah kecil halaman alih-alih memotong wallpaper</string>

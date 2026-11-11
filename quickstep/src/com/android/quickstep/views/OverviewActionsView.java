@@ -189,6 +189,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private boolean mScreenshot;
     private boolean mClearAll;
     private boolean mLens;
+    private boolean mSelect;
 
     private SharedPreferences mPrefs;
     private boolean mPrefsRegistered;
@@ -215,6 +216,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mScreenshot = LauncherPrefs.RECENTS_SCREENSHOT.get(context);
         mClearAll = LauncherPrefs.RECENTS_CLEAR_ALL.get(context);
         mLens = LauncherPrefs.RECENTS_LENS.get(context);
+        mSelect = LauncherPrefs.RECENTS_SELECT.get(context);
     }
 
     @Override
@@ -245,6 +247,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         if ((v = findViewById(R.id.action_save_app_pair)) != null) v.setOnClickListener(null);
         if ((v = findViewById(R.id.action_clear_all)) != null) v.setOnClickListener(null);
         if ((v = findViewById(R.id.action_lens)) != null) v.setOnClickListener(null);
+        if ((v = findViewById(R.id.action_select)) != null) v.setOnClickListener(null);
     }
 
     @Override
@@ -353,6 +356,12 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             lensButton.setVisibility(mLens && Utilities.isGSAEnabled(getContext()) ? VISIBLE : GONE);
         }
 
+        View selectButton = findViewById(R.id.action_select);
+        if (selectButton != null) {
+            selectButton.setOnClickListener(this);
+            selectButton.setVisibility(mSelect ? VISIBLE : GONE);
+        }
+
         fitActionButtons();
     }
 
@@ -442,6 +451,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             VibratorWrapper.INSTANCE.get(mContext).vibrate(VibratorWrapper.EFFECT_CLICK);
         } else if (id == R.id.action_lens) {
             mCallbacks.onLens();
+        } else if (id == R.id.action_select) {
+            mCallbacks.onSelect();
         }
     }
 
@@ -466,6 +477,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             mClearAll = prefs.getBoolean(key, true);
         } else if (LauncherPrefs.RECENTS_LENS.getSharedPrefKey().equals(key)) {
             mLens = prefs.getBoolean(key, false);
+        } else if (LauncherPrefs.RECENTS_SELECT.getSharedPrefKey().equals(key)) {
+            mSelect = prefs.getBoolean(key, true);
         }
         updateVisibilities();
     }

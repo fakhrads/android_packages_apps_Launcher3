@@ -52,6 +52,8 @@
                      android:featureFlag="android.security.app_lock_apis" />
     <uses-permission android:name="com.android.systemui.permission.LAUNCH_ACCESSIBILITY_SHORTCUT_CHOOSER_DIALOG" />
     <uses-permission android:name="android.permission.ACCESS_CONTEXTUAL_SEARCH" />
+    <!-- Select in overview reads the text of a task through requestAssistDataForTask -->
+    <uses-permission android:name="android.permission.GET_TOP_ACTIVITY_INFO" />
     <uses-permission android:name="android.permission.QUERY_USERS" />
     <uses-permission android:name="android.permission.INJECT_EVENTS" />
     <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
