@@ -119,6 +119,9 @@ object SettingsSearchIndex {
             "Swipe left to open Google Discover (-1 screen)", "discover news")
         add(home, "Search & feed", "Dock search bar", "Show Google search bar at the bottom hotseat",
             "qsb")
+        add(home, "Search & feed", "Search bar opens drawer search",
+            "Search apps, settings, shortcuts and contacts in the app drawer",
+            "qsb pixel search google app")
         add(home, "Search & feed", "Search bar opacity", null, "transparency qsb")
         add(home, "Search & feed", s(R.string.hotseat_qsb_space_title), null, "qsb spacing")
         add(home, "Search & feed", "Music recognition button", "Quick sound search on dock bar",

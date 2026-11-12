@@ -1,5 +1,7 @@
 package com.android.launcher3.qsb;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
+
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,13 +14,20 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Reorderable;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.util.MultiTranslateDelegate;
+import com.android.launcher3.views.ActivityContext;
 
 public class QsbLayout extends FrameLayout implements Reorderable, SharedPreferences.OnSharedPreferenceChangeListener {
+
+    /** Tapping the bar opens the drawer search (true) or the search app (false). */
+    public static final String PREF_DOCK_SEARCH_LAUNCHER = "pref_dock_search_launcher";
+    public static final boolean PREF_DOCK_SEARCH_LAUNCHER_DEFAULT = true;
 
     ImageView mAssistantIcon;
     ImageView mGoogleIcon;
@@ -50,11 +59,10 @@ public class QsbLayout extends FrameLayout implements Reorderable, SharedPrefere
         LauncherPrefs.getPrefs(mContext).registerOnSharedPreferenceChangeListener(this);
 
         String searchPackage = Utilities.getSearchWidgetPackageName(mContext);
-        if (searchPackage != null) {
-            setOnClickListener(view -> {
-                launchSearchActivity(searchPackage);
-            });
-        }
+        setOnClickListener(view -> {
+            if (opensLauncherSearch() && openDrawerSearch()) return;
+            if (searchPackage != null) launchSearchActivity(searchPackage);
+        });
 
         if (Utilities.isGSAEnabled(mContext)) {
             enableLensIcon();
@@ -119,6 +127,29 @@ public class QsbLayout extends FrameLayout implements Reorderable, SharedPrefere
             mGoogleIcon.setImageResource(R.drawable.ic_super_g_color_revamped);
             mLensIcon.setImageResource(R.drawable.ic_lens_color_revamped);
             mAiModeButton.setImageResource(isMusicSearch ? R.drawable.ic_music_color_revamped : R.drawable.ic_ai_mode_color_revamped);
+        }
+    }
+
+    private boolean opensLauncherSearch() {
+        return LauncherPrefs.getPrefs(mContext).getBoolean(PREF_DOCK_SEARCH_LAUNCHER,
+                PREF_DOCK_SEARCH_LAUNCHER_DEFAULT);
+    }
+
+    /** Opens the app drawer with its search field focused, like the Pixel Search provider. */
+    private boolean openDrawerSearch() {
+        ActivityContext activityContext = ActivityContext.lookupContext(mContext);
+        if (!(activityContext instanceof Launcher launcher)) return false;
+        try {
+            launcher.getStateManager().goToState(ALL_APPS, true,
+                    AnimatorListeners.forEndCallback((Boolean success) -> {
+                        if (success && launcher.isInState(ALL_APPS)) {
+                            launcher.getAppsView().getSearchUiManager().focusSearchField();
+                        }
+                    }));
+            return true;
+        } catch (RuntimeException e) {
+            Log.w("QsbLayout", "drawer search failed, opening the search app", e);
+            return false;
         }
     }
 

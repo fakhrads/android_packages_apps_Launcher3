@@ -109,6 +109,7 @@ fun HomeScreenSettingsScreen(
 
     var minusOne by rememberBooleanPref("pref_enable_minus_one", true)
     var dockSearch by rememberBooleanPref("pref_dock_search", true)
+    var dockSearchLauncher by rememberBooleanPref("pref_dock_search_launcher", true)
     var qsbOpacity by rememberIntPref("pref_qsb_outer_opacity", 50)
     var qsbSpace by rememberIntPref("pref_hotseat_qsb_space", 22)
     var musicSearch by rememberBooleanPref("pref_dock_music_search", false)
@@ -385,6 +386,17 @@ fun HomeScreenSettingsScreen(
                     checked = dockSearch,
                     onCheckedChange = { dockSearch = it },
                     enabled = gsaEnabled
+                )
+                SettingSwitch(
+                    title = "Search bar opens drawer search",
+                    subtitle = if (dockSearchLauncher) {
+                        "Search apps, settings, shortcuts and contacts in the app drawer"
+                    } else {
+                        "Opens the Google app"
+                    },
+                    checked = dockSearchLauncher,
+                    onCheckedChange = { dockSearchLauncher = it },
+                    enabled = dockSearch
                 )
                 SettingSlider(
                     title = "Search bar opacity",
