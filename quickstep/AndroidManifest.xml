@@ -40,6 +40,9 @@
     <uses-permission android:name="android.permission.MONITOR_INPUT"/>
     <uses-permission android:name="android.permission.ALLOW_SLIPPERY_TOUCHES"/>
     <uses-permission android:name="android.permission.ACCESS_SHORTCUTS"/>
+    <!-- Drawer search: Settings entries from the search indexables providers, and contacts -->
+    <uses-permission android:name="android.permission.READ_SEARCH_INDEXABLES"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.READ_REMOTE_TASKS"/>
     <uses-permission android:name="android.permission.REQUEST_TASK_HANDOFF"/>
 
