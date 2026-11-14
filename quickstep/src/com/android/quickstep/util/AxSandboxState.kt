@@ -15,123 +15,24 @@
  */
 package com.android.quickstep.util
 
-import android.app.AxSandboxManager
-import android.content.Context
-import android.database.ContentObserver
-import android.provider.Settings
-import android.util.Log
-import com.android.internal.app.IAppLockStateListener
-import com.android.launcher3.concurrent.annotations.Ui
-import com.android.launcher3.dagger.ApplicationContext
 import com.android.launcher3.dagger.LauncherAppSingleton
-import com.android.launcher3.util.DaggerSingletonTracker
-import com.android.launcher3.util.LooperExecutor
 import java.lang.Runnable
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CopyOnWriteArrayList
 import javax.inject.Inject
 
 /**
- * Caches per-package app lock state from [AxSandboxManager] and notifies listeners (on the UI
- * thread) whenever it may have changed.
+ * Per-package app lock state for recents.
+ *
+ * AxionOS backs this with its framework AxSandboxManager. Caduceus has no framework app lock, so
+ * no app is ever locked and the state never changes. The API stays the same so recents keeps
+ * working unchanged.
  */
 @LauncherAppSingleton
-class AxSandboxState
-@Inject
-constructor(
-    @ApplicationContext private val context: Context,
-    @Ui private val uiExecutor: LooperExecutor,
-    lifecycle: DaggerSingletonTracker,
-) {
-    private val sandboxManager: AxSandboxManager? =
-        context.getSystemService(AxSandboxManager::class.java)
-    private val lockCache = ConcurrentHashMap<String, Boolean>()
-    private val listeners = CopyOnWriteArrayList<Runnable>()
+class AxSandboxState @Inject constructor() {
 
-    private val lockStateListener =
-        object : IAppLockStateListener.Stub() {
-            override fun onAppLockStateChanged(packageName: String, locked: Boolean) {
-                if (packageName.isBlank()) return
-                // Only notify on a real change; every dispatch invalidates the recents list.
-                if (lockCache.put(packageName, locked) != locked) {
-                    dispatchChanged()
-                }
-            }
-        }
+    fun addChangeListener(listener: Runnable) {}
 
-    private val configObserver =
-        object : ContentObserver(null) {
-            override fun onChange(selfChange: Boolean) {
-                lockCache.clear()
-                dispatchChanged()
-            }
-        }
+    fun removeChangeListener(listener: Runnable) {}
 
-    init {
-        registerLockListener()
-        context.contentResolver.registerContentObserver(
-            Settings.Secure.getUriFor(AxSandboxManager.SETTING_SANDBOX_CONFIG),
-            false,
-            configObserver,
-        )
-        lifecycle.addCloseable {
-            unregisterLockListener()
-            context.contentResolver.unregisterContentObserver(configObserver)
-        }
-    }
-
-    fun addChangeListener(listener: Runnable) {
-        listeners.addIfAbsent(listener)
-    }
-
-    fun removeChangeListener(listener: Runnable) {
-        listeners.remove(listener)
-    }
-
-    /** May be called from any thread; the first lookup per package is a binder call. */
-    fun hasAppLock(packageName: String?, userId: Int): Boolean {
-        if (packageName.isNullOrBlank()) return false
-        val cacheKey = "$packageName:$userId"
-        lockCache[cacheKey]?.let { return it }
-        val hasLock = getHasAppLock(packageName, userId)
-        lockCache[cacheKey] = hasLock
-        return hasLock
-    }
-
-    private fun registerLockListener() {
-        val manager = sandboxManager ?: return
-        try {
-            manager.registerAppLockStateListener(lockStateListener)
-        } catch (e: RuntimeException) {
-            Log.w(TAG, "registerLockListener failed", e)
-        }
-    }
-
-    private fun unregisterLockListener() {
-        val manager = sandboxManager ?: return
-        try {
-            manager.unregisterAppLockStateListener(lockStateListener)
-        } catch (e: RuntimeException) {
-            Log.w(TAG, "unregisterLockListener failed", e)
-        }
-    }
-
-    private fun getHasAppLock(packageName: String, userId: Int): Boolean {
-        val manager = sandboxManager ?: return false
-        return try {
-            manager.getAppLockState(packageName, userId).hasAppLock()
-        } catch (e: RuntimeException) {
-            Log.w(TAG, "getHasAppLock failed", e)
-            false
-        }
-    }
-
-    private fun dispatchChanged() {
-        if (listeners.isEmpty()) return
-        uiExecutor.execute { listeners.forEach { it.run() } }
-    }
-
-    private companion object {
-        const val TAG = "AxSandboxState"
-    }
+    /** May be called from any thread. */
+    fun hasAppLock(packageName: String?, userId: Int): Boolean = false
 }
