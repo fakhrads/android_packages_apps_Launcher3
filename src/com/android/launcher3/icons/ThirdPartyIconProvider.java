@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ComponentInfo;
 import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableWrapper;
 import android.os.UserHandle;
 
 import com.android.launcher3.dagger.ApplicationContext;
@@ -15,7 +17,7 @@ import com.android.launcher3.util.ComponentKey;
 
 import javax.inject.Inject;
 
-import static com.android.launcher3.icons.BaseIconFactory.CONFIG_HINT_NO_WRAP;
+import static com.android.launcher3.graphics.IconLoader.CONFIG_HINT_NO_WRAP;
 
 @LauncherAppSingleton
 public class ThirdPartyIconProvider extends LauncherIconProvider {
@@ -45,8 +47,21 @@ public class ThirdPartyIconProvider extends LauncherIconProvider {
             return fallback.get();
         }
         if (!(icon instanceof AdaptiveIconDrawable)) {
+            // Pack artwork is already composed: tell iconloaderlib not to mask, wrap or shadow it.
+            icon = icon instanceof BitmapDrawable
+                    ? ExtendedBitmapDrawable.wrap(mContext.getResources(), icon, true)
+                    : new IconPackArtworkDrawable(icon);
+            // IconLoader (launch and drag animations) reads this hint.
             icon.setChangingConfigurations(icon.getChangingConfigurations() | CONFIG_HINT_NO_WRAP);
         }
         return icon;
+    }
+
+    /** Non-bitmap pack artwork, marked so iconloaderlib keeps its shape and transparency. */
+    private static final class IconPackArtworkDrawable extends DrawableWrapper
+            implements IconPackArtwork {
+        IconPackArtworkDrawable(Drawable drawable) {
+            super(drawable);
+        }
     }
 }

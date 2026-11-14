@@ -17,7 +17,6 @@ import android.graphics.drawable.Drawable;
 
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.LauncherIcons;
-import static com.android.launcher3.icons.LauncherIcons.CONFIG_HINT_NO_WRAP;
 
 import com.android.launcher3.icons.clock.CustomClock;
 
