@@ -166,6 +166,7 @@ import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.AppDrawerStyle;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.allapps.search.PixelSearchAlgorithm;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.apppairs.AppPairIcon;
@@ -882,6 +883,14 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         mDragLayer.clearAnimatedView();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // The drawer search asks for the contacts permission from here
+        PixelSearchAlgorithm.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override

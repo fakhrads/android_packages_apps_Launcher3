@@ -61,7 +61,7 @@ final class DeviceSearchSources {
     private static final int MAX_SHORTCUTS = 5;
     private static final int MAX_TOP_APP_SHORTCUTS = 3;
     private static final int MAX_CONTACTS = 4;
-    private static final int REQUEST_CODE_CONTACTS = 0x5a18;
+    static final int REQUEST_CODE_CONTACTS = 0x5a18;
     private static final String PREFS = "zl_pixel_search";
     private static final String PREF_CONTACTS_ASKED = "contacts_permission_asked";
 
@@ -213,13 +213,12 @@ final class DeviceSearchSources {
     }
 
     private static boolean askContacts(Context context, Object launcher) {
+        if (!(launcher instanceof Activity activity)) return false;
+        activity.requestPermissions(new String[] {Manifest.permission.READ_CONTACTS},
+                REQUEST_CODE_CONTACTS);
+        // Asked once: the row stays away whatever the answer, Settings can still grant it
         prefs(context).edit().putBoolean(PREF_CONTACTS_ASKED, true).apply();
-        if (launcher instanceof Activity activity) {
-            activity.requestPermissions(new String[] {Manifest.permission.READ_CONTACTS},
-                    REQUEST_CODE_CONTACTS);
-            return true;
-        }
-        return false;
+        return true;
     }
 
     private static SharedPreferences prefs(Context context) {

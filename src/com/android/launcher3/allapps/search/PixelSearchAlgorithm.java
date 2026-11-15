@@ -29,6 +29,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
@@ -41,6 +42,7 @@ import android.view.View;
 
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.allapps.search.PixelSearchAdapterProvider.SearchRow;
 import com.android.launcher3.model.data.AppInfo;
@@ -125,6 +127,20 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
         mAddNoResultsMessage = addNoResultsMessage;
         // Warm the Settings index so the first query has it
         SettingsSearchIndex.get().ensureFresh(context, INDEXER, () -> {});
+    }
+
+    /**
+     * The launcher hands its permission results here. After the contacts permission is granted,
+     * the typed query runs again so its contacts show. Returns whether it was this request.
+     */
+    public static boolean onRequestPermissionsResult(ActivityContext launcher, int requestCode,
+            int[] grantResults) {
+        if (requestCode != DeviceSearchSources.REQUEST_CODE_CONTACTS) return false;
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            ActivityAllAppsContainerView<?> appsView = launcher.getAppsView();
+            if (appsView != null) appsView.getSearchUiManager().refreshResults();
+        }
+        return true;
     }
 
     @Override
