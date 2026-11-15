@@ -39,7 +39,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -70,6 +73,9 @@ import com.android.launcher3.settings.compose.data.LauncherPrefsBridge
 import com.android.launcher3.settings.compose.data.rememberIntPref
 import com.android.launcher3.settings.compose.data.rememberStringPref
 import com.android.launcher3.settings.compose.data.rememberThemedIconsState
+import kotlinx.coroutines.delay
+
+private const val SHAPE_APPLY_DELAY_MS = 700L
 
 @Composable
 fun IconsSettingsScreen(
@@ -85,7 +91,25 @@ fun IconsSettingsScreen(
     var lawnIcons by rememberBooleanPref("pref_grayscale_icon_map_lawn", true)
     val iconPack by rememberStringPref(IconDatabase.KEY_ICON_PACK, IconDatabase.VALUE_DEFAULT)
     var iconShapeKey by rememberStringPref(ICON_SHAPE_PREF_KEY, "")
-    val previewShape = remember(iconShapeKey) { iconShapeForKey(iconShapeKey) }
+    // A new shape reloads every icon of the launcher, so a pick applies once the taps stop
+    var pickedShape by remember { mutableStateOf<String?>(null) }
+    val shownShape = pickedShape ?: iconShapeKey
+    LaunchedEffect(pickedShape) {
+        val pick = pickedShape ?: return@LaunchedEffect
+        delay(SHAPE_APPLY_DELAY_MS)
+        iconShapeKey = pick
+        pickedShape = null
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            // Left the screen before the delay ran out
+            pickedShape?.let { pick ->
+                LauncherPrefsBridge.getPrefs(context).edit()
+                    .putString(ICON_SHAPE_PREF_KEY, pick).apply()
+            }
+        }
+    }
+    val previewShape = remember(shownShape) { iconShapeForKey(shownShape) }
     val iconPackText = remember(iconPack) { LauncherPrefsBridge.getIconPackSummary(context) }
 
     val animatedIconScale by animateFloatAsState(
@@ -166,8 +190,8 @@ fun IconsSettingsScreen(
                 icon = Icons.Rounded.Category
             ) {
                 IconShapePicker(
-                    selected = iconShapeKey,
-                    onSelect = { iconShapeKey = it }
+                    selected = shownShape,
+                    onSelect = { pickedShape = if (it == iconShapeKey) null else it }
                 )
             }
 
