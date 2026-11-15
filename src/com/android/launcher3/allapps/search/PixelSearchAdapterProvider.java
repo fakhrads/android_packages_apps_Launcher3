@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.LruCache;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -60,6 +61,8 @@ public class PixelSearchAdapterProvider extends DefaultSearchAdapterProvider {
     public static final int VIEW_TYPE_SEARCH_ROW = 1 << BaseAllAppsAdapter.NEXT_ID;
 
     private static final ExecutorService ICON_EXECUTOR = Executors.newSingleThreadExecutor();
+    // Row icons by row id: retyping a query shows the same rows again
+    private static final LruCache<String, Drawable.ConstantState> ICON_CACHE = new LruCache<>(96);
     private static final int REQUEST_CODE_NO_OP = 0x5a17;
 
     private final Handler mMainHandler = new Handler(Looper.getMainLooper());
@@ -338,6 +341,12 @@ public class PixelSearchAdapterProvider extends DefaultSearchAdapterProvider {
             mIcon.setClipToOutline(row.roundIcon);
             mIcon.setOutlineProvider(row.roundIcon ? OVAL : ViewOutlineProvider.BACKGROUND);
             if (row.icon == null) return;
+            Drawable.ConstantState cached = ICON_CACHE.get(row.id);
+            if (cached != null) {
+                // A new drawable per view, so two rows never share bounds or callbacks
+                mIcon.setImageDrawable(cached.newDrawable(getResources()));
+                return;
+            }
             Context context = getContext();
             ICON_EXECUTOR.execute(() -> {
                 Drawable d = null;
@@ -346,6 +355,8 @@ public class PixelSearchAdapterProvider extends DefaultSearchAdapterProvider {
                 } catch (Exception e) {
                     Log.w(TAG, "icon failed for " + row.id, e);
                 }
+                Drawable.ConstantState state = d != null ? d.getConstantState() : null;
+                if (state != null) ICON_CACHE.put(row.id, state);
                 Drawable result = d;
                 mainHandler.post(() -> {
                     if (mBound == row) mIcon.setImageDrawable(result);

@@ -73,6 +73,10 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
     private static final int RESULT_WIDGETS = 1 << 7;
     private static final int RESULT_TYPES = ((1 << 18) - 1) & ~(RESULT_SLICE | RESULT_WIDGETS);
     private static final int SESSION_TIMEOUT_MS = 1500;
+    // The other sources wait for typing to pause; the app matches do not
+    private static final long SOURCES_DELAY_MS = 150;
+    // Source results that arrive close together go to the list as one update
+    private static final long DELIVER_MERGE_MS = 50;
     private static final int MAX_SERVICE_ROWS = 20;
 
     // com.android.app.search.LayoutType values
@@ -99,9 +103,14 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
     private SearchSession mSession;
     private boolean mSessionFailed;
 
-    // State of the newest query; results of older ones are dropped
-    private int mGeneration;
+    // State of the newest query; results of older ones are dropped, and the workers skip
+    // queries that are no longer the newest
+    private volatile int mGeneration;
     private String mQuery;
+    private boolean mSourcesStarted;
+    private Runnable mPendingSources;
+    private boolean mDeliverPending;
+    private final Runnable mMergedDeliver = this::deliver;
     private SearchCallback<AdapterItem> mCallback;
     private ArrayList<AdapterItem> mLocal;
     @SuppressWarnings("unchecked")
@@ -124,7 +133,9 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
         mQuery = query;
         mCallback = callback;
         mLocal = null;
+        mSourcesStarted = false;
         for (int i = 0; i < SRC_COUNT; i++) mRows[i] = null;
+        cancelPending();
 
         mAppState.getModel().enqueueModelUpdateTask((taskController, dataModel, apps) -> {
             ArrayList<AdapterItem> local =
@@ -133,17 +144,21 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
                 if (generation != mGeneration) return;
                 mLocal = local;
                 deliver();
-                AppInfo top = !local.isEmpty() ? local.get(0).itemInfo : null;
-                String topPackage = top != null && top.getTargetComponent() != null
-                        ? top.getTargetComponent().getPackageName() : null;
-                UserHandle topUser = top != null ? top.user : null;
-                runSource(generation, SRC_SHORTCUTS,
-                        () -> DeviceSearchSources.shortcuts(mContext, query, topPackage, topUser));
+                if (mSourcesStarted) runShortcuts(generation, query);
             });
         });
-        runSettings(generation, query);
-        runSource(generation, SRC_CONTACTS, () -> DeviceSearchSources.contacts(mContext, query));
-        queryService(query, generation);
+        // Every keystroke runs a new query; only the one typing pauses on asks the sources
+        mPendingSources = () -> {
+            mPendingSources = null;
+            if (generation != mGeneration) return;
+            mSourcesStarted = true;
+            if (mLocal != null) runShortcuts(generation, query);
+            runSettings(generation, query);
+            runSource(generation, SRC_CONTACTS,
+                    () -> DeviceSearchSources.contacts(mContext, query));
+            queryService(query, generation);
+        };
+        mUiHandler.postDelayed(mPendingSources, SOURCES_DELAY_MS);
     }
 
     @Override
@@ -151,12 +166,34 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
         if (interruptActiveRequests) {
             mGeneration++;
             mUiHandler.removeCallbacksAndMessages(null);
+            mPendingSources = null;
+            mDeliverPending = false;
         }
+    }
+
+    private void cancelPending() {
+        if (mPendingSources != null) {
+            mUiHandler.removeCallbacks(mPendingSources);
+            mPendingSources = null;
+        }
+        mUiHandler.removeCallbacks(mMergedDeliver);
+        mDeliverPending = false;
+    }
+
+    /** The top app's own shortcuts come first, so this waits for the app matches. */
+    private void runShortcuts(int generation, String query) {
+        AppInfo top = !mLocal.isEmpty() ? mLocal.get(0).itemInfo : null;
+        String topPackage = top != null && top.getTargetComponent() != null
+                ? top.getTargetComponent().getPackageName() : null;
+        UserHandle topUser = top != null ? top.user : null;
+        runSource(generation, SRC_SHORTCUTS,
+                () -> DeviceSearchSources.shortcuts(mContext, query, topPackage, topUser));
     }
 
     @Override
     public void destroy() {
         mGeneration++;
+        cancelPending();
         if (mSession != null) {
             try {
                 mSession.close();
@@ -173,6 +210,8 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
 
     private void runSource(int generation, int source, RowsTask task) {
         WORKER.execute(() -> {
+            // Typed past while it waited for a worker
+            if (generation != mGeneration) return;
             List<SearchRow> rows;
             try {
                 rows = task.run();
@@ -184,7 +223,7 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
             mUiHandler.post(() -> {
                 if (generation != mGeneration) return;
                 mRows[source] = result;
-                deliver();
+                scheduleDeliver();
             });
         });
     }
@@ -209,7 +248,7 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
                         logTargets(query, targets);
                         if (generation != mGeneration) return;
                         mRows[SRC_SERVICE] = serviceRows(targets, AppFilter.hiddenApps(mContext));
-                        deliver();
+                        scheduleDeliver();
                     });
         } catch (RuntimeException e) {
             Log.w(TAG, "query failed, no service results", e);
@@ -238,8 +277,17 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
     private static final int[] DEDUPE_PRIORITY = {
             SRC_SETTINGS, SRC_SHORTCUTS, SRC_CONTACTS, SRC_SERVICE};
 
+    /** Delivers soon, so the sources that answer close together make one list update. */
+    private void scheduleDeliver() {
+        if (mDeliverPending) return;
+        mDeliverPending = true;
+        mUiHandler.postDelayed(mMergedDeliver, DELIVER_MERGE_MS);
+    }
+
     /** Apps, then each source under its header, without repeats; waits for the apps. */
     private void deliver() {
+        mUiHandler.removeCallbacks(mMergedDeliver);
+        mDeliverPending = false;
         if (mLocal == null || mCallback == null) return;
         ArrayList<AdapterItem> result = new ArrayList<>(mLocal);
         // Pick the surviving rows in priority order, then show them in display order
