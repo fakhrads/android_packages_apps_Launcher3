@@ -476,7 +476,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         } else if (LauncherPrefs.RECENTS_CLEAR_ALL.getSharedPrefKey().equals(key)) {
             mClearAll = prefs.getBoolean(key, true);
         } else if (LauncherPrefs.RECENTS_LENS.getSharedPrefKey().equals(key)) {
-            mLens = prefs.getBoolean(key, false);
+            mLens = LauncherPrefs.RECENTS_LENS.get(getContext());
         } else if (LauncherPrefs.RECENTS_SELECT.getSharedPrefKey().equals(key)) {
             mSelect = prefs.getBoolean(key, true);
         }

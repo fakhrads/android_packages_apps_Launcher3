@@ -70,7 +70,7 @@ fun RecentsSettingsScreen(
     var screenshotButton by rememberBooleanPref("pref_recents_screenshot", true)
     var clearAllButton by rememberBooleanPref("pref_recents_clear_all", true)
     var clearAllPreserveActive by rememberBooleanPref("pref_recents_clear_all_preserve_active", false)
-    var lensButton by rememberBooleanPref("pref_recents_lens", false)
+    var lensButton by rememberBooleanPref("pref_recents_lens", true)
     var selectButton by rememberBooleanPref("pref_recents_select", true)
     var swipeDownToLock by rememberBooleanPref("pref_swipe_down_to_lock", false)
 
