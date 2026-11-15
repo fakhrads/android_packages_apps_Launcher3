@@ -27,7 +27,7 @@ import com.android.launcher3.util.Executors;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Asks the system for the view structure of a task and turns the text in it into words with
@@ -51,60 +51,87 @@ public final class AssistTextRequester {
 
     private AssistTextRequester() {}
 
+    /** Asks for the text of {@code taskId}; {@code callback} gets exactly one answer. */
     public static void request(Context context, int taskId, Bitmap snapshot, Callback callback) {
         final Context appContext = context.getApplicationContext();
-        final AtomicBoolean done = new AtomicBoolean(false);
-        final Runnable fail = () -> {
-            if (done.compareAndSet(false, true)) {
-                Executors.MAIN_EXECUTOR.execute(() -> callback.onResult(null));
-            }
-        };
-        Executors.MAIN_EXECUTOR.getHandler().postDelayed(() -> {
-            if (!done.get()) {
-                Log.w(TAG, "No assist structure for task " + taskId + " after " + TIMEOUT_MS + " ms");
-            }
-            fail.run();
-        }, TIMEOUT_MS);
+        final Request request = new Request(taskId, snapshot, callback);
+        Executors.MAIN_EXECUTOR.getHandler().postDelayed(request.mTimeout, TIMEOUT_MS);
 
         Executors.UI_HELPER_EXECUTOR.execute(() -> {
             try {
-                final IAssistDataReceiver receiver = new IAssistDataReceiver.Stub() {
-                    @Override
-                    public void onHandleAssistData(Bundle data) {
-                        if (done.get()) {
-                            return;
-                        }
-                        SelectSession session = null;
-                        try {
-                            session = buildSession(data, snapshot);
-                        } catch (RuntimeException e) {
-                            Log.e(TAG, "Reading the assist structure failed", e);
-                        }
-                        if (session == null) {
-                            fail.run();
-                            return;
-                        }
-                        final SelectSession result = session;
-                        if (done.compareAndSet(false, true)) {
-                            Executors.MAIN_EXECUTOR.execute(() -> callback.onResult(result));
-                        }
-                    }
-
-                    @Override
-                    public void onHandleAssistScreenshot(Bitmap screenshot) {}
-                };
                 final boolean accepted = ActivityTaskManager.getService()
-                        .requestAssistDataForTask(receiver, taskId, appContext.getPackageName(),
+                        .requestAssistDataForTask(request, taskId, appContext.getPackageName(),
                                 appContext.getAttributionTag(), true /* fetchStructure */);
                 if (!accepted) {
                     Log.w(TAG, "The system refused assist data for task " + taskId);
-                    fail.run();
+                    request.finish(null);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Requesting assist data failed for task " + taskId, e);
-                fail.run();
+                request.finish(null);
             }
         });
+    }
+
+    /**
+     * One request. The system may keep the receiver (a binder object) for a while after it
+     * answered, so the snapshot and the callback are let go as soon as there is an answer or the
+     * time is up.
+     */
+    private static final class Request extends IAssistDataReceiver.Stub {
+        private final int mTaskId;
+        private final AtomicReference<Bitmap> mSnapshot;
+        private final AtomicReference<Callback> mCallback;
+        final Runnable mTimeout = () -> {
+            if (isPending()) {
+                Log.w(TAG, "No assist structure for task " + getTaskId() + " after "
+                        + TIMEOUT_MS + " ms");
+            }
+            finish(null);
+        };
+
+        Request(int taskId, Bitmap snapshot, Callback callback) {
+            mTaskId = taskId;
+            mSnapshot = new AtomicReference<>(snapshot);
+            mCallback = new AtomicReference<>(callback);
+        }
+
+        int getTaskId() {
+            return mTaskId;
+        }
+
+        boolean isPending() {
+            return mCallback.get() != null;
+        }
+
+        /** Answers once, on the main thread; later calls do nothing. */
+        void finish(@Nullable SelectSession session) {
+            final Callback callback = mCallback.getAndSet(null);
+            if (callback == null) {
+                return;
+            }
+            mSnapshot.set(null);
+            Executors.MAIN_EXECUTOR.getHandler().removeCallbacks(mTimeout);
+            Executors.MAIN_EXECUTOR.execute(() -> callback.onResult(session));
+        }
+
+        @Override
+        public void onHandleAssistData(Bundle data) {
+            final Bitmap snapshot = mSnapshot.get();
+            if (snapshot == null) {
+                return;
+            }
+            SelectSession session = null;
+            try {
+                session = buildSession(data, snapshot);
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Reading the assist structure failed", e);
+            }
+            finish(session);
+        }
+
+        @Override
+        public void onHandleAssistScreenshot(Bitmap screenshot) {}
     }
 
     @Nullable

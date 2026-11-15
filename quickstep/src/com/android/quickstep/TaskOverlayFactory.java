@@ -129,6 +129,9 @@ public class TaskOverlayFactory {
      */
     public static class TaskOverlay<T extends OverviewActionsView> {
 
+        // Main thread only: whether a Select request waits for the app's answer
+        private static boolean sSelectInFlight;
+
         protected final Context mApplicationContext;
         protected final TaskContainer mTaskContainer;
 
@@ -262,6 +265,8 @@ public class TaskOverlayFactory {
          * text to show, so a task without any leaves everything as it was.
          */
         private void startSelect(Task task) {
+            // One request at a time: a second press while the app is asked would race the first
+            if (sSelectInFlight) return;
             final Bitmap thumbnail = getThumbnail();
             if (thumbnail == null) {
                 showNoTextMessage();
@@ -273,7 +278,12 @@ public class TaskOverlayFactory {
                 showNoTextMessage();
                 return;
             }
-            AssistTextRequester.request(mApplicationContext, task.key.id, snapshot, session -> {
+            sSelectInFlight = true;
+            final int taskId = task.key.id;
+            AssistTextRequester.request(mApplicationContext, taskId, snapshot, session -> {
+                sSelectInFlight = false;
+                // The user left overview or dismissed the task while the app answered
+                if (!isTaskStillShown(taskId)) return;
                 if (session == null) {
                     showNoTextMessage();
                     return;
@@ -291,6 +301,12 @@ public class TaskOverlayFactory {
                     }
                 });
             });
+        }
+
+        private boolean isTaskStillShown(int taskId) {
+            RecentsView recentsView = mTaskContainer.getTaskView().getRecentsView();
+            return recentsView != null && recentsView.isShown()
+                    && recentsView.getTaskViewByTaskId(taskId) != null;
         }
 
         private void showNoTextMessage() {
