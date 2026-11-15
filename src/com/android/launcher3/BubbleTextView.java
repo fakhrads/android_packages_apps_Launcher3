@@ -885,6 +885,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         if (mIgnorePressedStateChange || mScaleForReorderBounce != 1f) {
             return;
         }
+        // Views get setPressed(false) all the time (scrolls, recycling, state refreshes): with
+        // nothing pressed and nothing animating there is no spring to build
+        if (!pressed && mPressAnimator == null && getScaleX() == 1f && getScaleY() == 1f) {
+            return;
+        }
         if (mPressAnimator != null) {
             mPressAnimator.cancel();
             mPressAnimator = null;
