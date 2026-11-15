@@ -66,12 +66,23 @@ public class AppFilter {
 
     /** Hides or shows an app in the app drawer; the model reloads to apply it. */
     public static void setAppHidden(Context context, ComponentName app, boolean hidden) {
-        Set<String> apps = new HashSet<>(
-                LauncherPrefs.get(context).get(LauncherPrefs.HIDDEN_APPS));
+        if (saveAppHidden(context, app, hidden)) reloadForHiddenApps();
+    }
+
+    /**
+     * Hides or shows an app without applying it yet, for a list of switches; call
+     * {@link #reloadForHiddenApps()} once when done. Returns whether anything changed.
+     */
+    public static boolean saveAppHidden(Context context, ComponentName app, boolean hidden) {
+        Set<String> apps = new HashSet<>(hiddenApps(context));
         boolean changed = hidden ? apps.add(app.flattenToShortString())
                 : apps.remove(app.flattenToShortString());
-        if (!changed) return;
-        LauncherPrefs.get(context).put(LauncherPrefs.HIDDEN_APPS, apps);
+        if (changed) LauncherPrefs.get(context).put(LauncherPrefs.HIDDEN_APPS, apps);
+        return changed;
+    }
+
+    /** Reloads the model, which applies the hidden apps to the drawer and its search. */
+    public static void reloadForHiddenApps() {
         LauncherAppState.INSTANCE.executeIfCreated(
                 state -> state.getModel().reloadIfActive("hidden apps changed"));
     }

@@ -5,7 +5,6 @@
 
 package com.android.launcher3.settings.compose.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -152,7 +150,7 @@ fun DrawerTabAppsScreen(
     var members by remember { mutableStateOf(tab.apps) }
     var showRenameDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
-    val apps = remember { loadLauncherApps(context) }
+    val apps = rememberLauncherApps()
     val iconSizePx = with(LocalDensity.current) { 40.dp.roundToPx() }
 
     fun setMember(app: LauncherAppEntry, inTab: Boolean) {
@@ -188,9 +186,8 @@ fun DrawerTabAppsScreen(
                     }
                 }
             }
-            items(apps, key = { it.key }) { app ->
+            items(apps.orEmpty(), key = { it.key }) { app ->
                 val inTab = members.contains(app.key)
-                val icon = remember(app.key) { appIconBitmap(app.info, iconSizePx) }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -199,7 +196,7 @@ fun DrawerTabAppsScreen(
                         .clickable { setMember(app, !inTab) }
                         .padding(horizontal = 8.dp, vertical = 6.dp)
                 ) {
-                    Image(bitmap = icon, contentDescription = null, modifier = Modifier.size(40.dp))
+                    AppRowIcon(app, iconSizePx)
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
                         text = app.label,
