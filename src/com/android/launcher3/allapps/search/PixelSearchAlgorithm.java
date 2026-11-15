@@ -25,6 +25,7 @@ import android.app.search.SearchContext;
 import android.app.search.SearchSession;
 import android.app.search.SearchTarget;
 import android.app.search.SearchUiManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
@@ -38,6 +39,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.android.launcher3.AppFilter;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.allapps.search.PixelSearchAdapterProvider.SearchRow;
@@ -206,7 +208,7 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
                     targets -> {
                         logTargets(query, targets);
                         if (generation != mGeneration) return;
-                        mRows[SRC_SERVICE] = serviceRows(targets);
+                        mRows[SRC_SERVICE] = serviceRows(targets, AppFilter.hiddenApps(mContext));
                         deliver();
                     });
         } catch (RuntimeException e) {
@@ -314,13 +316,13 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
      * Rows for everything but plain apps (the local match has those). A child target is shown
      * on its own only when its parent is not, so app shortcuts under a skipped app still appear.
      */
-    private static List<SearchRow> serviceRows(List<SearchTarget> targets) {
+    private static List<SearchRow> serviceRows(List<SearchTarget> targets, Set<String> hidden) {
         List<SearchRow> rows = new ArrayList<>();
         if (targets == null) return rows;
         Set<String> shown = new HashSet<>();
         for (SearchTarget t : targets) {
             if (rows.size() >= MAX_SERVICE_ROWS) break;
-            if (t == null || t.isHidden()) continue;
+            if (t == null || t.isHidden() || isOfHiddenApp(t, hidden)) continue;
             if (t.getParentId() != null && shown.contains(t.getParentId())) continue;
             String layout = t.getLayoutType();
             if (LAYOUT_DIVIDER.equals(layout) || LAYOUT_EMPTY_DIVIDER.equals(layout)) continue;
@@ -348,6 +350,23 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
         }
         dropEmptyHeaders(rows);
         return rows;
+    }
+
+    /** Whether the target opens an app the user hid, or one of its shortcuts. */
+    private static boolean isOfHiddenApp(SearchTarget t, Set<String> hidden) {
+        if (hidden.isEmpty()) return false;
+        ShortcutInfo shortcut = t.getShortcutInfo();
+        if (shortcut != null) {
+            return AppFilter.isHiddenTarget(hidden, shortcut.getPackage(), shortcut.getActivity());
+        }
+        SearchAction action = t.getSearchAction();
+        Intent intent = action != null ? action.getIntent() : null;
+        ComponentName component = intent != null ? intent.getComponent() : null;
+        String pkg = t.getPackageName();
+        if (component == null && intent != null && intent.getPackage() != null) {
+            pkg = intent.getPackage();
+        }
+        return AppFilter.isHiddenTarget(hidden, pkg, component);
     }
 
     private static SearchRow serviceRow(SearchTarget t, String id, CharSequence title,

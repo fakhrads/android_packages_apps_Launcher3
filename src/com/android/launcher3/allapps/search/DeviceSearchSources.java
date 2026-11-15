@@ -42,6 +42,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.AppFilter;
 import com.android.launcher3.allapps.search.PixelSearchAdapterProvider.SearchRow;
 
 import java.io.InputStream;
@@ -82,7 +83,12 @@ final class DeviceSearchSources {
         if (q.length() < 2) return rows;
         LauncherApps la = context.getSystemService(LauncherApps.class);
         if (la == null || !la.hasShortcutHostPermission()) return rows;
-        List<ShortcutInfo> all = allShortcuts(context, la);
+        // Shortcuts of hidden apps would show that the app is there
+        Set<String> hidden = AppFilter.hiddenApps(context);
+        List<ShortcutInfo> all = new ArrayList<>();
+        for (ShortcutInfo si : allShortcuts(context, la)) {
+            if (!AppFilter.isHiddenTarget(hidden, si.getPackage(), si.getActivity())) all.add(si);
+        }
         String cq = q.replace(" ", "");
         List<ShortcutInfo> picked = new ArrayList<>();
         if (topPackage != null) {

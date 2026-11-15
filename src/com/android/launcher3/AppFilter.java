@@ -3,6 +3,8 @@ package com.android.launcher3;
 import android.content.ComponentName;
 import android.content.Context;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.dagger.ApplicationContext;
 
 import java.util.Arrays;
@@ -38,8 +40,28 @@ public class AppFilter {
     }
 
     public static boolean isHiddenApp(Context context, ComponentName app) {
-        return LauncherPrefs.get(context).get(LauncherPrefs.HIDDEN_APPS)
-                .contains(app.flattenToShortString());
+        return hiddenApps(context).contains(app.flattenToShortString());
+    }
+
+    /** The apps the user hid, as flattened short component names. */
+    public static Set<String> hiddenApps(Context context) {
+        return LauncherPrefs.get(context).get(LauncherPrefs.HIDDEN_APPS);
+    }
+
+    /**
+     * Whether a search result of {@code pkg} belongs to a hidden app: the activity it opens is
+     * hidden, or, when that activity is not known, any app of the package is.
+     */
+    public static boolean isHiddenTarget(Set<String> hidden, @Nullable String pkg,
+            @Nullable ComponentName component) {
+        if (hidden.isEmpty()) return false;
+        if (component != null) return hidden.contains(component.flattenToShortString());
+        if (pkg == null) return false;
+        String prefix = pkg + "/";
+        for (String app : hidden) {
+            if (app.startsWith(prefix)) return true;
+        }
+        return false;
     }
 
     /** Hides or shows an app in the app drawer; the model reloads to apply it. */
