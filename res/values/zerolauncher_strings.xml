@@ -21,4 +21,13 @@
     <string name="zl_profile_work">Work profile</string>
     <string name="zl_profile_private">Private space</string>
     <string name="zl_profile_other">Other profile</string>
+
+    <!-- Home screen gestures: the actions of a double tap or a pinch -->
+    <string name="zl_gesture_double_tap">Double tap</string>
+    <string name="zl_gesture_none">Nothing</string>
+    <string name="zl_gesture_sleep">Sleep</string>
+    <string name="zl_gesture_notifications">Notifications</string>
+    <string name="zl_gesture_quick_settings">Quick settings</string>
+    <string name="zl_gesture_app_drawer">App drawer</string>
+    <string name="zl_gesture_recents">Recents</string>
 </resources>

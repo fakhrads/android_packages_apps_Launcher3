@@ -21,4 +21,13 @@
     <string name="zl_profile_work">Profil kerja</string>
     <string name="zl_profile_private">Ruang pribadi</string>
     <string name="zl_profile_other">Profil lain</string>
+
+    <!-- Home screen gestures: the actions of a double tap or a pinch -->
+    <string name="zl_gesture_double_tap">Ketuk dua kali</string>
+    <string name="zl_gesture_none">Tidak ada</string>
+    <string name="zl_gesture_sleep">Matikan layar</string>
+    <string name="zl_gesture_notifications">Notifikasi</string>
+    <string name="zl_gesture_quick_settings">Setelan cepat</string>
+    <string name="zl_gesture_app_drawer">Laci aplikasi</string>
+    <string name="zl_gesture_recents">Aplikasi terbaru</string>
 </resources>

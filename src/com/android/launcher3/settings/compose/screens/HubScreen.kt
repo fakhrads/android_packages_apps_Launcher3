@@ -37,8 +37,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.android.launcher3.R
+import com.android.launcher3.customization.IconDatabase
 import com.android.launcher3.settings.compose.components.HeroOverviewCard
 import com.android.launcher3.settings.compose.components.MetricTile
 import com.android.launcher3.settings.compose.components.NavRow
@@ -46,10 +49,10 @@ import com.android.launcher3.settings.compose.components.QuickToggleTile
 import com.android.launcher3.settings.compose.components.SettingsCard
 import com.android.launcher3.settings.compose.components.StatusChip
 import com.android.launcher3.settings.compose.data.LauncherPrefsBridge
-import com.android.launcher3.customization.IconDatabase
 import com.android.launcher3.settings.compose.data.rememberBooleanPref
 import com.android.launcher3.settings.compose.data.rememberStringPref
 import com.android.launcher3.settings.compose.data.rememberThemedIconsState
+import com.android.launcher3.touch.HomeGestureActions
 
 enum class SettingsSubscreen {
     HUB,
@@ -96,6 +99,7 @@ fun HubScreen(
     // 2x2 Quick toggles
     var lockLayout by rememberBooleanPref(key = "pref_workspace_lock", defaultValue = false)
     var sleepGesture by rememberBooleanPref(key = "pref_sleep_gesture", defaultValue = true)
+    val doubleTapAction by rememberStringPref("pref_double_tap_action", HomeGestureActions.SLEEP)
     var themedIcons by rememberThemedIconsState()
     var dockSearch by rememberBooleanPref(key = "pref_dock_search", defaultValue = true)
 
@@ -180,8 +184,8 @@ fun HubScreen(
                 modifier = Modifier.weight(1f)
             )
             QuickToggleTile(
-                title = "Double tap sleep",
-                subtitle = "Turn off screen",
+                title = stringResource(R.string.zl_gesture_double_tap),
+                subtitle = stringResource(homeGestureLabel(doubleTapAction)),
                 checked = sleepGesture,
                 onCheckedChange = { sleepGesture = it },
                 icon = Icons.Rounded.TouchApp,

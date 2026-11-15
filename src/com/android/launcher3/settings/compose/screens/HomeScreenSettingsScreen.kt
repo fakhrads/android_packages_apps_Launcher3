@@ -7,6 +7,7 @@ package com.android.launcher3.settings.compose.screens
 
 import android.content.ComponentName
 import android.content.Intent
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -457,6 +458,17 @@ fun HomeScreenSettingsScreen(
             }
         }
     }
+}
+
+/** The name of a HomeGestureActions action, for the settings. */
+@StringRes
+internal fun homeGestureLabel(action: String): Int = when (action) {
+    HomeGestureActions.NONE -> R.string.zl_gesture_none
+    HomeGestureActions.NOTIFICATIONS -> R.string.zl_gesture_notifications
+    HomeGestureActions.QUICK_SETTINGS -> R.string.zl_gesture_quick_settings
+    HomeGestureActions.APP_DRAWER -> R.string.zl_gesture_app_drawer
+    HomeGestureActions.RECENTS -> R.string.zl_gesture_recents
+    else -> R.string.zl_gesture_sleep
 }
 
 /**
