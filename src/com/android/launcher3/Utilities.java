@@ -156,8 +156,6 @@ public final class Utilities {
 
     private static final String FREEFORM_PACKAGE = "com.libremobileos.freeform";
     private static final String FREEFORM_INTENT = "com.libremobileos.freeform.START_FREEFORM";
-    private static final String ZEROENGINE_PACKAGE = "com.fakhrads.zeroengine";
-    private static final String ZEROENGINE_FLOATING_INTENT = "com.fakhrads.zeroengine.action.OPEN_FLOATING";
 
     /**
      * Returns true if theme is dark.

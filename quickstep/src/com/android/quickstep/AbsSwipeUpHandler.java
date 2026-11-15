@@ -214,8 +214,6 @@ public abstract class AbsSwipeUpHandler<
 
     // Fraction of the scroll and transform animation in which the current task fades out
     private static final float KQS_TASK_FADE_ANIMATION_FRACTION = 0.4f;
-    private static final String ZEROENGINE_FLOATING_INTENT = "com.fakhrads.zeroengine.action.OPEN_FLOATING";
-    private static final String ZEROENGINE_PACKAGE = "com.fakhrads.zeroengine";
     private static final String LMO_FREEFORM_INTENT = "com.libremobileos.freeform.START_FREEFORM";
     private static final String LMO_FREEFORM_PACKAGE = "com.libremobileos.freeform";
     private static final String OVERVIEW_GESTURE_ACTION_SPLIT_SCREEN = "split_screen";

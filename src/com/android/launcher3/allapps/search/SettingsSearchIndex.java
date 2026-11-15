@@ -130,7 +130,6 @@ final class SettingsSearchIndex {
     }
 
     private volatile List<Entry> mEntries;
-    private volatile boolean mFromProviders;
     private Locale mLocale;
     private long mBuiltAt;
     private boolean mBuilding;
@@ -165,7 +164,6 @@ final class SettingsSearchIndex {
                     + (System.currentTimeMillis() - start) + " ms");
             synchronized (SettingsSearchIndex.this) {
                 mEntries = entries;
-                mFromProviders = fromProviders;
                 mLocale = locale;
                 mBuiltAt = System.currentTimeMillis();
                 mBuilding = false;
@@ -220,10 +218,6 @@ final class SettingsSearchIndex {
         if (intent.getComponent() != null) return intent.getComponent().getPackageName();
         if (intent.getPackage() != null) return intent.getPackage();
         return e.packageName;
-    }
-
-    boolean isFromProviders() {
-        return mFromProviders;
     }
 
     private static final class Scored {
