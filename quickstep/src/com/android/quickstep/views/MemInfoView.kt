@@ -143,45 +143,22 @@ class MemInfoView(context: Context, attrs: AttributeSet?) :
         return knownSizes.last()
     }
 
-    private var cachedZramSize: Long = -1L
-
-    private fun getZramSize(): Long {
-        if (!LauncherPrefs.RECENTS_MEMINFO_ZRAM.get(context)) return 0
-        if (cachedZramSize >= 0) return cachedZramSize
-
-        var zramSize = 0L
-
-        try {
-            BufferedReader(FileReader("/sys/block/zram0/disksize")).use { reader ->
-                reader.readLine()?.trim()?.let { zramSize = it.toLong() }
+    /**
+     * The memory ZRAM uses right now, in bytes: mem_used_total, the third field of mm_stat. -1
+     * when it is off or unreadable, so the line leaves ZRAM out instead of showing 0.
+     * disksize, read before, is only the size ZRAM was set up with.
+     */
+    private fun getZramUsed(): Long {
+        if (!LauncherPrefs.RECENTS_MEMINFO_ZRAM.get(context)) return -1
+        return try {
+            BufferedReader(FileReader(ZRAM_MM_STAT)).use { reader ->
+                val fields = reader.readLine()?.trim()?.split(Regex("\\s+")) ?: return -1
+                fields.getOrNull(2)?.toLongOrNull() ?: -1
             }
         } catch (e: IOException) {
-            Log.w(TAG, "Primary ZRAM location failed, trying fallback", e)
-        } catch (e: NumberFormatException) {
-            Log.w(TAG, "Primary ZRAM location failed, trying fallback", e)
+            Log.w(TAG, "Cannot read $ZRAM_MM_STAT", e)
+            -1
         }
-
-        if (zramSize == 0L) {
-            try {
-                BufferedReader(FileReader("/proc/swaps")).use { reader ->
-                    reader.forEachLine { rawLine ->
-                        if (rawLine.contains("zram0")) {
-                            val parts = rawLine.trim().split(Regex("\\s+"))
-                            if (parts.size > 2) {
-                                zramSize = parts[2].toLong() * 1024 // KB to bytes
-                            }
-                        }
-                    }
-                }
-            } catch (e: IOException) {
-                Log.w(TAG, "Fallback ZRAM location not available", e)
-            } catch (e: NumberFormatException) {
-                Log.w(TAG, "Fallback ZRAM location not available", e)
-            }
-        }
-
-        cachedZramSize = zramSize
-        return zramSize
     }
 
     fun setListener(context: Context) {
@@ -219,19 +196,17 @@ class MemInfoView(context: Context, attrs: AttributeSet?) :
 
             view.activityManager.getMemoryInfo(view.memInfo)
             val freeMemory = view.memInfo.availMem
-            val zramSize = view.getZramSize()
+            val zramUsed = view.getZramUsed()
 
             val availResult = Formatter.formatShortFileSize(view.context, freeMemory)
-            val text = if (zramSize > 0) {
-                val zramResult = Formatter.formatShortFileSize(view.context, zramSize)
-                String.format(
-                    Locale.getDefault(),
-                    view.memInfoText,
-                    availResult,
-                    "${view.totalResult} + $zramResult",
-                )
-            } else {
+            val memory =
                 String.format(Locale.getDefault(), view.memInfoText, availResult, view.totalResult)
+            val text = if (zramUsed >= 0) {
+                val zramResult = Formatter.formatShortFileSize(view.context, zramUsed)
+                memory + "  \u00b7  " +
+                    view.context.getString(R.string.zl_meminfo_zram_used, zramResult)
+            } else {
+                memory
             }
 
             MAIN_EXECUTOR.handler.post { view.text = text }
@@ -252,6 +227,7 @@ class MemInfoView(context: Context, attrs: AttributeSet?) :
     companion object {
         private const val TAG = "MemInfoView"
         private const val REFRESH_INTERVAL_MS = 3000L
+        private const val ZRAM_MM_STAT = "/sys/block/zram0/mm_stat"
 
         private const val ALPHA_STATE_CTRL = 0
         const val ALPHA_FS_PROGRESS = 1

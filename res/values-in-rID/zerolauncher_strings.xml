@@ -34,4 +34,7 @@
     <!-- Home screen settings: the haptic when the app drawer opens -->
     <string name="zl_drawer_open_haptic_title">Getar saat laci aplikasi dibuka</string>
     <string name="zl_drawer_open_haptic_summary">Getaran klik saat usapan atau gestur beranda membuka laci aplikasi</string>
+
+    <!-- Memory info in recents: the memory ZRAM uses now, added after the RAM line -->
+    <string name="zl_meminfo_zram_used">ZRAM <xliff:g id="size" example="1,2 GB">%1$s</xliff:g> terpakai</string>
 </resources>

@@ -34,4 +34,7 @@
     <!-- Home screen settings: the haptic when the app drawer opens -->
     <string name="zl_drawer_open_haptic_title">Haptic on app drawer open</string>
     <string name="zl_drawer_open_haptic_summary">A click when a swipe or the home gesture opens the app drawer</string>
+
+    <!-- Memory info in recents: the memory ZRAM uses now, added after the RAM line -->
+    <string name="zl_meminfo_zram_used">ZRAM <xliff:g id="size" example="1.2 GB">%1$s</xliff:g> used</string>
 </resources>
