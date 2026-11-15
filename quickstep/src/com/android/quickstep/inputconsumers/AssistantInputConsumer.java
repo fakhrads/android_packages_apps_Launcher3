@@ -369,7 +369,10 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         final Intent explicit = newAssistIntent().setComponent(assistant);
         Intent intent = pm.resolveActivity(explicit, 0) != null ? explicit : null;
         if (intent == null) {
+            // Limited to the assistant's package: without it ACTION_ASSIST resolves to whichever
+            // app declares it, or to a chooser when there are several
             final Intent implicit = newAssistIntent()
+                    .setPackage(assistant.getPackageName())
                     .putExtra(Intent.EXTRA_ASSIST_PACKAGE, assistant.getPackageName());
             if (pm.resolveActivity(implicit, PackageManager.MATCH_DEFAULT_ONLY) != null) {
                 intent = implicit;
