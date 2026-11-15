@@ -99,6 +99,12 @@ public class StatusBarTouchController implements TouchController {
             cleanupAfterGesture();
             return false;
         }
+        if (ev.getPointerCount() > 1) {
+            // A second finger makes it a pinch (a home screen gesture), not a pull on the shade
+            mCanIntercept = false;
+            cleanupAfterGesture();
+            return false;
+        }
 
         mEventDispatcher.dispatchEvent(ev);
 
