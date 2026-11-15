@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 Fakhri Adi Saputra
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Layout backup and restore -->
+    <string name="zl_backup_saved">Cadangan disimpan</string>
+    <string name="zl_backup_failed">Gagal mencadangkan: <xliff:g id="reason" example="File tidak bisa dibuka">%1$s</xliff:g></string>
+    <string name="zl_restore_failed">Gagal memulihkan: <xliff:g id="reason" example="Cadangan ini rusak">%1$s</xliff:g></string>
+    <string name="zl_backup_error_open">File tidak bisa dibuka</string>
+    <string name="zl_backup_error_not_backup">File ini bukan cadangan ZeroLauncher</string>
+    <string name="zl_backup_error_newer">Cadangan ini dari ZeroLauncher yang lebih baru</string>
+    <string name="zl_backup_error_damaged">Cadangan ini rusak</string>
+    <string name="zl_backup_error_no_layout">Cadangan ini tidak berisi tata letak layar utama</string>
+    <string name="zl_backup_error_too_large">Cadangan ini terlalu besar</string>
+    <string name="zl_backup_error_bad_value">Cadangan ini berisi nilai yang tidak valid untuk <xliff:g id="setting" example="pref_custom_icon_size">%1$s</xliff:g></string>
+</resources>

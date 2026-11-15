@@ -12,7 +12,7 @@ import com.android.launcher3.util.ComponentKey;
 
 public class IconDatabase {
 
-    private static final String PREF_FILE_NAME = BuildConfig.APPLICATION_ID + ".ICON_DATABASE";
+    public static final String PREF_FILE_NAME = BuildConfig.APPLICATION_ID + ".ICON_DATABASE";
     public static final String KEY_ICON_PACK = "pref_icon_pack";
     public static final String VALUE_DEFAULT = "";
     private static final String DRAWABLE_SEPARATOR = "::";

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 Fakhri Adi Saputra
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!-- Layout backup and restore -->
+    <string name="zl_backup_saved">Backup saved</string>
+    <string name="zl_backup_failed">Backup failed: <xliff:g id="reason" example="The file could not be opened">%1$s</xliff:g></string>
+    <string name="zl_restore_failed">Restore failed: <xliff:g id="reason" example="The backup is damaged">%1$s</xliff:g></string>
+    <string name="zl_backup_error_open">The file could not be opened</string>
+    <string name="zl_backup_error_not_backup">This file is not a ZeroLauncher backup</string>
+    <string name="zl_backup_error_newer">The backup is from a newer ZeroLauncher</string>
+    <string name="zl_backup_error_damaged">The backup is damaged</string>
+    <string name="zl_backup_error_no_layout">The backup has no home screen layout</string>
+    <string name="zl_backup_error_too_large">The backup is too large</string>
+    <string name="zl_backup_error_bad_value">The backup has an invalid value for <xliff:g id="setting" example="pref_custom_icon_size">%1$s</xliff:g></string>
+</resources>

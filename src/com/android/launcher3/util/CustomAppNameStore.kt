@@ -16,7 +16,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo
 
 object CustomAppNameStore {
 
-    private const val CUSTOM_NAMES_PREFS = "custom_app_names"
+    const val CUSTOM_NAMES_PREFS = "custom_app_names"
 
     @JvmStatic
     fun supportsCustomName(info: ItemInfo?): Boolean =
