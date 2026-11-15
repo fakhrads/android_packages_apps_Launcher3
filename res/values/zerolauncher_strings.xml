@@ -30,4 +30,8 @@
     <string name="zl_gesture_quick_settings">Quick settings</string>
     <string name="zl_gesture_app_drawer">App drawer</string>
     <string name="zl_gesture_recents">Recents</string>
+
+    <!-- Home screen settings: the haptic when the app drawer opens -->
+    <string name="zl_drawer_open_haptic_title">Haptic on app drawer open</string>
+    <string name="zl_drawer_open_haptic_summary">A click when a swipe or the home gesture opens the app drawer</string>
 </resources>

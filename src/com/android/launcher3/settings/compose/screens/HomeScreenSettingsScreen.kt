@@ -89,6 +89,7 @@ fun HomeScreenSettingsScreen(
     var doubleTapAction by rememberStringPref("pref_double_tap_action", "sleep")
     var pinchAction by rememberStringPref("pref_pinch_action", "none")
     var iconTapHaptic by rememberBooleanPref("pref_icon_tap_haptic", true)
+    var drawerOpenHaptic by rememberBooleanPref("pref_drawer_open_haptic", true)
 
     var wallpaperCarousel by rememberBooleanPref("pref_wallpaper_carousel", true)
     var carouselLockscreen by rememberBooleanPref("pref_wallpaper_carousel_lockscreen", true)
@@ -225,6 +226,12 @@ fun HomeScreenSettingsScreen(
                         "dock or app drawer",
                     checked = iconTapHaptic,
                     onCheckedChange = { iconTapHaptic = it }
+                )
+                SettingSwitch(
+                    title = stringResource(R.string.zl_drawer_open_haptic_title),
+                    subtitle = stringResource(R.string.zl_drawer_open_haptic_summary),
+                    checked = drawerOpenHaptic,
+                    onCheckedChange = { drawerOpenHaptic = it }
                 )
             }
 

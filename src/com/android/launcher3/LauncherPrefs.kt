@@ -333,6 +333,8 @@ constructor(@ApplicationContext private val encryptedContext: Context) {
         @JvmField val BOUNCY_STRENGTH = backedUpItem("pref_bouncy_strength", 100)
         @JvmField val BOUNCY_SPEED = backedUpItem("pref_bouncy_speed", 100)
         @JvmField val ICON_TAP_HAPTIC = backedUpItem("pref_icon_tap_haptic", true)
+        /** The click when a swipe or the home gesture opens the app drawer. */
+        @JvmField val DRAWER_OPEN_HAPTIC = backedUpItem("pref_drawer_open_haptic", true)
         @JvmField val OVERVIEW_GESTURE_ACTION = backedUpItem("pref_overview_gesture_action", "freeform")
         @JvmField val FREEFORM_GESTURE_PROGRESS = backedUpItem("pref_start_freeform_progress", 20)
         @JvmField val SWIPE_DOWN_TO_LOCK = backedUpItem("pref_swipe_down_to_lock", false)

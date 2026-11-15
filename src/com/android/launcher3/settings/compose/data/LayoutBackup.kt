@@ -237,7 +237,7 @@ object LayoutBackup {
             LauncherPrefs.CORNER_SWIPE_ACTION, LauncherPrefs.MOTION_STYLE,
             LauncherPrefs.MOTION_RESPONSE, LauncherPrefs.SURFACE_TRANSLUCENCY,
             LauncherPrefs.BOUNCY_ANIMATIONS, LauncherPrefs.BOUNCY_STRENGTH,
-            LauncherPrefs.BOUNCY_SPEED, LauncherPrefs.ICON_TAP_HAPTIC,
+            LauncherPrefs.BOUNCY_SPEED, LauncherPrefs.ICON_TAP_HAPTIC, LauncherPrefs.DRAWER_OPEN_HAPTIC,
             LauncherPrefs.OVERVIEW_GESTURE_ACTION, LauncherPrefs.FREEFORM_GESTURE_PROGRESS,
             LauncherPrefs.SWIPE_DOWN_TO_LOCK, LauncherPrefs.HOTSEAT_OPACITY,
             LauncherPrefs.HOTSEAT_QSB_OPACITY, LauncherPrefs.HOTSEAT_QSB_OUTER_OPACITY,

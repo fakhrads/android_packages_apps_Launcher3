@@ -3900,7 +3900,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (getNextPage() != page) {
                 snapToPage(page);
             } else if (mLauncher.canOpenAllApps()) {
-                if (!mLauncher.isInState(ALL_APPS)) {
+                if (!mLauncher.isInState(ALL_APPS)
+                        && LauncherPrefs.DRAWER_OPEN_HAPTIC.get(mLauncher)) {
                     VibratorWrapper.INSTANCE.get(mLauncher).vibrate(VibratorWrapper.EFFECT_CLICK);
                 }
                 mLauncher.getStateManager().goToState(ALL_APPS);

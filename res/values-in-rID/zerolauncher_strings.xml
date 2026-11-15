@@ -30,4 +30,8 @@
     <string name="zl_gesture_quick_settings">Setelan cepat</string>
     <string name="zl_gesture_app_drawer">Laci aplikasi</string>
     <string name="zl_gesture_recents">Aplikasi terbaru</string>
+
+    <!-- Home screen settings: the haptic when the app drawer opens -->
+    <string name="zl_drawer_open_haptic_title">Getar saat laci aplikasi dibuka</string>
+    <string name="zl_drawer_open_haptic_summary">Getaran klik saat usapan atau gestur beranda membuka laci aplikasi</string>
 </resources>

@@ -40,6 +40,7 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -366,7 +367,8 @@ public abstract class AbstractStateChangeTouchController
         anim.setFloatValues(startProgress, endProgress);
         updateSwipeCompleteAnimation(anim, duration, targetState, velocity, fling);
         mCurrentAnimation.dispatchOnStart();
-        if (targetState == LauncherState.ALL_APPS && mStartState != ALL_APPS) {
+        if (targetState == LauncherState.ALL_APPS && mStartState != ALL_APPS
+                && LauncherPrefs.DRAWER_OPEN_HAPTIC.get(mLauncher)) {
             VibratorWrapper.INSTANCE.get(mLauncher).vibrate(VibratorWrapper.EFFECT_CLICK);
         }
         if (targetState == LauncherState.ALL_APPS) {

@@ -79,6 +79,8 @@ object SettingsSearchIndex {
             "gesture zoom sleep notifications quick settings drawer recents")
         add(home, "Gestures", "Haptic on icon tap",
             "Light vibration when opening an app or folder from home", "vibrate")
+        add(home, "Gestures", s(R.string.zl_drawer_open_haptic_title),
+            s(R.string.zl_drawer_open_haptic_summary), "vibrate all apps swipe")
         add(home, "Wallpaper", s(R.string.wallpaper_carousel_title),
             s(R.string.wallpaper_carousel_summary), "rotate change")
         add(home, "Wallpaper", s(R.string.wallpaper_carousel_lockscreen_title),
