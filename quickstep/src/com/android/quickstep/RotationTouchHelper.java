@@ -209,6 +209,10 @@ public class RotationTouchHelper {
         return mOrientationTouchTransformer.touchInAssistantRegion(ev);
     }
 
+    public boolean touchInAssistantRegionEdge(MotionEvent ev) {
+        return mOrientationTouchTransformer.touchInAssistantRegionEdge(ev);
+    }
+
     public boolean touchInOneHandedModeRegion(MotionEvent ev) {
         return mOrientationTouchTransformer.touchInOneHandedModeRegion(ev);
     }

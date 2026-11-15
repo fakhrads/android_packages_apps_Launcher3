@@ -317,6 +317,14 @@ class OrientationTouchTransformer {
 
     }
 
+    /** Whether the touch is in the outer half of an assistant corner, next to the screen edge. */
+    boolean touchInAssistantRegionEdge(MotionEvent ev) {
+        float x = ev.getX();
+        float y = ev.getY();
+        return (mAssistantLeftRegion.contains(x, y) && x < mAssistantLeftRegion.centerX())
+                || (mAssistantRightRegion.contains(x, y) && x > mAssistantRightRegion.centerX());
+    }
+
     boolean touchInOneHandedModeRegion(MotionEvent ev) {
         return mOneHandedModeRegion.contains(ev.getX(), ev.getY());
     }

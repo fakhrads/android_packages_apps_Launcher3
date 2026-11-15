@@ -619,6 +619,14 @@ public class RecentsAnimationDeviceState implements ExclusionListener {
     }
 
     /**
+     * @param ev An ACTION_DOWN motion event
+     * @return whether it is in the outer half of an assistant corner, next to the screen edge
+     */
+    public boolean isInAssistantRegionEdge(MotionEvent ev) {
+        return mRotationTouchHelper.touchInAssistantRegionEdge(ev);
+    }
+
+    /**
      * One handed gestural in quickstep only active on NO_BUTTON, TWO_BUTTONS, and portrait mode
      *
      * @param ev The touch screen motion event.

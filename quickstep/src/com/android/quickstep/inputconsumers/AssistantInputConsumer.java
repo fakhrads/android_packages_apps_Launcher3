@@ -79,6 +79,8 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
 
     private static final String TAG = "AssistantInputConsumer";
     private static final long RETRACT_ANIMATION_DURATION_MS = 300;
+    // From this angle up a corner swipe counts as straight up, see isValidAssistantGestureAngle
+    private static final float STRAIGHT_UP_DEG = 85;
 
     // From //java/com/google/android/apps/gsa/search/shared/util/OpaContract.java.
     private static final String OPA_BUNDLE_TRIGGER = "triggered_by";
@@ -106,6 +108,8 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private final Context mContext;
     private final Consumer<MotionEvent> mGestureDetector;
     private final boolean mCornerSwipeCts;
+    // Whether the swipe started in the outer half of the corner, where straight up counts
+    private final boolean mStraightUpAllowed;
     // Resolved when the swipe starts, so completing the gesture does not pay to resolve it.
     private ContextualSearchInvoker mCtsInvoker;
 
@@ -120,6 +124,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         final Resources res = context.getResources();
         mContext = context;
         mCornerSwipeCts = "cts".equals(LauncherPrefs.CORNER_SWIPE_ACTION.get(context));
+        mStraightUpAllowed = deviceState.isInAssistantRegionEdge(startEvent);
         mDragDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mFlingDistThreshold = res.getDimension(R.dimen.gestures_assistant_fling_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
@@ -418,11 +423,13 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         // normalize so that angle is measured clockwise from horizontal in the bottom right corner
         // and counterclockwise from horizontal in the bottom left corner
         angle = angle > 90 ? 180 - angle : angle;
+        if (angle <= mAngleThreshold || angle > 90) return false;
         // `angle < 90` rejected a straight up swipe from the corner: atan2 gives exactly 90 when the
-        // finger does not drift sideways, so the gesture that users actually make fell through to
-        // the home consumer. Accept vertical; the region check above already keeps this gesture
-        // inside the 48dp corner areas.
-        return (angle > mAngleThreshold && angle <= 90);
+        // finger does not drift sideways, and that is the gesture users make from the very corner.
+        // But a home swipe that starts near the side of the screen is straight up too, so a
+        // (nearly) straight swipe counts only from the outer half of the 48dp corner, next to the
+        // screen edge, where a home swipe hardly starts. A diagonal one counts in the whole corner.
+        return angle < STRAIGHT_UP_DEG || mStraightUpAllowed;
     }
 
     private boolean sendEvent(int action, int code, int flags) {
