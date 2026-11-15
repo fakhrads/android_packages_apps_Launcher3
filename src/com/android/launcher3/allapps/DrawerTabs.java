@@ -28,7 +28,9 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * The tabs above the app drawer list: All, the tabs the user made, and (when on) one per app
@@ -64,12 +66,24 @@ public final class DrawerTabs {
         public final String title;
         @Nullable public final Set<String> apps;
         public final boolean custom;
+        /**
+         * This tab as the filter of the app lists, null for All. One object per tab, so a list
+         * can tell that it already has this filter.
+         */
+        @Nullable public final Predicate<ItemInfo> filter;
 
         Tab(String id, String title, @Nullable Set<String> apps, boolean custom) {
             this.id = id;
             this.title = title;
             this.apps = apps;
             this.custom = custom;
+            this.filter = apps == null ? null : this::matches;
+        }
+
+        /** Whether the tab has the same name and apps as {@code other}. */
+        public boolean sameAs(Tab other) {
+            return id.equals(other.id) && title.equals(other.title) && custom == other.custom
+                    && Objects.equals(apps, other.apps);
         }
 
         public boolean matches(ItemInfo info) {

@@ -153,6 +153,9 @@ public class DrawerTabsRowView extends HorizontalScrollView implements FloatingH
     }
 
     private void applyTabs(List<DrawerTabs.Tab> tabs) {
+        // Every app update builds the tabs again; most of the time they are the same, and
+        // keeping the old ones keeps their filters, so the lists are not filtered again
+        if (sameTabs(mTabs, tabs)) return;
         mTabs = tabs;
         if (findTab(mSelectedId) == null) {
             mSelectedId = DrawerTabs.ALL;
@@ -171,6 +174,14 @@ public class DrawerTabsRowView extends HorizontalScrollView implements FloatingH
         }
         applyFilter(false);
         updateSwipeRecyclerView();
+    }
+
+    private static boolean sameTabs(List<DrawerTabs.Tab> a, List<DrawerTabs.Tab> b) {
+        if (a.size() != b.size()) return false;
+        for (int i = 0; i < a.size(); i++) {
+            if (!a.get(i).sameAs(b.get(i))) return false;
+        }
+        return true;
     }
 
     private TextView createPill(DrawerTabs.Tab tab) {
@@ -275,7 +286,7 @@ public class DrawerTabsRowView extends HorizontalScrollView implements FloatingH
         DrawerTabs.Tab tab = findTab(mSelectedId);
         ActivityAllAppsContainerView<?> appsView = mActivityContext.getAppsView();
         if (appsView == null) return;
-        appsView.setDrawerTabFilter(tab == null || tab.apps == null ? null : tab::matches);
+        appsView.setDrawerTabFilter(tab == null ? null : tab.filter);
         if (scrollToTop && appsView.getActiveRecyclerView() != null) {
             appsView.getActiveRecyclerView().scrollToTop();
         }
