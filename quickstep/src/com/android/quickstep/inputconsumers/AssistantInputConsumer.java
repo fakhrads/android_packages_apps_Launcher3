@@ -55,6 +55,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import androidx.annotation.WorkerThread;
+
 import com.android.app.animation.Interpolators;
 import com.android.internal.app.AssistUtils;
 import com.android.launcher3.LauncherPrefs;
@@ -295,23 +297,31 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         // for the home long press as soon as Contextual Search exists (see
         // SystemUiProxy.setAssistantOverridesRequested), so the injected key event below lands
         // nowhere on a device that has Contextual Search.
-        if (startConfiguredAssistant()) {
-            // Clear the assistant invocation lights started by the swipe progress.
-            SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(0f);
-            performGestureEndHaptic();
-            mLaunchedAssistant = true;
-            return;
-        }
-        SystemUiProxy.INSTANCE.get(mContext).onAssistantGestureCompletion(velocity);
-        startAssistantInternal();
+        // Finding and starting it takes binder calls, so not on the touch (main) thread; the
+        // gesture counts as done right away, so it cannot complete twice meanwhile.
+        performGestureEndHaptic();
+        mLaunchedAssistant = true;
+        Executors.UI_HELPER_EXECUTOR.execute(() -> {
+            boolean started = startConfiguredAssistant();
+            Executors.MAIN_EXECUTOR.execute(() -> {
+                if (started) {
+                    // Clear the assistant invocation lights started by the swipe progress.
+                    SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(0f);
+                } else {
+                    SystemUiProxy.INSTANCE.get(mContext).onAssistantGestureCompletion(velocity);
+                    sendLongSwipeHome();
+                }
+            });
+        });
     }
 
     /**
      * Starts the assistant named by the assistant setting: its voice session when it is a voice
-     * interaction service, else its assist activity.
+     * interaction service, else its assist activity. Binder calls: on UI_HELPER_EXECUTOR.
      *
-     * @return whether the assistant was started, or is being started in the background
+     * @return whether the assistant was started
      */
+    @WorkerThread
     private boolean startConfiguredAssistant() {
         final AssistUtils assistUtils = new AssistUtils(mContext);
         final ComponentName assistant = assistUtils.getAssistComponentForUser(UserHandle.myUserId());
@@ -331,34 +341,33 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
 
     /**
      * Shows the voice session of the active assistant the way SystemUI's AssistManager does for the
-     * assist gesture. The binder call goes off the touch thread, and when the system does not show a
-     * session (the service is not running, or is disabled for now) the assist activity is started
-     * instead, so the swipe never ends in nothing.
+     * assist gesture. When the system does not show a session (the service is not running, or is
+     * disabled for now) the assist activity is started instead, so the swipe never ends in nothing.
      */
+    @WorkerThread
     private void showAssistantSession(AssistUtils assistUtils, ComponentName assistant) {
         final Bundle args = new Bundle();
         args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
         args.putLong("invocation_time_ms", SystemClock.elapsedRealtime());
         args.putInt(Intent.EXTRA_ASSIST_DISPLAY_ID, mContext.getDisplayId());
-        Executors.UI_HELPER_EXECUTOR.execute(() -> {
-            boolean shown = false;
-            try {
-                shown = assistUtils.showSessionForActiveService(args,
-                        VoiceInteractionSession.SHOW_SOURCE_ASSIST_GESTURE,
-                        mContext.getAttributionTag(), null, null);
-            } catch (RuntimeException e) {
-                Log.w(TAG, "Cannot show the session of " + assistant.flattenToShortString(), e);
-            }
-            if (shown) {
-                Log.i(TAG, "Showed the assistant session of " + assistant.flattenToShortString());
-            } else {
-                Log.w(TAG, "No session shown for " + assistant.flattenToShortString()
-                        + ", starting its assist activity");
-                startAssistActivity(assistant);
-            }
-        });
+        boolean shown = false;
+        try {
+            shown = assistUtils.showSessionForActiveService(args,
+                    VoiceInteractionSession.SHOW_SOURCE_ASSIST_GESTURE,
+                    mContext.getAttributionTag(), null, null);
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Cannot show the session of " + assistant.flattenToShortString(), e);
+        }
+        if (shown) {
+            Log.i(TAG, "Showed the assistant session of " + assistant.flattenToShortString());
+        } else {
+            Log.w(TAG, "No session shown for " + assistant.flattenToShortString()
+                    + ", starting its assist activity");
+            startAssistActivity(assistant);
+        }
     }
 
+    @WorkerThread
     private boolean startAssistActivity(ComponentName assistant) {
         final PackageManager pm = mContext.getPackageManager();
         // The assistant setting normally names the assistant's VoiceInteractionService, not an
@@ -401,11 +410,10 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
                 .putExtra(INVOCATION_TYPE_KEY, INVOCATION_TYPE_GESTURE);
     }
 
-    private void startAssistantInternal() {
+    /** The key events SystemUI and the window manager take as the assistant gesture. */
+    private void sendLongSwipeHome() {
         sendEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HOME, KeyEvent.FLAG_LONG_SWIPE);
         sendEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HOME, KeyEvent.FLAG_LONG_SWIPE);
-        performGestureEndHaptic();
-        mLaunchedAssistant = true;
     }
 
     private void performGestureEndHaptic() {
