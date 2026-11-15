@@ -138,8 +138,11 @@ object LayoutBackup {
             while (names.hasNext()) {
                 val name = names.next()
                 if (!SAFE_NAME.matches(name) || name in EXCLUDED_PREFS) continue
-                val editor = context.getSharedPreferences(name, Context.MODE_PRIVATE).edit().clear()
+                val sp = context.getSharedPreferences(name, Context.MODE_PRIVATE)
                 val values = prefs.getJSONObject(name)
+                // Not clear(): listeners get a null key for it, and some call key.equals()
+                val editor = sp.edit()
+                for (stale in sp.all.keys) if (!values.has(stale)) editor.remove(stale)
                 val keys = values.keys()
                 while (keys.hasNext()) {
                     val key = keys.next()

@@ -277,10 +277,9 @@ public class SettingsIcons extends CollapsingToolbarBaseActivity
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-            switch (key) {
-                case IconDatabase.KEY_ICON_PACK:
-                    updatePreferences();
-                    break;
+            // key is null after Editor.clear(), which a switch on a String does not survive
+            if (IconDatabase.KEY_ICON_PACK.equals(key)) {
+                updatePreferences();
             }
         }
 

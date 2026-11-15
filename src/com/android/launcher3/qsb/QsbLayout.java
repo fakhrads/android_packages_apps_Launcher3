@@ -101,10 +101,11 @@ public class QsbLayout extends FrameLayout implements Reorderable, SharedPrefere
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (key.equals(LauncherPrefs.DOCK_MUSIC_SEARCH.getSharedPrefKey())
-                || key.equals(LauncherPrefs.DOCK_THEME.getSharedPrefKey())) {
+        // key is null after Editor.clear() on targets from R on
+        if (LauncherPrefs.DOCK_MUSIC_SEARCH.getSharedPrefKey().equals(key)
+                || LauncherPrefs.DOCK_THEME.getSharedPrefKey().equals(key)) {
             setIcons();
-        } else if (key.equals(LauncherPrefs.QSB_OUTER_OPACITY.getSharedPrefKey())) {
+        } else if (LauncherPrefs.QSB_OUTER_OPACITY.getSharedPrefKey().equals(key)) {
             // Update the drawable if it's already set
             View parent = (View) getParent();
             if (parent != null && parent.getBackground() instanceof QsbOuterDrawable) {
