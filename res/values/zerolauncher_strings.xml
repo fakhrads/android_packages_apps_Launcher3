@@ -16,4 +16,9 @@
     <string name="zl_backup_error_no_layout">The backup has no home screen layout</string>
     <string name="zl_backup_error_too_large">The backup is too large</string>
     <string name="zl_backup_error_bad_value">The backup has an invalid value for <xliff:g id="setting" example="pref_custom_icon_size">%1$s</xliff:g></string>
+
+    <!-- Hidden apps list: the sections of apps of other profiles -->
+    <string name="zl_profile_work">Work profile</string>
+    <string name="zl_profile_private">Private space</string>
+    <string name="zl_profile_other">Other profile</string>
 </resources>

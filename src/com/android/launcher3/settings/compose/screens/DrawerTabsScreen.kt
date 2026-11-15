@@ -186,7 +186,7 @@ fun DrawerTabAppsScreen(
                     }
                 }
             }
-            items(apps.orEmpty(), key = { it.key }) { app ->
+            items(apps.orEmpty(), key = { it.rowKey }) { app ->
                 val inTab = members.contains(app.key)
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

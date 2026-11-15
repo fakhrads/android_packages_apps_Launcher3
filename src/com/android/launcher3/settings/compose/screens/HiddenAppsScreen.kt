@@ -12,6 +12,8 @@ import android.content.pm.LauncherApps
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Process
+import android.os.UserHandle
+import android.os.UserManager
 import androidx.annotation.WorkerThread
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -47,33 +49,73 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.android.launcher3.AppFilter
+import com.android.launcher3.R
 import com.android.launcher3.settings.compose.components.ScreenScaffold
 import java.text.Collator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-/** A launchable app of the personal profile, for the app lists of the settings. */
-internal class LauncherAppEntry(val info: LauncherActivityInfo, val label: String) {
+/** A launchable app, for the app lists of the settings. */
+internal class LauncherAppEntry(
+    val info: LauncherActivityInfo,
+    val label: String,
+    /** The name of the app's profile, null for the personal one. */
+    val profile: String? = null,
+) {
     val component: ComponentName = info.componentName
+    /** Hidden apps and drawer tabs are stored by component, for every profile. */
     val key: String = component.flattenToShortString()
+    /** One row per profile, for list keys. */
+    val rowKey: String = key + "#" + info.user.hashCode()
 }
 
-/** The launchable apps sorted by label. Slow, so not on the main thread. */
+/**
+ * The launchable apps sorted by label: the personal profile's, then, with [allProfiles], those of
+ * every other profile that is running (a work profile, an unlocked private space). Slow, so not
+ * on the main thread.
+ */
 @WorkerThread
-internal fun loadLauncherApps(context: Context): List<LauncherAppEntry> {
+internal fun loadLauncherApps(context: Context, allProfiles: Boolean = false): List<LauncherAppEntry> {
     val launcherApps = context.getSystemService(LauncherApps::class.java)
+    val userManager = context.getSystemService(UserManager::class.java)
     val collator = Collator.getInstance()
+    val me = Process.myUserHandle()
+    val users = ArrayList<UserHandle>()
+    users.add(me)
+    if (allProfiles) userManager.userProfiles.filterTo(users) { it != me }
     val apps = ArrayList<LauncherAppEntry>()
-    for (info in launcherApps.getActivityList(null, Process.myUserHandle())) {
-        apps.add(LauncherAppEntry(info, info.label.toString()))
+    for (user in users) {
+        if (user != me && userManager.isQuietModeEnabled(user)) continue
+        val profile = if (user == me) null else profileName(context, launcherApps, user)
+        val section = ArrayList<LauncherAppEntry>()
+        for (info in launcherApps.getActivityList(null, user)) {
+            section.add(LauncherAppEntry(info, info.label.toString(), profile))
+        }
+        section.sortWith { a, b -> collator.compare(a.label, b.label) }
+        apps.addAll(section)
     }
-    apps.sortWith { a, b -> collator.compare(a.label, b.label) }
     return apps
+}
+
+private fun profileName(context: Context, launcherApps: LauncherApps, user: UserHandle): String {
+    val type = try {
+        launcherApps.getLauncherUserInfo(user)?.userType
+    } catch (e: RuntimeException) {
+        null
+    }
+    return context.getString(
+        when (type) {
+            UserManager.USER_TYPE_PROFILE_MANAGED -> R.string.zl_profile_work
+            UserManager.USER_TYPE_PROFILE_PRIVATE -> R.string.zl_profile_private
+            else -> R.string.zl_profile_other
+        }
+    )
 }
 
 @WorkerThread
 internal fun appIconBitmap(info: LauncherActivityInfo, sizePx: Int): ImageBitmap {
-    val drawable = info.getIcon(0)
+    // Badged, so apps of a work profile carry its badge
+    val drawable = info.getBadgedIcon(0)
     val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
     drawable.setBounds(0, 0, sizePx, sizePx)
     drawable.draw(Canvas(bitmap))
@@ -82,10 +124,10 @@ internal fun appIconBitmap(info: LauncherActivityInfo, sizePx: Int): ImageBitmap
 
 /** The apps of [loadLauncherApps], loaded off the main thread; null until they are there. */
 @Composable
-internal fun rememberLauncherApps(): List<LauncherAppEntry>? {
+internal fun rememberLauncherApps(allProfiles: Boolean = false): List<LauncherAppEntry>? {
     val context = LocalContext.current
-    val apps by produceState<List<LauncherAppEntry>?>(null) {
-        value = withContext(Dispatchers.IO) { loadLauncherApps(context) }
+    val apps by produceState<List<LauncherAppEntry>?>(null, allProfiles) {
+        value = withContext(Dispatchers.IO) { loadLauncherApps(context, allProfiles) }
     }
     return apps
 }
@@ -93,7 +135,7 @@ internal fun rememberLauncherApps(): List<LauncherAppEntry>? {
 /** An app's icon, drawn off the main thread; null until it is there. */
 @Composable
 internal fun rememberAppIcon(app: LauncherAppEntry, sizePx: Int): ImageBitmap? {
-    val icon by produceState<ImageBitmap?>(null, app.key, sizePx) {
+    val icon by produceState<ImageBitmap?>(null, app.rowKey, sizePx) {
         value = withContext(Dispatchers.IO) {
             try {
                 appIconBitmap(app.info, sizePx)
@@ -123,7 +165,7 @@ fun HiddenAppsScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val apps = rememberLauncherApps()
+    val apps = rememberLauncherApps(allProfiles = true)
     var hidden by remember { mutableStateOf(AppFilter.hiddenApps(context)) }
     // The model reloads once when the list closes, not for every switch
     var changed by remember { mutableStateOf(false) }
@@ -155,29 +197,41 @@ fun HiddenAppsScreen(
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
             }
-            items(apps.orEmpty(), key = { it.key }) { app ->
-                val isHidden = hidden.contains(app.key)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .clickable { setHidden(app, !isHidden) }
-                        .padding(horizontal = 8.dp, vertical = 6.dp)
-                ) {
-                    AppRowIcon(app, iconSizePx)
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        text = app.label,
-                        style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Switch(
-                        checked = isHidden,
-                        onCheckedChange = { checked -> setHidden(app, checked) }
-                    )
+            for ((profile, profileApps) in apps.orEmpty().groupBy { it.profile }) {
+                if (profile != null) {
+                    item(key = "profile:$profile", contentType = "profile") {
+                        Text(
+                            text = profile,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(start = 8.dp, top = 16.dp, bottom = 4.dp)
+                        )
+                    }
+                }
+                items(profileApps, key = { it.rowKey }) { app ->
+                    val isHidden = hidden.contains(app.key)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .clickable { setHidden(app, !isHidden) }
+                            .padding(horizontal = 8.dp, vertical = 6.dp)
+                    ) {
+                        AppRowIcon(app, iconSizePx)
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text(
+                            text = app.label,
+                            style = MaterialTheme.typography.bodyLarge,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Switch(
+                            checked = isHidden,
+                            onCheckedChange = { checked -> setHidden(app, checked) }
+                        )
+                    }
                 }
             }
         }
