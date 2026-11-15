@@ -5,6 +5,7 @@
 package com.android.launcher3.quickspace;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.app.ActivityOptions;
 import android.app.PendingIntent;
@@ -83,7 +84,8 @@ public class GoogleSmartspaceClient implements SmartspaceSession.OnTargetsAvaila
                     new SmartspaceConfig.Builder(mContext, UI_SURFACE_HOME)
                             .setSmartspaceTargetCount(TARGET_COUNT)
                             .build());
-            mSession.addOnTargetsAvailableListener(MAIN_EXECUTOR, this);
+            // Off the main thread: making the cards loads their icons
+            mSession.addOnTargetsAvailableListener(UI_HELPER_EXECUTOR, this);
             mSession.requestSmartspaceUpdate();
         } catch (RuntimeException e) {
             Log.w(TAG, "could not open a smartspace session", e);
@@ -129,6 +131,7 @@ public class GoogleSmartspaceClient implements SmartspaceSession.OnTargetsAvaila
         return mEvent;
     }
 
+    /** Called on UI_HELPER_EXECUTOR; the cards are handed to the main thread. */
     @Override
     public void onTargetsAvailable(List<SmartspaceTarget> targets) {
         Card weather = null;
@@ -153,9 +156,15 @@ public class GoogleSmartspaceClient implements SmartspaceSession.OnTargetsAvaila
         }
         Log.i(TAG, targets.size() + " targets, weather=" + (weather != null)
                 + " event=" + (event != null));
-        mWeather = weather;
-        mEvent = event;
-        mCallback.onSmartspaceUpdated();
+        Card newWeather = weather;
+        Card newEvent = event;
+        MAIN_EXECUTOR.execute(() -> {
+            // Stopped while the cards were made
+            if (mSession == null) return;
+            mWeather = newWeather;
+            mEvent = newEvent;
+            mCallback.onSmartspaceUpdated();
+        });
     }
 
     private Card toCard(SmartspaceTarget target) {
