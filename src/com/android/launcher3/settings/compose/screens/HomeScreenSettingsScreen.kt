@@ -206,7 +206,7 @@ fun HomeScreenSettingsScreen(
                     onCheckedChange = { sleepGesture = it }
                 )
                 ChoiceList(
-                    choices = homeGestureChoices(withNone = false),
+                    choices = homeGestureChoices(withNone = false, withDrawer = !iosDrawer),
                     selected = doubleTapAction,
                     onSelect = { doubleTapAction = it },
                     enabled = sleepGesture
@@ -232,7 +232,7 @@ fun HomeScreenSettingsScreen(
                 icon = Icons.Rounded.TouchApp
             ) {
                 ChoiceList(
-                    choices = homeGestureChoices(withNone = true),
+                    choices = homeGestureChoices(withNone = true, withDrawer = !iosDrawer),
                     selected = pinchAction,
                     onSelect = { pinchAction = it }
                 )
@@ -389,14 +389,16 @@ fun HomeScreenSettingsScreen(
                 )
                 SettingSwitch(
                     title = "Search bar opens drawer search",
-                    subtitle = if (dockSearchLauncher) {
+                    subtitle = if (iosDrawer) {
+                        "The iOS drawer style has no app drawer, so the bar opens the Google app"
+                    } else if (dockSearchLauncher) {
                         "Search apps, settings, shortcuts and contacts in the app drawer"
                     } else {
                         "Opens the Google app"
                     },
-                    checked = dockSearchLauncher,
+                    checked = dockSearchLauncher && !iosDrawer,
                     onCheckedChange = { dockSearchLauncher = it },
-                    enabled = dockSearch
+                    enabled = dockSearch && !iosDrawer
                 )
                 SettingSlider(
                     title = "Search bar opacity",
@@ -457,8 +459,11 @@ fun HomeScreenSettingsScreen(
     }
 }
 
-/** Actions of HomeGestureActions, for the double tap and the pinch. */
-private fun homeGestureChoices(withNone: Boolean): List<ChoiceItem<String>> {
+/**
+ * Actions of HomeGestureActions, for the double tap and the pinch. The iOS drawer style has no
+ * app drawer to open, so [withDrawer] is false for it.
+ */
+private fun homeGestureChoices(withNone: Boolean, withDrawer: Boolean): List<ChoiceItem<String>> {
     val choices = ArrayList<ChoiceItem<String>>()
     if (withNone) {
         choices.add(ChoiceItem(HomeGestureActions.NONE, "Nothing", icon = Icons.Rounded.Block))
@@ -469,7 +474,9 @@ private fun homeGestureChoices(withNone: Boolean): List<ChoiceItem<String>> {
         icon = Icons.Rounded.Notifications))
     choices.add(ChoiceItem(HomeGestureActions.QUICK_SETTINGS, "Quick settings",
         icon = Icons.Rounded.Tune))
-    choices.add(ChoiceItem(HomeGestureActions.APP_DRAWER, "App drawer", icon = Icons.Rounded.Apps))
+    if (withDrawer) {
+        choices.add(ChoiceItem(HomeGestureActions.APP_DRAWER, "App drawer", icon = Icons.Rounded.Apps))
+    }
     choices.add(ChoiceItem(HomeGestureActions.RECENTS, "Recents", icon = Icons.Rounded.Layers))
     return choices
 }

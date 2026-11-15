@@ -37,6 +37,8 @@ public final class HomeGestureActions {
                 launcher.getSystemService(StatusBarManager.class).expandSettingsPanel();
                 return true;
             case APP_DRAWER:
+                // The iOS drawer style has no app drawer, and going to ALL_APPS bounces back
+                if (!launcher.canOpenAllApps()) return false;
                 launcher.getStateManager().goToState(ALL_APPS);
                 return true;
             case RECENTS:

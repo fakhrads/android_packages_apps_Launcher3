@@ -136,10 +136,14 @@ public class QsbLayout extends FrameLayout implements Reorderable, SharedPrefere
                 PREF_DOCK_SEARCH_LAUNCHER_DEFAULT);
     }
 
-    /** Opens the app drawer with its search field focused, like the Pixel Search provider. */
+    /**
+     * Opens the app drawer with its search field focused, like the Pixel Search provider. False
+     * when there is no drawer to open (the iOS drawer style), so the bar opens the search app.
+     */
     private boolean openDrawerSearch() {
         ActivityContext activityContext = ActivityContext.lookupContext(mContext);
         if (!(activityContext instanceof Launcher launcher)) return false;
+        if (!launcher.canOpenAllApps()) return false;
         try {
             launcher.getStateManager().goToState(ALL_APPS, true,
                     AnimatorListeners.forEndCallback((Boolean success) -> {
