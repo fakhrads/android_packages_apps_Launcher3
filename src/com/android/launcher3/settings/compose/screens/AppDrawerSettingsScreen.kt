@@ -91,20 +91,20 @@ fun AppDrawerSettingsScreen(
     val sortChoices = listOf(
         ChoiceItem(
             value = "alphabetical",
-            title = "Alphabetical (A–Z)",
-            summary = "Standard application listing sorted by name",
+            title = stringResource(R.string.zl_drawer_sort_alpha),
+            summary = stringResource(R.string.zl_drawer_sort_alpha_summary),
             icon = Icons.Rounded.Sort
         ),
         ChoiceItem(
             value = "install_date",
-            title = "Install date",
-            summary = "Newest installed apps first",
+            title = stringResource(R.string.zl_drawer_sort_install),
+            summary = stringResource(R.string.zl_drawer_sort_install_summary),
             icon = Icons.Rounded.Schedule
         ),
         ChoiceItem(
             value = "usage",
-            title = "Usage frequency",
-            summary = "Prioritize apps you launch most often",
+            title = stringResource(R.string.zl_drawer_sort_usage),
+            summary = stringResource(R.string.zl_drawer_sort_usage_summary),
             icon = Icons.Rounded.Apps
         )
     )
@@ -112,26 +112,26 @@ fun AppDrawerSettingsScreen(
     val searchChoices = listOf(
         ChoiceItem(
             value = "top",
-            title = "Top bar",
-            summary = "Classic Android application search placement",
+            title = stringResource(R.string.zl_drawer_search_top),
+            summary = stringResource(R.string.zl_drawer_search_top_summary),
             icon = Icons.Rounded.Search
         ),
         ChoiceItem(
             value = "bottom",
-            title = "Bottom dock",
-            summary = "Comfortable one-handed thumb reach",
+            title = stringResource(R.string.zl_drawer_search_bottom),
+            summary = stringResource(R.string.zl_drawer_search_bottom_summary),
             icon = Icons.Rounded.Search
         ),
         ChoiceItem(
             value = "hidden",
-            title = "Hidden",
-            summary = "No search bar in the app drawer",
+            title = stringResource(R.string.drawer_search_location_hidden),
+            summary = stringResource(R.string.zl_drawer_search_hidden_summary),
             icon = Icons.Rounded.SearchOff
         )
     )
 
     ScreenScaffold(
-        title = "App drawer",
+        title = stringResource(R.string.zl_settings_app_drawer),
         onBack = onBack
     ) {
         Column(
@@ -153,12 +153,12 @@ fun AppDrawerSettingsScreen(
             }
 
             SettingsCard(
-                title = "Organization & layout",
+                title = stringResource(R.string.zl_drawer_organization),
                 icon = Icons.Rounded.Category
             ) {
                 SettingSwitch(
-                    title = "Smart Auto-Organize",
-                    subtitle = "Group apps into smart category folders (Games, Social, Media, Tools) at the top",
+                    title = stringResource(R.string.zl_drawer_auto_organize),
+                    subtitle = stringResource(R.string.zl_drawer_auto_organize_summary),
                     checked = autoOrganize,
                     onCheckedChange = { defaultListView = !it }
                 )
@@ -170,24 +170,28 @@ fun AppDrawerSettingsScreen(
                 )
                 val hiddenCount = LauncherPrefs.get(context).get(LauncherPrefs.HIDDEN_APPS).size
                 NavRow(
-                    title = "Hidden apps",
-                    summary = if (hiddenCount == 0) "Keep apps out of the app drawer and its search"
-                    else "$hiddenCount hidden from the app drawer and its search",
+                    title = stringResource(R.string.zl_settings_hidden_apps),
+                    summary = if (hiddenCount == 0) {
+                        stringResource(R.string.zl_drawer_hidden_apps_summary)
+                    } else {
+                        stringResource(R.string.zl_drawer_hidden_apps_count, hiddenCount)
+                    },
                     icon = Icons.Rounded.Visibility,
                     onClick = onOpenHiddenApps
                 )
                 val tabsOn = LauncherPrefs.get(context).get(LauncherPrefs.DRAWER_TABS)
                 NavRow(
-                    title = "Drawer tabs",
-                    summary = if (tabsOn) "On: your own tabs and app categories above the list"
-                    else "Off: group apps into tabs above the list",
+                    title = stringResource(R.string.zl_settings_drawer_tabs),
+                    summary = stringResource(
+                        if (tabsOn) R.string.zl_drawer_tabs_on else R.string.zl_drawer_tabs_off
+                    ),
                     icon = Icons.Rounded.Tab,
                     onClick = onOpenDrawerTabs
                 )
             }
 
             SettingsCard(
-                title = "App sorting",
+                title = stringResource(R.string.zl_drawer_sorting),
                 icon = Icons.Rounded.Sort
             ) {
                 ChoiceList(
@@ -198,7 +202,7 @@ fun AppDrawerSettingsScreen(
             }
 
             SettingsCard(
-                title = "Search placement",
+                title = stringResource(R.string.zl_drawer_search_placement),
                 icon = Icons.Rounded.Search
             ) {
                 ChoiceList(
@@ -209,11 +213,11 @@ fun AppDrawerSettingsScreen(
             }
 
             SettingsCard(
-                title = "Dimensions & opacity",
+                title = stringResource(R.string.zl_drawer_dimensions),
                 icon = Icons.Rounded.Tune
             ) {
                 SettingSlider(
-                    title = "Background opacity",
+                    title = stringResource(R.string.background_opacity_title),
                     value = opacity,
                     min = 0,
                     max = 100,
@@ -242,7 +246,7 @@ fun AppDrawerSettingsScreen(
                     enabled = customColor
                 )
                 SettingSlider(
-                    title = "Row vertical height",
+                    title = stringResource(R.string.zl_drawer_row_height),
                     value = rowHeight,
                     min = 75,
                     max = 150,
@@ -253,40 +257,40 @@ fun AppDrawerSettingsScreen(
             }
 
             SettingsCard(
-                title = "Behavior & typography",
+                title = stringResource(R.string.zl_drawer_behavior),
                 icon = Icons.Rounded.Palette
             ) {
                 SettingSwitch(
-                    title = "Fast scrollbar",
-                    subtitle = "Alphabet index on right edge",
+                    title = stringResource(R.string.zl_drawer_scrollbar),
+                    subtitle = stringResource(R.string.zl_drawer_scrollbar_summary),
                     checked = scrollbar,
                     onCheckedChange = { scrollbar = it },
                     // The paged drawer has no vertical scrolling, hence no fast scroller.
                     enabled = drawerStyle != "vertical"
                 )
                 SettingSwitch(
-                    title = "Show application labels",
-                    subtitle = "Text under application icons",
+                    title = stringResource(R.string.zl_drawer_labels),
+                    subtitle = stringResource(R.string.zl_drawer_labels_summary),
                     checked = showLabels,
                     onCheckedChange = { showLabels = it }
                 )
                 SettingSwitch(
-                    title = "Allow two-line labels",
-                    subtitle = "Wrap long app names across two lines",
+                    title = stringResource(R.string.zl_drawer_two_line_labels),
+                    subtitle = stringResource(R.string.zl_drawer_two_line_labels_summary),
                     checked = twoLineLabels,
                     onCheckedChange = { twoLineLabels = it },
                     enabled = showLabels
                 )
                 SettingSwitch(
-                    title = "Dark label text",
-                    subtitle = "Force black text for high-contrast light backgrounds",
+                    title = stringResource(R.string.zl_drawer_dark_text),
+                    subtitle = stringResource(R.string.zl_drawer_dark_text_summary),
                     checked = darkText,
                     onCheckedChange = { darkText = it },
                     enabled = showLabels
                 )
                 SettingSwitch(
-                    title = "Open keyboard on drawer swipe",
-                    subtitle = "Instantly focus search field when opening drawer",
+                    title = stringResource(R.string.zl_drawer_open_keyboard),
+                    subtitle = stringResource(R.string.zl_drawer_open_keyboard_summary),
                     checked = openKeyboard,
                     onCheckedChange = { openKeyboard = it },
                     enabled = searchPlacement != "hidden" && drawerStyle != "ios",

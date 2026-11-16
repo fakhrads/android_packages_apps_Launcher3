@@ -122,7 +122,7 @@ fun HomeScreenSettingsScreen(
     val notSystemSummary = stringResource(R.string.google_app_not_system_summary)
 
     ScreenScaffold(
-        title = "Homescreen",
+        title = stringResource(R.string.zl_settings_homescreen),
         onBack = onBack
     ) {
         Column(
@@ -133,12 +133,12 @@ fun HomeScreenSettingsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             SettingsCard(
-                title = "Desktop layout",
+                title = stringResource(R.string.zl_home_desktop_layout),
                 icon = Icons.Rounded.Dashboard
             ) {
                 SettingSwitch(
-                    title = "Lock desktop layout",
-                    subtitle = "Prevent moving or dropping icons and widgets",
+                    title = stringResource(R.string.zl_home_lock_layout),
+                    subtitle = stringResource(R.string.zl_home_lock_layout_summary),
                     checked = lockLayout,
                     onCheckedChange = { lockLayout = it },
                     icon = Icons.Rounded.Lock
@@ -147,8 +147,7 @@ fun HomeScreenSettingsScreen(
                 // back when it is turned off (InvariantDeviceProfile keeps its name)
                 SettingSwitch(
                     title = stringResource(R.string.landscape_mode_title),
-                    subtitle = "Keep the home screen in landscape with its own layout. " +
-                        "Your portrait layout comes back when this is off",
+                    subtitle = stringResource(R.string.zl_home_landscape_summary),
                     checked = fixedLandscape,
                     onCheckedChange = { fixedLandscape = it },
                     icon = Icons.Rounded.ScreenRotation
@@ -164,15 +163,15 @@ fun HomeScreenSettingsScreen(
                     enabled = !iosDrawer
                 )
                 SettingSwitch(
-                    title = "Show status bar",
-                    subtitle = "Display system icons on the top",
+                    title = stringResource(R.string.zl_home_status_bar),
+                    subtitle = stringResource(R.string.zl_home_status_bar_summary),
                     checked = showStatusBar,
                     onCheckedChange = { showStatusBar = it },
                     icon = Icons.Rounded.Visibility
                 )
                 SettingSwitch(
-                    title = "Dark status bar icons",
-                    subtitle = "Force dark status bar glyphs on desktop",
+                    title = stringResource(R.string.zl_home_dark_status_bar),
+                    subtitle = stringResource(R.string.zl_home_dark_status_bar_summary),
                     checked = darkStatusBar,
                     onCheckedChange = { darkStatusBar = it },
                     enabled = showStatusBar
@@ -184,8 +183,8 @@ fun HomeScreenSettingsScreen(
                     onCheckedChange = { topShadow = it }
                 )
                 SettingSwitch(
-                    title = "Show icon labels",
-                    subtitle = "Display text under app icons on workspace",
+                    title = stringResource(R.string.zl_home_icon_labels),
+                    subtitle = stringResource(R.string.zl_home_icon_labels_summary),
                     checked = desktopLabels,
                     onCheckedChange = { desktopLabels = it }
                 )
@@ -198,12 +197,12 @@ fun HomeScreenSettingsScreen(
             }
 
             SettingsCard(
-                title = "Gestures",
+                title = stringResource(R.string.zl_home_gestures),
                 icon = Icons.Rounded.TouchApp
             ) {
                 SettingSwitch(
-                    title = "Double tap",
-                    subtitle = "Double tap blank home screen space to run the action below",
+                    title = stringResource(R.string.zl_gesture_double_tap),
+                    subtitle = stringResource(R.string.zl_home_double_tap_summary),
                     checked = sleepGesture,
                     onCheckedChange = { sleepGesture = it }
                 )
@@ -214,16 +213,15 @@ fun HomeScreenSettingsScreen(
                     enabled = sleepGesture
                 )
                 SettingSwitch(
-                    title = "Vibrate on double tap",
-                    subtitle = "Provide tactile feedback when the double tap runs",
+                    title = stringResource(R.string.zl_home_double_tap_haptic),
+                    subtitle = stringResource(R.string.zl_home_double_tap_haptic_summary),
                     checked = sleepGestureHaptic,
                     onCheckedChange = { sleepGestureHaptic = it },
                     enabled = sleepGesture
                 )
                 SettingSwitch(
-                    title = "Haptic on icon tap",
-                    subtitle = "Light vibration when opening an app or folder from home, " +
-                        "dock or app drawer",
+                    title = stringResource(R.string.zl_home_icon_tap_haptic),
+                    subtitle = stringResource(R.string.zl_home_icon_tap_haptic_summary),
                     checked = iconTapHaptic,
                     onCheckedChange = { iconTapHaptic = it }
                 )
@@ -236,7 +234,7 @@ fun HomeScreenSettingsScreen(
             }
 
             SettingsCard(
-                title = "Pinch in",
+                title = stringResource(R.string.zl_home_pinch_in),
                 icon = Icons.Rounded.TouchApp
             ) {
                 ChoiceList(
@@ -247,7 +245,7 @@ fun HomeScreenSettingsScreen(
             }
 
             SettingsCard(
-                title = "Wallpaper",
+                title = stringResource(R.string.zl_home_wallpaper),
                 icon = Icons.Rounded.Wallpaper
             ) {
                 SettingSwitch(
@@ -335,9 +333,8 @@ fun HomeScreenSettingsScreen(
                     enabled = quickspace
                 )
                 SettingSwitch(
-                    title = "At a Glance from Google",
-                    subtitle = "Calendar, timers, weather and more from Android System " +
-                        "Intelligence, as on Pixel. Falls back to the items above without it",
+                    title = stringResource(R.string.zl_home_glance_google),
+                    subtitle = stringResource(R.string.zl_home_glance_google_summary),
                     checked = quickspaceGoogle,
                     onCheckedChange = { quickspaceGoogle = it },
                     enabled = quickspace
@@ -375,12 +372,12 @@ fun HomeScreenSettingsScreen(
             }
 
             SettingsCard(
-                title = "Search & feed",
+                title = stringResource(R.string.zl_home_search_feed),
                 icon = Icons.Rounded.Search
             ) {
                 SettingSwitch(
-                    title = "Google Feed page",
-                    subtitle = if (gsaEnabled) "Swipe left to open Google Discover (-1 screen)"
+                    title = stringResource(R.string.zl_home_google_feed),
+                    subtitle = if (gsaEnabled) stringResource(R.string.zl_home_google_feed_summary)
                     else notSystemSummary,
                     checked = minusOne,
                     onCheckedChange = { minusOne = it },
@@ -388,28 +385,26 @@ fun HomeScreenSettingsScreen(
                     icon = Icons.Rounded.Feed
                 )
                 SettingSwitch(
-                    title = "Dock search bar",
-                    subtitle = if (gsaEnabled) "Show Google search bar at the bottom hotseat"
+                    title = stringResource(R.string.zl_home_dock_search),
+                    subtitle = if (gsaEnabled) stringResource(R.string.zl_home_dock_search_summary)
                     else notSystemSummary,
                     checked = dockSearch,
                     onCheckedChange = { dockSearch = it },
                     enabled = gsaEnabled
                 )
                 SettingSwitch(
-                    title = "Search bar opens drawer search",
-                    subtitle = if (iosDrawer) {
-                        "The iOS drawer style has no app drawer, so the bar opens the Google app"
-                    } else if (dockSearchLauncher) {
-                        "Search apps, settings, shortcuts and contacts in the app drawer"
-                    } else {
-                        "Opens the Google app"
-                    },
+                    title = stringResource(R.string.zl_home_search_opens_drawer),
+                    subtitle = stringResource(
+                        if (iosDrawer) R.string.zl_home_search_opens_drawer_ios
+                        else if (dockSearchLauncher) R.string.zl_home_search_opens_drawer_on
+                        else R.string.zl_home_search_opens_drawer_off
+                    ),
                     checked = dockSearchLauncher && !iosDrawer,
                     onCheckedChange = { dockSearchLauncher = it },
                     enabled = dockSearch && !iosDrawer
                 )
                 SettingSlider(
-                    title = "Search bar opacity",
+                    title = stringResource(R.string.zl_home_search_opacity),
                     value = qsbOpacity,
                     min = 0,
                     max = 100,
@@ -427,8 +422,8 @@ fun HomeScreenSettingsScreen(
                     enabled = dockSearch
                 )
                 SettingSwitch(
-                    title = "Music recognition button",
-                    subtitle = "Quick sound search on dock bar",
+                    title = stringResource(R.string.zl_home_music_search),
+                    subtitle = stringResource(R.string.zl_home_music_search_summary),
                     checked = musicSearch,
                     onCheckedChange = { musicSearch = it },
                     enabled = gsaEnabled && dockSearch
@@ -443,7 +438,7 @@ fun HomeScreenSettingsScreen(
             }
 
             SettingsCard(
-                title = "Dock",
+                title = stringResource(R.string.zl_home_dock),
                 icon = Icons.Rounded.Dashboard
             ) {
                 SettingSwitch(
@@ -482,20 +477,24 @@ internal fun homeGestureLabel(action: String): Int = when (action) {
  * Actions of HomeGestureActions, for the double tap and the pinch. The iOS drawer style has no
  * app drawer to open, so [withDrawer] is false for it.
  */
+@Composable
 private fun homeGestureChoices(withNone: Boolean, withDrawer: Boolean): List<ChoiceItem<String>> {
     val choices = ArrayList<ChoiceItem<String>>()
     if (withNone) {
-        choices.add(ChoiceItem(HomeGestureActions.NONE, "Nothing", icon = Icons.Rounded.Block))
+        choices.add(ChoiceItem(HomeGestureActions.NONE,
+            stringResource(R.string.zl_gesture_none), icon = Icons.Rounded.Block))
     }
-    choices.add(ChoiceItem(HomeGestureActions.SLEEP, "Sleep", "Turn the screen off",
-        Icons.Rounded.Bedtime))
-    choices.add(ChoiceItem(HomeGestureActions.NOTIFICATIONS, "Notifications",
-        icon = Icons.Rounded.Notifications))
-    choices.add(ChoiceItem(HomeGestureActions.QUICK_SETTINGS, "Quick settings",
-        icon = Icons.Rounded.Tune))
+    choices.add(ChoiceItem(HomeGestureActions.SLEEP, stringResource(R.string.zl_gesture_sleep),
+        stringResource(R.string.zl_gesture_sleep_summary), Icons.Rounded.Bedtime))
+    choices.add(ChoiceItem(HomeGestureActions.NOTIFICATIONS,
+        stringResource(R.string.zl_gesture_notifications), icon = Icons.Rounded.Notifications))
+    choices.add(ChoiceItem(HomeGestureActions.QUICK_SETTINGS,
+        stringResource(R.string.zl_gesture_quick_settings), icon = Icons.Rounded.Tune))
     if (withDrawer) {
-        choices.add(ChoiceItem(HomeGestureActions.APP_DRAWER, "App drawer", icon = Icons.Rounded.Apps))
+        choices.add(ChoiceItem(HomeGestureActions.APP_DRAWER,
+            stringResource(R.string.zl_gesture_app_drawer), icon = Icons.Rounded.Apps))
     }
-    choices.add(ChoiceItem(HomeGestureActions.RECENTS, "Recents", icon = Icons.Rounded.Layers))
+    choices.add(ChoiceItem(HomeGestureActions.RECENTS,
+        stringResource(R.string.zl_gesture_recents), icon = Icons.Rounded.Layers))
     return choices
 }

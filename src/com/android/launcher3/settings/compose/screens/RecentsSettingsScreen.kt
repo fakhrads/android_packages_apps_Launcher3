@@ -93,9 +93,10 @@ fun RecentsSettingsScreen(
     val cornerSwipeChoices = listOf(
         ChoiceItem(
             value = "assistant",
-            title = "Assistant overlay",
-            summary = assistantName?.let { "$it, shown over the current app" }
-                ?: "None picked in the default apps",
+            title = stringResource(R.string.zl_recents_assistant_overlay),
+            summary = assistantName?.let {
+                stringResource(R.string.zl_recents_assistant_overlay_summary, it)
+            } ?: stringResource(R.string.zl_recents_assistant_none),
             icon = Icons.Rounded.Assistant
         ),
         ChoiceItem(
@@ -122,7 +123,7 @@ fun RecentsSettingsScreen(
         ChoiceItem(
             value = "default",
             title = stringResource(R.string.recents_style_default),
-            summary = "AOSP horizontal scrolling task carousel",
+            summary = stringResource(R.string.zl_recents_style_default_summary),
             icon = Icons.Rounded.ViewCarousel
         ),
         ChoiceItem(
@@ -148,7 +149,7 @@ fun RecentsSettingsScreen(
     )
 
     ScreenScaffold(
-        title = "Recents & overview",
+        title = stringResource(R.string.zl_settings_recents_title),
         onBack = onBack
     ) {
         Column(
@@ -159,7 +160,7 @@ fun RecentsSettingsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             SettingsCard(
-                title = "Overview layout",
+                title = stringResource(R.string.zl_recents_layout),
                 icon = Icons.Rounded.Layers
             ) {
                 ChoiceList(
@@ -174,8 +175,8 @@ fun RecentsSettingsScreen(
                 icon = Icons.Rounded.Search
             ) {
                 SettingSwitch(
-                    title = "Hold anywhere on the nav bar",
-                    subtitle = "Touch and hold any part of the bottom gesture bar, not only the handle",
+                    title = stringResource(R.string.zl_recents_hold_nav),
+                    subtitle = stringResource(R.string.zl_recents_hold_nav_summary),
                     checked = lpnhFullWidth,
                     onCheckedChange = { lpnhFullWidth = it },
                     icon = Icons.Rounded.TouchApp
@@ -183,7 +184,7 @@ fun RecentsSettingsScreen(
             }
 
             SettingsCard(
-                title = "Swipe from bottom corner",
+                title = stringResource(R.string.zl_recents_corner_swipe),
                 icon = Icons.Rounded.CallMade
             ) {
                 ChoiceList(
@@ -193,8 +194,8 @@ fun RecentsSettingsScreen(
                     onSelect = { cornerSwipeAction = it }
                 )
                 NavRow(
-                    title = "Digital assistant app",
-                    summary = "Pick Gemini, ChatGPT, Claude or another assistant in the default apps",
+                    title = stringResource(R.string.zl_recents_assistant_app),
+                    summary = stringResource(R.string.zl_recents_assistant_app_summary),
                     icon = Icons.Rounded.Apps,
                     onClick = {
                         context.startActivity(
@@ -206,39 +207,39 @@ fun RecentsSettingsScreen(
             }
 
             SettingsCard(
-                title = "Actions & telemetry",
+                title = stringResource(R.string.zl_recents_actions),
                 icon = Icons.Rounded.Memory
             ) {
                 SettingSwitch(
-                    title = "Memory info",
-                    subtitle = "Show RAM usage in the recents bottom bar",
+                    title = stringResource(R.string.recents_meminfo_title),
+                    subtitle = stringResource(R.string.zl_recents_meminfo_summary),
                     checked = meminfo,
                     onCheckedChange = { meminfo = it },
                     icon = Icons.Rounded.Memory
                 )
                 SettingSwitch(
-                    title = "ZRAM info",
-                    subtitle = "Add ZRAM usage to the memory info",
+                    title = stringResource(R.string.recents_meminfo_zram_title),
+                    subtitle = stringResource(R.string.zl_recents_zram_summary),
                     checked = meminfoZram,
                     onCheckedChange = { meminfoZram = it },
                     enabled = meminfo
                 )
                 SettingSwitch(
-                    title = "Haptic feedback on scroll",
-                    subtitle = "Gentle tick when snapping to each recent task",
+                    title = stringResource(R.string.zl_recents_scroll_haptic),
+                    subtitle = stringResource(R.string.zl_recents_scroll_haptic_summary),
                     checked = scrollVibrate,
                     onCheckedChange = { scrollVibrate = it }
                 )
                 SettingSwitch(
-                    title = "Quick screenshot action",
-                    subtitle = "Capture current active task directly from overview",
+                    title = stringResource(R.string.zl_recents_screenshot),
+                    subtitle = stringResource(R.string.zl_recents_screenshot_summary),
                     checked = screenshotButton,
                     onCheckedChange = { screenshotButton = it },
                     icon = Icons.Rounded.Screenshot
                 )
                 SettingSwitch(
-                    title = "Clear all button",
-                    subtitle = "Show button to dismiss all recent tasks",
+                    title = stringResource(R.string.zl_recents_clear_all),
+                    subtitle = stringResource(R.string.zl_recents_clear_all_summary),
                     checked = clearAllButton,
                     onCheckedChange = { clearAllButton = it },
                     icon = Icons.Rounded.DeleteSweep
@@ -252,7 +253,7 @@ fun RecentsSettingsScreen(
                 )
                 SettingSwitch(
                     title = stringResource(R.string.recents_select_title),
-                    subtitle = "Freeze the screen and pick its text, then copy, share or search it. Images and games have no text to pick",
+                    subtitle = stringResource(R.string.zl_recents_select_summary),
                     checked = selectButton,
                     onCheckedChange = { selectButton = it },
                     icon = Icons.Rounded.TouchApp
@@ -272,7 +273,7 @@ fun RecentsSettingsScreen(
                     icon = Icons.Rounded.Lock
                 )
                 SettingSlider(
-                    title = "Card background opacity",
+                    title = stringResource(R.string.zl_recents_card_opacity),
                     value = recentsOpacity,
                     min = 0,
                     max = 100,

@@ -129,29 +129,32 @@ fun HubScreen(
         // 1. Bento Hero Card: System Overview + Telemetry + Quick Restart
         HeroOverviewCard(
             title = "ZeroLauncher",
-            subtitle = "Workspace & gesture engine",
+            subtitle = stringResource(R.string.zl_settings_hub_subtitle),
             icon = Icons.Rounded.Home,
             trailingAction = {
                 StatusChip(
-                    label = "Restart",
+                    label = stringResource(R.string.pref_restart_title),
                     icon = Icons.Rounded.Refresh,
                     onClick = { LauncherPrefsBridge.restart(context) }
                 )
             },
             metricsContent = {
                 MetricTile(
-                    label = "Grid layout",
+                    label = stringResource(R.string.zl_settings_metric_grid),
                     value = gridText,
                     icon = Icons.Rounded.GridView
                 )
                 MetricTile(
-                    label = "Icon style",
-                    value = if (themedIcons) "Themed" else "Stock",
+                    label = stringResource(R.string.zl_settings_metric_icon_style),
+                    value = stringResource(
+                        if (themedIcons) R.string.zl_settings_metric_themed
+                        else R.string.zl_settings_metric_stock
+                    ),
                     icon = Icons.Rounded.Palette,
                     highlight = themedIcons
                 )
                 MetricTile(
-                    label = "Recents",
+                    label = stringResource(R.string.recents_category_title),
                     value = recentsText,
                     icon = Icons.Rounded.Layers
                 )
@@ -164,7 +167,7 @@ fun HubScreen(
 
         // 2. Section: Quick Controls (2x2 Bento Grid)
         Text(
-            text = "Quick controls",
+            text = stringResource(R.string.zl_settings_quick_controls),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface,
@@ -176,8 +179,8 @@ fun HubScreen(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             QuickToggleTile(
-                title = "Lock layout",
-                subtitle = "Prevent moving items",
+                title = stringResource(R.string.settings_lock_layout_title),
+                subtitle = stringResource(R.string.zl_settings_lock_layout_summary),
                 checked = lockLayout,
                 onCheckedChange = { lockLayout = it },
                 icon = Icons.Rounded.Lock,
@@ -198,16 +201,16 @@ fun HubScreen(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             QuickToggleTile(
-                title = "Themed icons",
-                subtitle = "Adaptive monochrome",
+                title = stringResource(R.string.zl_settings_themed_icons),
+                subtitle = stringResource(R.string.zl_settings_themed_icons_short),
                 checked = themedIcons,
                 onCheckedChange = { themedIcons = it },
                 icon = Icons.Rounded.Palette,
                 modifier = Modifier.weight(1f)
             )
             QuickToggleTile(
-                title = "Dock search",
-                subtitle = "Bottom search bar",
+                title = stringResource(R.string.zl_settings_dock_search),
+                subtitle = stringResource(R.string.zl_settings_dock_search_short),
                 checked = dockSearch,
                 onCheckedChange = { dockSearch = it },
                 icon = Icons.Rounded.Search,
@@ -219,43 +222,43 @@ fun HubScreen(
 
         // 3. Section: Bento Category Navigation
         SettingsCard(
-            title = "Configuration",
+            title = stringResource(R.string.zl_settings_configuration),
             icon = Icons.Rounded.Settings
         ) {
             NavRow(
-                title = "Homescreen",
-                summary = "Layout, wallpaper, At A Glance, search bar, dock",
+                title = stringResource(R.string.zl_settings_homescreen),
+                summary = stringResource(R.string.zl_settings_homescreen_summary),
                 icon = Icons.Rounded.Home,
                 onClick = { onNavigate(SettingsSubscreen.HOMESCREEN) },
                 badgeText = gridText
             )
 
             NavRow(
-                title = "Icons & theming",
-                summary = "Size scaling, icon packs, font scale",
+                title = stringResource(R.string.zl_settings_icons),
+                summary = stringResource(R.string.zl_settings_icons_summary),
                 icon = Icons.Rounded.Palette,
                 onClick = { onNavigate(SettingsSubscreen.ICONS) },
                 badgeText = iconPackText
             )
 
             NavRow(
-                title = "App drawer",
-                summary = "Sorting, opacity, layout style, row height",
+                title = stringResource(R.string.zl_settings_app_drawer),
+                summary = stringResource(R.string.zl_settings_app_drawer_summary),
                 icon = Icons.Rounded.Apps,
                 onClick = { onNavigate(SettingsSubscreen.APP_DRAWER) }
             )
 
             NavRow(
-                title = "Recents & multitasking",
-                summary = "Overview style, freeform gestures, memory info",
+                title = stringResource(R.string.zl_settings_recents),
+                summary = stringResource(R.string.zl_settings_recents_summary),
                 icon = Icons.Rounded.Layers,
                 onClick = { onNavigate(SettingsSubscreen.RECENTS) },
                 badgeText = recentsText
             )
 
             NavRow(
-                title = "System & miscellaneous",
-                summary = "Blur depth, burn-in protection, restart",
+                title = stringResource(R.string.zl_settings_misc),
+                summary = stringResource(R.string.zl_settings_misc_summary),
                 icon = Icons.Rounded.Tune,
                 onClick = { onNavigate(SettingsSubscreen.MISC) }
             )

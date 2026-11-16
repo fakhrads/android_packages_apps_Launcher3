@@ -37,4 +37,215 @@
 
     <!-- Memory info in recents: the memory ZRAM uses now, added after the RAM line -->
     <string name="zl_meminfo_zram_used">ZRAM <xliff:g id="size" example="1.2 GB">%1$s</xliff:g> used</string>
+
+    <!-- Settings hub -->
+    <string name="zl_settings_hub_subtitle">Workspace &amp; gesture engine</string>
+    <string name="zl_settings_metric_grid">Grid layout</string>
+    <string name="zl_settings_metric_icon_style">Icon style</string>
+    <string name="zl_settings_metric_themed">Themed</string>
+    <string name="zl_settings_metric_stock">Stock</string>
+    <string name="zl_settings_quick_controls">Quick controls</string>
+    <string name="zl_settings_lock_layout_summary">Prevent moving items</string>
+    <string name="zl_settings_themed_icons">Themed icons</string>
+    <string name="zl_settings_themed_icons_short">Adaptive monochrome</string>
+    <string name="zl_settings_dock_search">Dock search</string>
+    <string name="zl_settings_dock_search_short">Bottom search bar</string>
+    <string name="zl_settings_configuration">Configuration</string>
+    <string name="zl_settings_homescreen">Homescreen</string>
+    <string name="zl_settings_homescreen_summary">Layout, wallpaper, At A Glance, search bar, dock</string>
+    <string name="zl_settings_icons">Icons &amp; theming</string>
+    <string name="zl_settings_icons_summary">Size scaling, icon packs, font scale</string>
+    <string name="zl_settings_app_drawer">App drawer</string>
+    <string name="zl_settings_app_drawer_summary">Sorting, opacity, layout style, row height</string>
+    <string name="zl_settings_recents">Recents &amp; multitasking</string>
+    <string name="zl_settings_recents_summary">Overview style, freeform gestures, memory info</string>
+    <string name="zl_settings_misc">System &amp; miscellaneous</string>
+    <string name="zl_settings_misc_summary">Blur depth, burn-in protection, restart</string>
+    <string name="zl_settings_recents_title">Recents &amp; overview</string>
+    <string name="zl_settings_hidden_apps">Hidden apps</string>
+    <string name="zl_settings_drawer_tabs">Drawer tabs</string>
+
+    <!-- Settings: the search field of the hub and its results -->
+    <string name="zl_settings_search_hint">Search settings</string>
+    <string name="zl_settings_search_no_match">No setting matches \"<xliff:g id="query" example="blur">%1$s</xliff:g>\"</string>
+    <plurals name="zl_settings_search_results">
+        <item quantity="one"><xliff:g id="count" example="1">%1$d</xliff:g> result</item>
+        <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> results</item>
+    </plurals>
+
+    <!-- Settings: shared buttons and labels -->
+    <string name="zl_settings_back">Back</string>
+    <string name="zl_settings_apply">Apply</string>
+    <string name="zl_settings_delete">Delete</string>
+    <string name="zl_settings_name">Name</string>
+
+    <!-- Home screen settings -->
+    <string name="zl_home_desktop_layout">Desktop layout</string>
+    <string name="zl_home_lock_layout">Lock desktop layout</string>
+    <string name="zl_home_lock_layout_summary">Prevent moving or dropping icons and widgets</string>
+    <string name="zl_home_landscape_summary">Keep the home screen in landscape with its own layout. Your portrait layout comes back when this is off</string>
+    <string name="zl_home_status_bar">Show status bar</string>
+    <string name="zl_home_status_bar_summary">Display system icons on the top</string>
+    <string name="zl_home_dark_status_bar">Dark status bar icons</string>
+    <string name="zl_home_dark_status_bar_summary">Force dark status bar glyphs on desktop</string>
+    <string name="zl_home_icon_labels">Show icon labels</string>
+    <string name="zl_home_icon_labels_summary">Display text under app icons on workspace</string>
+    <string name="zl_home_gestures">Gestures</string>
+    <string name="zl_home_double_tap_summary">Double tap blank home screen space to run the action below</string>
+    <string name="zl_home_double_tap_haptic">Vibrate on double tap</string>
+    <string name="zl_home_double_tap_haptic_summary">Provide tactile feedback when the double tap runs</string>
+    <string name="zl_home_icon_tap_haptic">Haptic on icon tap</string>
+    <string name="zl_home_icon_tap_haptic_summary">Light vibration when opening an app or folder from home, dock or app drawer</string>
+    <string name="zl_home_pinch_in">Pinch in</string>
+    <string name="zl_home_pinch_in_summary">Pinch in on blank home screen space to run an action</string>
+    <string name="zl_gesture_sleep_summary">Turn the screen off</string>
+    <string name="zl_home_wallpaper">Wallpaper</string>
+    <string name="zl_home_glance_google">At a Glance from Google</string>
+    <string name="zl_home_glance_google_summary">Calendar, timers, weather and more from Android System Intelligence, as on Pixel. Falls back to the items above without it</string>
+    <string name="zl_home_search_feed">Search &amp; feed</string>
+    <string name="zl_home_google_feed">Google Feed page</string>
+    <string name="zl_home_google_feed_summary">Swipe left to open Google Discover (-1 screen)</string>
+    <string name="zl_home_dock_search">Dock search bar</string>
+    <string name="zl_home_dock_search_summary">Show Google search bar at the bottom hotseat</string>
+    <string name="zl_home_search_opens_drawer">Search bar opens drawer search</string>
+    <string name="zl_home_search_opens_drawer_ios">The iOS drawer style has no app drawer, so the bar opens the Google app</string>
+    <string name="zl_home_search_opens_drawer_on">Search apps, settings, shortcuts and contacts in the app drawer</string>
+    <string name="zl_home_search_opens_drawer_off">Opens the Google app</string>
+    <string name="zl_home_search_opacity">Search bar opacity</string>
+    <string name="zl_home_music_search">Music recognition button</string>
+    <string name="zl_home_music_search_summary">Quick sound search on dock bar</string>
+    <string name="zl_home_dock">Dock</string>
+
+    <!-- Icons and theming settings -->
+    <string name="zl_icons_live_preview">Live preview</string>
+    <string name="zl_icons_preview_phone">Phone</string>
+    <string name="zl_icons_preview_messages">Messages</string>
+    <string name="zl_icons_preview_browser">Browser</string>
+    <string name="zl_icons_shape">Icon shape</string>
+    <string name="zl_icons_shape_summary">Circle, squircle, teardrop and more</string>
+    <string name="zl_icons_scale">Scale &amp; dimensions</string>
+    <string name="zl_icons_label_size">Label font size</string>
+    <string name="zl_icons_adaptive">Adaptive styling</string>
+    <string name="zl_icons_pack_summary">Apply icons from an installed icon pack</string>
+    <string name="zl_icons_themed_summary">Monochrome icons tinted with the wallpaper colors</string>
+    <string name="zl_icons_dots_summary">Managed in system notification settings</string>
+
+    <!-- App drawer settings -->
+    <string name="zl_drawer_sort_alpha">Alphabetical (A–Z)</string>
+    <string name="zl_drawer_sort_alpha_summary">Standard application listing sorted by name</string>
+    <string name="zl_drawer_sort_install">Install date</string>
+    <string name="zl_drawer_sort_install_summary">Newest installed apps first</string>
+    <string name="zl_drawer_sort_usage">Usage frequency</string>
+    <string name="zl_drawer_sort_usage_summary">Prioritize apps you launch most often</string>
+    <string name="zl_drawer_search_top">Top bar</string>
+    <string name="zl_drawer_search_top_summary">Classic Android application search placement</string>
+    <string name="zl_drawer_search_bottom">Bottom dock</string>
+    <string name="zl_drawer_search_bottom_summary">Comfortable one-handed thumb reach</string>
+    <string name="zl_drawer_search_hidden_summary">No search bar in the app drawer</string>
+    <string name="zl_drawer_organization">Organization &amp; layout</string>
+    <string name="zl_drawer_auto_organize">Smart Auto-Organize</string>
+    <string name="zl_drawer_auto_organize_summary">Group apps into smart category folders (Games, Social, Media, Tools) at the top</string>
+    <string name="zl_drawer_hidden_apps_summary">Keep apps out of the app drawer and its search</string>
+    <string name="zl_drawer_hidden_apps_count"><xliff:g id="count" example="3">%1$d</xliff:g> hidden from the app drawer and its search</string>
+    <string name="zl_drawer_tabs_on">On: your own tabs and app categories above the list</string>
+    <string name="zl_drawer_tabs_off">Off: group apps into tabs above the list</string>
+    <string name="zl_drawer_sorting">App sorting</string>
+    <string name="zl_drawer_search_placement">Search placement</string>
+    <string name="zl_drawer_dimensions">Dimensions &amp; opacity</string>
+    <string name="zl_drawer_row_height">Row vertical height</string>
+    <string name="zl_drawer_behavior">Behavior &amp; typography</string>
+    <string name="zl_drawer_scrollbar">Fast scrollbar</string>
+    <string name="zl_drawer_scrollbar_summary">Alphabet index on right edge</string>
+    <string name="zl_drawer_labels">Show application labels</string>
+    <string name="zl_drawer_labels_summary">Text under application icons</string>
+    <string name="zl_drawer_two_line_labels">Allow two-line labels</string>
+    <string name="zl_drawer_two_line_labels_summary">Wrap long app names across two lines</string>
+    <string name="zl_drawer_dark_text">Dark label text</string>
+    <string name="zl_drawer_dark_text_summary">Force black text for high-contrast light backgrounds</string>
+    <string name="zl_drawer_open_keyboard">Open keyboard on drawer swipe</string>
+    <string name="zl_drawer_open_keyboard_summary">Instantly focus search field when opening drawer</string>
+
+    <!-- Hidden apps list -->
+    <string name="zl_hidden_apps_header">Checked apps are gone from the app drawer and its search. Their icons on the home screen stay.</string>
+
+    <!-- Drawer tabs settings -->
+    <string name="zl_tabs_card">Tabs</string>
+    <string name="zl_tabs_show">Show tabs</string>
+    <string name="zl_tabs_show_summary">A row of tabs under the app drawer search bar. Long press a tab to come back here.</string>
+    <string name="zl_tabs_category">Category tabs</string>
+    <string name="zl_tabs_category_summary">One more tab per app category, the same categories Smart Auto-Organize uses</string>
+    <string name="zl_tabs_yours">Your tabs</string>
+    <plurals name="zl_tabs_app_count">
+        <item quantity="one"><xliff:g id="count" example="1">%1$d</xliff:g> app</item>
+        <item quantity="other"><xliff:g id="count" example="5">%1$d</xliff:g> apps</item>
+    </plurals>
+    <string name="zl_tabs_add">Add a tab</string>
+    <string name="zl_tabs_add_summary">Name it, then pick its apps</string>
+    <string name="zl_tabs_new">New tab</string>
+    <string name="zl_tabs_move_left">Move left</string>
+    <string name="zl_tabs_move_right">Move right</string>
+    <string name="zl_tabs_rename">Rename tab</string>
+    <string name="zl_tabs_delete_title">Delete \"<xliff:g id="tab" example="Work">%1$s</xliff:g>\"?</string>
+    <string name="zl_tabs_delete_message">The tab goes away. Its apps stay in the app drawer.</string>
+
+    <!-- Recents settings -->
+    <string name="zl_recents_assistant_overlay">Assistant overlay</string>
+    <string name="zl_recents_assistant_overlay_summary"><xliff:g id="assistant" example="Gemini">%1$s</xliff:g>, shown over the current app</string>
+    <string name="zl_recents_assistant_none">None picked in the default apps</string>
+    <string name="zl_recents_style_default_summary">AOSP horizontal scrolling task carousel</string>
+    <string name="zl_recents_layout">Overview layout</string>
+    <string name="zl_recents_hold_nav">Hold anywhere on the nav bar</string>
+    <string name="zl_recents_hold_nav_summary">Touch and hold any part of the bottom gesture bar, not only the handle</string>
+    <string name="zl_recents_corner_swipe">Swipe from bottom corner</string>
+    <string name="zl_recents_corner_swipe_summary">Assistant overlay or Circle to Search</string>
+    <string name="zl_recents_assistant_app">Digital assistant app</string>
+    <string name="zl_recents_assistant_app_summary">Pick Gemini, ChatGPT, Claude or another assistant in the default apps</string>
+    <string name="zl_recents_actions">Actions &amp; telemetry</string>
+    <string name="zl_recents_meminfo_summary">Show RAM usage in the recents bottom bar</string>
+    <string name="zl_recents_zram_summary">Add ZRAM usage to the memory info</string>
+    <string name="zl_recents_scroll_haptic">Haptic feedback on scroll</string>
+    <string name="zl_recents_scroll_haptic_summary">Gentle tick when snapping to each recent task</string>
+    <string name="zl_recents_screenshot">Quick screenshot action</string>
+    <string name="zl_recents_screenshot_summary">Capture current active task directly from overview</string>
+    <string name="zl_recents_clear_all">Clear all button</string>
+    <string name="zl_recents_clear_all_summary">Show button to dismiss all recent tasks</string>
+    <string name="zl_recents_select_summary">Freeze the screen and pick its text, then copy, share or search it. Images and games have no text to pick</string>
+    <string name="zl_recents_card_opacity">Card background opacity</string>
+
+    <!-- Miscellaneous settings -->
+    <string name="zl_misc_motion">Motion</string>
+    <string name="zl_misc_motion_summary">Calm, Standard or Expressive</string>
+    <string name="zl_misc_motion_calm">Calm</string>
+    <string name="zl_misc_motion_calm_summary">Settles straight in, nothing springs back</string>
+    <string name="zl_misc_motion_standard">Standard</string>
+    <string name="zl_misc_motion_standard_summary">A little momentum on the surfaces you throw</string>
+    <string name="zl_misc_motion_expressive">Expressive</string>
+    <string name="zl_misc_motion_expressive_summary">Pronounced springs, the drawer carries past its target</string>
+    <string name="zl_misc_response">Response</string>
+    <string name="zl_misc_bouncy">Bouncy animations</string>
+    <string name="zl_misc_bouncy_summary">Rubber band overscroll when you pull past the end of the home screen or the app drawer. Restarts the launcher</string>
+    <string name="zl_misc_bounce_strength">Bounce strength</string>
+    <string name="zl_misc_animation_speed">Animation speed</string>
+    <string name="zl_misc_render_effects">Visual render effects</string>
+    <string name="zl_misc_blur_radius">Background blur radius</string>
+    <string name="zl_misc_transparency">Transparency</string>
+    <string name="zl_misc_translucency">Surface translucency</string>
+    <string name="zl_misc_translucency_solid">Solid</string>
+    <string name="zl_misc_translucency_summary">Scales the app drawer, hotseat and recents together. Each surface keeps its own opacity, so the drawer stays lighter than the hotseat.</string>
+    <string name="zl_misc_oled">OLED hardware care</string>
+    <string name="zl_misc_burn_in">Navigation bar burn-in protection</string>
+    <string name="zl_misc_burn_in_summary">Micro-shift navbar pill pixels periodically to prevent OLED image retention</string>
+    <string name="zl_misc_burn_in_interval">Pixel shift interval</string>
+    <string name="zl_misc_maintenance">Maintenance</string>
+    <string name="zl_misc_backup">Back up layout &amp; settings</string>
+    <string name="zl_misc_backup_summary">Save the home screen layout and every ZeroLauncher setting to a file</string>
+    <string name="zl_misc_restore">Restore from a backup</string>
+    <string name="zl_misc_restore_summary">Replace the layout and settings with a saved backup</string>
+    <string name="zl_misc_restart">Restart ZeroLauncher</string>
+    <string name="zl_misc_restart_summary">Reinitialize workspace, reload icon caches, and flush memory</string>
+    <string name="zl_misc_restore_dialog_title">Restore a backup?</string>
+    <string name="zl_misc_restore_dialog_message">The current home screen layout and settings are replaced by the backup you pick, then ZeroLauncher restarts.</string>
+    <string name="zl_misc_restore_dialog_pick">Pick a backup</string>
+    <string name="zl_misc_restart_dialog_title">Restart ZeroLauncher?</string>
+    <string name="zl_misc_restart_dialog_message">The launcher process will restart immediately to reload all resources and configurations.</string>
 </resources>

@@ -119,7 +119,7 @@ fun IconsSettingsScreen(
     )
 
     ScreenScaffold(
-        title = "Icons & theming",
+        title = stringResource(R.string.zl_settings_icons),
         onBack = onBack
     ) {
         Column(
@@ -144,7 +144,7 @@ fun IconsSettingsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Live preview",
+                        text = stringResource(R.string.zl_icons_live_preview),
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
@@ -158,7 +158,7 @@ fun IconsSettingsScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         PreviewIconItem(
-                            label = "Phone",
+                            label = stringResource(R.string.zl_icons_preview_phone),
                             icon = Icons.Rounded.Call,
                             scale = animatedIconScale,
                             themed = themedIcons,
@@ -166,7 +166,7 @@ fun IconsSettingsScreen(
                             shape = previewShape
                         )
                         PreviewIconItem(
-                            label = "Messages",
+                            label = stringResource(R.string.zl_icons_preview_messages),
                             icon = Icons.Rounded.Chat,
                             scale = animatedIconScale,
                             themed = themedIcons,
@@ -174,7 +174,7 @@ fun IconsSettingsScreen(
                             shape = previewShape
                         )
                         PreviewIconItem(
-                            label = "Browser",
+                            label = stringResource(R.string.zl_icons_preview_browser),
                             icon = Icons.Rounded.Language,
                             scale = animatedIconScale,
                             themed = themedIcons,
@@ -186,7 +186,7 @@ fun IconsSettingsScreen(
             }
 
             SettingsCard(
-                title = "Icon shape",
+                title = stringResource(R.string.zl_icons_shape),
                 icon = Icons.Rounded.Category
             ) {
                 IconShapePicker(
@@ -197,11 +197,11 @@ fun IconsSettingsScreen(
 
             // Section: Scaling Controls
             SettingsCard(
-                title = "Scale & dimensions",
+                title = stringResource(R.string.zl_icons_scale),
                 icon = Icons.Rounded.Tune
             ) {
                 SettingSlider(
-                    title = "Icon size",
+                    title = stringResource(R.string.icon_size_title),
                     value = iconSize,
                     min = 50,
                     max = 150,
@@ -211,7 +211,7 @@ fun IconsSettingsScreen(
                 )
 
                 SettingSlider(
-                    title = "Label font size",
+                    title = stringResource(R.string.zl_icons_label_size),
                     value = fontSize,
                     min = 50,
                     max = 150,
@@ -223,12 +223,12 @@ fun IconsSettingsScreen(
 
             // Section: Appearance
             SettingsCard(
-                title = "Adaptive styling",
+                title = stringResource(R.string.zl_icons_adaptive),
                 icon = Icons.Rounded.Palette
             ) {
                 NavRow(
                     title = stringResource(R.string.icon_pack_title),
-                    summary = "Apply icons from an installed icon pack",
+                    summary = stringResource(R.string.zl_icons_pack_summary),
                     icon = Icons.Rounded.Interests,
                     onClick = {
                         context.startActivity(Intent(context, IconPackSettingsActivity::class.java))
@@ -236,8 +236,8 @@ fun IconsSettingsScreen(
                     badgeText = iconPackText
                 )
                 SettingSwitch(
-                    title = "Themed icons",
-                    subtitle = "Monochrome icons tinted with the wallpaper colors",
+                    title = stringResource(R.string.zl_settings_themed_icons),
+                    subtitle = stringResource(R.string.zl_icons_themed_summary),
                     checked = themedIcons,
                     onCheckedChange = { themedIcons = it },
                     icon = Icons.Rounded.Palette
@@ -251,7 +251,7 @@ fun IconsSettingsScreen(
                 )
                 NavRow(
                     title = stringResource(R.string.notification_dots_title),
-                    summary = "Managed in system notification settings",
+                    summary = stringResource(R.string.zl_icons_dots_summary),
                     icon = Icons.Rounded.Notifications,
                     onClick = {
                         // Same intent the legacy NotificationDotsPreference used.

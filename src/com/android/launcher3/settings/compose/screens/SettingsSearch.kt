@@ -33,8 +33,11 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.android.launcher3.R
 import com.android.launcher3.settings.compose.components.NavRow
 import com.android.launcher3.settings.compose.components.SettingsCard
 import com.android.launcher3.settings.compose.data.SettingsSearchIndex
@@ -63,12 +66,17 @@ fun SettingsSearchBar(
         value = query,
         onValueChange = onQueryChange,
         singleLine = true,
-        placeholder = { Text("Search settings") },
+        placeholder = { Text(stringResource(R.string.zl_settings_search_hint)) },
         leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null) },
         trailingIcon = {
             if (query.isNotEmpty()) {
                 IconButton(onClick = { onQueryChange("") }) {
-                    Icon(Icons.Rounded.Close, contentDescription = "Clear")
+                    Icon(
+                        Icons.Rounded.Close,
+                        contentDescription = stringResource(
+                            R.string.home_screen_files_rename_dialog_clear_button
+                        )
+                    )
                 }
             }
         },
@@ -93,7 +101,7 @@ fun SettingsSearchResults(
 
     if (results.isEmpty()) {
         Text(
-            text = "No setting matches \"${query.trim()}\"",
+            text = stringResource(R.string.zl_settings_search_no_match, query.trim()),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = modifier
@@ -103,7 +111,9 @@ fun SettingsSearchResults(
         return
     }
     SettingsCard(
-        title = if (results.size == 1) "1 result" else "${results.size} results",
+        title = pluralStringResource(
+            R.plurals.zl_settings_search_results, results.size, results.size
+        ),
         icon = Icons.Rounded.Search,
         modifier = modifier
     ) {
@@ -111,7 +121,7 @@ fun SettingsSearchResults(
             results.forEach { entry ->
                 NavRow(
                     title = entry.title,
-                    summary = SettingsSearchIndex.screenName(entry.screen) + " › " + entry.section,
+                    summary = entry.screenName + " › " + entry.section,
                     icon = screenIcon(entry.screen),
                     onClick = {
                         focus.clearFocus()

@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.android.launcher3.AppFilter
@@ -180,7 +181,7 @@ fun HiddenAppsScreen(
     }
 
     ScreenScaffold(
-        title = "Hidden apps",
+        title = stringResource(R.string.zl_settings_hidden_apps),
         onBack = onBack
     ) {
         LazyColumn(
@@ -190,8 +191,7 @@ fun HiddenAppsScreen(
         ) {
             item(key = "header", contentType = null) {
                 Text(
-                    text = "Checked apps are gone from the app drawer and its search. " +
-                        "Their icons on the home screen stay.",
+                    text = stringResource(R.string.zl_hidden_apps_header),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 12.dp)

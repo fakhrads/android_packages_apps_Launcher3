@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.PathParser
+import com.android.launcher3.R
 import com.android.launcher3.shapes.IconShapeModel
 import com.android.launcher3.shapes.ShapesProvider
 
@@ -121,7 +122,7 @@ fun IconShapePicker(
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = model?.let { stringResource(it.titleId) } ?: "Default",
+                    text = stringResource(model?.titleId ?: R.string.icon_pack_default_label),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     color = if (isSelected) colors.primary else colors.onSurfaceVariant,

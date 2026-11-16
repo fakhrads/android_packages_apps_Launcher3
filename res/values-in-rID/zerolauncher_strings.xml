@@ -37,4 +37,213 @@
 
     <!-- Memory info in recents: the memory ZRAM uses now, added after the RAM line -->
     <string name="zl_meminfo_zram_used">ZRAM <xliff:g id="size" example="1,2 GB">%1$s</xliff:g> terpakai</string>
+
+    <!-- Settings hub -->
+    <string name="zl_settings_hub_subtitle">Mesin ruang kerja &amp; gestur</string>
+    <string name="zl_settings_metric_grid">Tata letak grid</string>
+    <string name="zl_settings_metric_icon_style">Gaya ikon</string>
+    <string name="zl_settings_metric_themed">Bertema</string>
+    <string name="zl_settings_metric_stock">Bawaan</string>
+    <string name="zl_settings_quick_controls">Kontrol cepat</string>
+    <string name="zl_settings_lock_layout_summary">Cegah item dipindahkan</string>
+    <string name="zl_settings_themed_icons">Ikon bertema</string>
+    <string name="zl_settings_themed_icons_short">Monokrom adaptif</string>
+    <string name="zl_settings_dock_search">Penelusuran dok</string>
+    <string name="zl_settings_dock_search_short">Bilah penelusuran bawah</string>
+    <string name="zl_settings_configuration">Konfigurasi</string>
+    <string name="zl_settings_homescreen">Layar utama</string>
+    <string name="zl_settings_homescreen_summary">Tata letak, wallpaper, At a Glance, bilah penelusuran, dok</string>
+    <string name="zl_settings_icons">Ikon &amp; tema</string>
+    <string name="zl_settings_icons_summary">Skala ukuran, paket ikon, skala font</string>
+    <string name="zl_settings_app_drawer">Laci aplikasi</string>
+    <string name="zl_settings_app_drawer_summary">Urutan, opasitas, gaya tata letak, tinggi baris</string>
+    <string name="zl_settings_recents">Terbaru &amp; multitasking</string>
+    <string name="zl_settings_recents_summary">Gaya ringkasan, gestur freeform, info memori</string>
+    <string name="zl_settings_misc">Sistem &amp; lain-lain</string>
+    <string name="zl_settings_misc_summary">Kedalaman blur, perlindungan burn-in, mulai ulang</string>
+    <string name="zl_settings_recents_title">Terbaru &amp; ringkasan</string>
+    <string name="zl_settings_hidden_apps">Aplikasi tersembunyi</string>
+    <string name="zl_settings_drawer_tabs">Tab laci</string>
+
+    <!-- Settings: the search field of the hub and its results -->
+    <string name="zl_settings_search_hint">Telusuri setelan</string>
+    <string name="zl_settings_search_no_match">Tidak ada setelan yang cocok dengan \"<xliff:g id="query" example="blur">%1$s</xliff:g>\"</string>
+    <plurals name="zl_settings_search_results">
+        <item quantity="other"><xliff:g id="count" example="4">%1$d</xliff:g> hasil</item>
+    </plurals>
+
+    <!-- Settings: shared buttons and labels -->
+    <string name="zl_settings_back">Kembali</string>
+    <string name="zl_settings_apply">Terapkan</string>
+    <string name="zl_settings_delete">Hapus</string>
+    <string name="zl_settings_name">Nama</string>
+
+    <!-- Home screen settings -->
+    <string name="zl_home_desktop_layout">Tata letak layar utama</string>
+    <string name="zl_home_lock_layout">Kunci tata letak layar utama</string>
+    <string name="zl_home_lock_layout_summary">Cegah ikon dan widget dipindahkan atau ditambahkan</string>
+    <string name="zl_home_landscape_summary">Layar utama tetap lanskap dengan tata letaknya sendiri. Tata letak potret kembali saat setelan ini nonaktif</string>
+    <string name="zl_home_status_bar">Tampilkan bilah status</string>
+    <string name="zl_home_status_bar_summary">Tampilkan ikon sistem di bagian atas</string>
+    <string name="zl_home_dark_status_bar">Ikon bilah status gelap</string>
+    <string name="zl_home_dark_status_bar_summary">Paksa ikon bilah status gelap di layar utama</string>
+    <string name="zl_home_icon_labels">Tampilkan label ikon</string>
+    <string name="zl_home_icon_labels_summary">Tampilkan teks di bawah ikon aplikasi di layar utama</string>
+    <string name="zl_home_gestures">Gestur</string>
+    <string name="zl_home_double_tap_summary">Ketuk dua kali area kosong di layar utama untuk menjalankan tindakan di bawah</string>
+    <string name="zl_home_double_tap_haptic">Getar saat ketuk dua kali</string>
+    <string name="zl_home_double_tap_haptic_summary">Beri getaran saat ketuk dua kali dijalankan</string>
+    <string name="zl_home_icon_tap_haptic">Getar saat ikon diketuk</string>
+    <string name="zl_home_icon_tap_haptic_summary">Getaran ringan saat membuka aplikasi atau folder dari layar utama, dok, atau laci aplikasi</string>
+    <string name="zl_home_pinch_in">Cubit ke dalam</string>
+    <string name="zl_home_pinch_in_summary">Cubit ke dalam di area kosong layar utama untuk menjalankan tindakan</string>
+    <string name="zl_gesture_sleep_summary">Layar langsung mati</string>
+    <string name="zl_home_wallpaper">Wallpaper</string>
+    <string name="zl_home_glance_google">At a Glance dari Google</string>
+    <string name="zl_home_glance_google_summary">Kalender, timer, cuaca, dan lainnya dari Android System Intelligence, seperti di Pixel. Tanpanya, item di atas yang dipakai</string>
+    <string name="zl_home_search_feed">Penelusuran &amp; feed</string>
+    <string name="zl_home_google_feed">Halaman Google Feed</string>
+    <string name="zl_home_google_feed_summary">Geser ke kiri untuk membuka Google Discover (layar -1)</string>
+    <string name="zl_home_dock_search">Bilah penelusuran dok</string>
+    <string name="zl_home_dock_search_summary">Tampilkan bilah penelusuran Google di dok bawah</string>
+    <string name="zl_home_search_opens_drawer">Bilah penelusuran membuka penelusuran laci</string>
+    <string name="zl_home_search_opens_drawer_ios">Gaya laci iOS tidak punya laci aplikasi, jadi bilah ini membuka aplikasi Google</string>
+    <string name="zl_home_search_opens_drawer_on">Telusuri aplikasi, setelan, pintasan, dan kontak di laci aplikasi</string>
+    <string name="zl_home_search_opens_drawer_off">Membuka aplikasi Google</string>
+    <string name="zl_home_search_opacity">Opasitas bilah penelusuran</string>
+    <string name="zl_home_music_search">Tombol pengenalan musik</string>
+    <string name="zl_home_music_search_summary">Penelusuran lagu cepat di bilah dok</string>
+    <string name="zl_home_dock">Dok</string>
+
+    <!-- Icons and theming settings -->
+    <string name="zl_icons_live_preview">Pratinjau langsung</string>
+    <string name="zl_icons_preview_phone">Telepon</string>
+    <string name="zl_icons_preview_messages">Pesan</string>
+    <string name="zl_icons_preview_browser">Browser</string>
+    <string name="zl_icons_shape">Bentuk ikon</string>
+    <string name="zl_icons_shape_summary">Lingkaran, squircle, tetesan air, dan lainnya</string>
+    <string name="zl_icons_scale">Skala &amp; dimensi</string>
+    <string name="zl_icons_label_size">Ukuran font label</string>
+    <string name="zl_icons_adaptive">Gaya adaptif</string>
+    <string name="zl_icons_pack_summary">Terapkan ikon dari paket ikon yang terinstal</string>
+    <string name="zl_icons_themed_summary">Ikon monokrom yang diwarnai mengikuti warna wallpaper</string>
+    <string name="zl_icons_dots_summary">Diatur di setelan notifikasi sistem</string>
+
+    <!-- App drawer settings -->
+    <string name="zl_drawer_sort_alpha">Abjad (A–Z)</string>
+    <string name="zl_drawer_sort_alpha_summary">Daftar aplikasi standar, diurutkan menurut nama</string>
+    <string name="zl_drawer_sort_install">Tanggal instal</string>
+    <string name="zl_drawer_sort_install_summary">Aplikasi yang terakhir diinstal tampil lebih dulu</string>
+    <string name="zl_drawer_sort_usage">Frekuensi penggunaan</string>
+    <string name="zl_drawer_sort_usage_summary">Utamakan aplikasi yang paling sering Anda buka</string>
+    <string name="zl_drawer_search_top">Bilah atas</string>
+    <string name="zl_drawer_search_top_summary">Posisi penelusuran aplikasi khas Android</string>
+    <string name="zl_drawer_search_bottom">Dok bawah</string>
+    <string name="zl_drawer_search_bottom_summary">Mudah dijangkau ibu jari dengan satu tangan</string>
+    <string name="zl_drawer_search_hidden_summary">Tanpa bilah penelusuran di laci aplikasi</string>
+    <string name="zl_drawer_organization">Penataan &amp; tata letak</string>
+    <string name="zl_drawer_auto_organize">Penataan Otomatis Pintar</string>
+    <string name="zl_drawer_auto_organize_summary">Kelompokkan aplikasi ke folder kategori pintar (Game, Sosial, Media, Alat) di bagian atas</string>
+    <string name="zl_drawer_hidden_apps_summary">Sembunyikan aplikasi dari laci aplikasi dan penelusurannya</string>
+    <string name="zl_drawer_hidden_apps_count"><xliff:g id="count" example="3">%1$d</xliff:g> disembunyikan dari laci aplikasi dan penelusurannya</string>
+    <string name="zl_drawer_tabs_on">Aktif: tab Anda sendiri dan kategori aplikasi di atas daftar</string>
+    <string name="zl_drawer_tabs_off">Nonaktif: kelompokkan aplikasi ke dalam tab di atas daftar</string>
+    <string name="zl_drawer_sorting">Urutan aplikasi</string>
+    <string name="zl_drawer_search_placement">Posisi penelusuran</string>
+    <string name="zl_drawer_dimensions">Dimensi &amp; opasitas</string>
+    <string name="zl_drawer_row_height">Tinggi baris vertikal</string>
+    <string name="zl_drawer_behavior">Perilaku &amp; tipografi</string>
+    <string name="zl_drawer_scrollbar">Scrollbar cepat</string>
+    <string name="zl_drawer_scrollbar_summary">Indeks abjad di tepi kanan</string>
+    <string name="zl_drawer_labels">Tampilkan label aplikasi</string>
+    <string name="zl_drawer_labels_summary">Teks di bawah ikon aplikasi</string>
+    <string name="zl_drawer_two_line_labels">Izinkan label dua baris</string>
+    <string name="zl_drawer_two_line_labels_summary">Nama aplikasi yang panjang ditampilkan dalam dua baris</string>
+    <string name="zl_drawer_dark_text">Teks label gelap</string>
+    <string name="zl_drawer_dark_text_summary">Paksa teks hitam untuk latar terang berkontras tinggi</string>
+    <string name="zl_drawer_open_keyboard">Buka keyboard saat laci digeser</string>
+    <string name="zl_drawer_open_keyboard_summary">Langsung fokus ke kolom penelusuran saat laci dibuka</string>
+
+    <!-- Hidden apps list -->
+    <string name="zl_hidden_apps_header">Aplikasi yang dicentang hilang dari laci aplikasi dan penelusurannya. Ikonnya di layar utama tetap ada.</string>
+
+    <!-- Drawer tabs settings -->
+    <string name="zl_tabs_card">Tab</string>
+    <string name="zl_tabs_show">Tampilkan tab</string>
+    <string name="zl_tabs_show_summary">Deretan tab di bawah bilah penelusuran laci aplikasi. Tekan lama tab untuk kembali ke sini.</string>
+    <string name="zl_tabs_category">Tab kategori</string>
+    <string name="zl_tabs_category_summary">Satu tab tambahan per kategori aplikasi, sama dengan kategori Penataan Otomatis Pintar</string>
+    <string name="zl_tabs_yours">Tab Anda</string>
+    <plurals name="zl_tabs_app_count">
+        <item quantity="other"><xliff:g id="count" example="5">%1$d</xliff:g> aplikasi</item>
+    </plurals>
+    <string name="zl_tabs_add">Tambahkan tab</string>
+    <string name="zl_tabs_add_summary">Beri nama, lalu pilih aplikasinya</string>
+    <string name="zl_tabs_new">Tab baru</string>
+    <string name="zl_tabs_move_left">Pindah ke kiri</string>
+    <string name="zl_tabs_move_right">Pindah ke kanan</string>
+    <string name="zl_tabs_rename">Ganti nama tab</string>
+    <string name="zl_tabs_delete_title">Hapus \"<xliff:g id="tab" example="Kerja">%1$s</xliff:g>\"?</string>
+    <string name="zl_tabs_delete_message">Tab ini dihapus. Aplikasinya tetap ada di laci aplikasi.</string>
+
+    <!-- Recents settings -->
+    <string name="zl_recents_assistant_overlay">Overlay asisten</string>
+    <string name="zl_recents_assistant_overlay_summary"><xliff:g id="assistant" example="Gemini">%1$s</xliff:g>, ditampilkan di atas aplikasi saat ini</string>
+    <string name="zl_recents_assistant_none">Belum ada yang dipilih di aplikasi default</string>
+    <string name="zl_recents_style_default_summary">Carousel tugas AOSP yang digulir horizontal</string>
+    <string name="zl_recents_layout">Tata letak ringkasan</string>
+    <string name="zl_recents_hold_nav">Tahan di mana saja pada bilah navigasi</string>
+    <string name="zl_recents_hold_nav_summary">Sentuh lama bagian mana pun dari bilah gestur bawah, tidak hanya bagian tengahnya</string>
+    <string name="zl_recents_corner_swipe">Geser dari sudut bawah</string>
+    <string name="zl_recents_corner_swipe_summary">Overlay asisten atau Circle to Search</string>
+    <string name="zl_recents_assistant_app">Aplikasi asisten digital</string>
+    <string name="zl_recents_assistant_app_summary">Pilih Gemini, ChatGPT, Claude, atau asisten lain di aplikasi default</string>
+    <string name="zl_recents_actions">Tindakan &amp; telemetri</string>
+    <string name="zl_recents_meminfo_summary">Tampilkan penggunaan RAM di bilah bawah aplikasi terbaru</string>
+    <string name="zl_recents_zram_summary">Tambahkan penggunaan ZRAM ke info memori</string>
+    <string name="zl_recents_scroll_haptic">Getar saat menggulir</string>
+    <string name="zl_recents_scroll_haptic_summary">Getaran halus saat berhenti di setiap tugas terbaru</string>
+    <string name="zl_recents_screenshot">Tindakan screenshot cepat</string>
+    <string name="zl_recents_screenshot_summary">Ambil screenshot tugas aktif langsung dari ringkasan</string>
+    <string name="zl_recents_clear_all">Tombol hapus semua</string>
+    <string name="zl_recents_clear_all_summary">Tampilkan tombol untuk menutup semua tugas terbaru</string>
+    <string name="zl_recents_select_summary">Bekukan layar dan pilih teksnya, lalu salin, bagikan, atau telusuri. Gambar dan game tidak punya teks untuk dipilih</string>
+    <string name="zl_recents_card_opacity">Opasitas latar kartu</string>
+
+    <!-- Miscellaneous settings -->
+    <string name="zl_misc_motion">Gerakan</string>
+    <string name="zl_misc_motion_summary">Tenang, Standar, atau Ekspresif</string>
+    <string name="zl_misc_motion_calm">Tenang</string>
+    <string name="zl_misc_motion_calm_summary">Langsung diam, tanpa memantul balik</string>
+    <string name="zl_misc_motion_standard">Standar</string>
+    <string name="zl_misc_motion_standard_summary">Sedikit momentum pada permukaan yang Anda lempar</string>
+    <string name="zl_misc_motion_expressive">Ekspresif</string>
+    <string name="zl_misc_motion_expressive_summary">Pantulan terasa kuat, laci melaju melewati targetnya</string>
+    <string name="zl_misc_response">Respons</string>
+    <string name="zl_misc_bouncy">Animasi memantul</string>
+    <string name="zl_misc_bouncy_summary">Efek karet saat menarik melewati ujung layar utama atau laci aplikasi. Launcher akan dimulai ulang</string>
+    <string name="zl_misc_bounce_strength">Kekuatan pantulan</string>
+    <string name="zl_misc_animation_speed">Kecepatan animasi</string>
+    <string name="zl_misc_render_effects">Efek visual</string>
+    <string name="zl_misc_blur_radius">Radius blur latar</string>
+    <string name="zl_misc_transparency">Transparansi</string>
+    <string name="zl_misc_translucency">Tembus pandang permukaan</string>
+    <string name="zl_misc_translucency_solid">Padat</string>
+    <string name="zl_misc_translucency_summary">Mengatur laci aplikasi, dok, dan aplikasi terbaru sekaligus. Setiap permukaan tetap punya opasitasnya sendiri, jadi laci tetap lebih transparan daripada dok.</string>
+    <string name="zl_misc_oled">Perawatan layar OLED</string>
+    <string name="zl_misc_burn_in">Perlindungan burn-in bilah navigasi</string>
+    <string name="zl_misc_burn_in_summary">Geser sedikit piksel pil bilah navigasi secara berkala untuk mencegah retensi gambar OLED</string>
+    <string name="zl_misc_burn_in_interval">Interval pergeseran piksel</string>
+    <string name="zl_misc_maintenance">Pemeliharaan</string>
+    <string name="zl_misc_backup">Cadangkan tata letak &amp; setelan</string>
+    <string name="zl_misc_backup_summary">Simpan tata letak layar utama dan semua setelan ZeroLauncher ke file</string>
+    <string name="zl_misc_restore">Pulihkan dari cadangan</string>
+    <string name="zl_misc_restore_summary">Ganti tata letak dan setelan dengan cadangan yang tersimpan</string>
+    <string name="zl_misc_restart">Mulai ulang ZeroLauncher</string>
+    <string name="zl_misc_restart_summary">Inisialisasi ulang ruang kerja, muat ulang cache ikon, dan kosongkan memori</string>
+    <string name="zl_misc_restore_dialog_title">Pulihkan cadangan?</string>
+    <string name="zl_misc_restore_dialog_message">Tata letak layar utama dan setelan saat ini akan diganti dengan cadangan yang Anda pilih, lalu ZeroLauncher dimulai ulang.</string>
+    <string name="zl_misc_restore_dialog_pick">Pilih cadangan</string>
+    <string name="zl_misc_restart_dialog_title">Mulai ulang ZeroLauncher?</string>
+    <string name="zl_misc_restart_dialog_message">Proses launcher akan langsung dimulai ulang untuk memuat ulang semua resource dan konfigurasi.</string>
 </resources>

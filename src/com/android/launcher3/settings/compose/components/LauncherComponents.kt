@@ -66,11 +66,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
+import com.android.launcher3.R
 import kotlin.math.roundToInt
 
 @Composable
@@ -420,7 +422,10 @@ fun QuickToggleTile(
                     }
                 }
                 Text(
-                    text = if (checked) "On" else "Off",
+                    text = stringResource(
+                        if (checked) R.string.notification_dots_desc_on
+                        else R.string.notification_dots_desc_off
+                    ),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = subtextColor
@@ -852,7 +857,7 @@ fun ScreenScaffold(
                         IconButton(onClick = it) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = stringResource(R.string.zl_settings_back)
                             )
                         }
                     }
@@ -982,10 +987,12 @@ fun ColorSettingRow(
                 TextButton(onClick = {
                     onColorChange(pending)
                     showDialog = false
-                }) { Text("Apply") }
+                }) { Text(stringResource(R.string.zl_settings_apply)) }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showDialog = false }) {
+                    Text(stringResource(android.R.string.cancel))
+                }
             }
         )
     }

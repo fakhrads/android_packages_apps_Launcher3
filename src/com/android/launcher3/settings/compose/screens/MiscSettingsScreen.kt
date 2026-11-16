@@ -88,7 +88,7 @@ fun MiscSettingsScreen(
     }
 
     ScreenScaffold(
-        title = "Miscellaneous",
+        title = stringResource(R.string.misc_category_title),
         onBack = onBack
     ) {
         Column(
@@ -99,7 +99,7 @@ fun MiscSettingsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             SettingsCard(
-                title = "Motion",
+                title = stringResource(R.string.zl_misc_motion),
                 icon = Icons.Rounded.Animation
             ) {
                 // The style decides how much a surface is allowed to overshoot; the response
@@ -109,20 +109,22 @@ fun MiscSettingsScreen(
                     choices = listOf(
                         ChoiceItem(
                             value = "calm",
-                            title = "Calm",
-                            summary = "Settles straight in, nothing springs back",
+                            title = stringResource(R.string.zl_misc_motion_calm),
+                            summary = stringResource(R.string.zl_misc_motion_calm_summary),
                             icon = Icons.Rounded.Tune
                         ),
                         ChoiceItem(
                             value = "standard",
-                            title = "Standard",
-                            summary = "A little momentum on the surfaces you throw",
+                            title = stringResource(R.string.zl_misc_motion_standard),
+                            summary = stringResource(R.string.zl_misc_motion_standard_summary),
                             icon = Icons.Rounded.Animation
                         ),
                         ChoiceItem(
                             value = "expressive",
-                            title = "Expressive",
-                            summary = "Pronounced springs, the drawer carries past its target",
+                            title = stringResource(R.string.zl_misc_motion_expressive),
+                            summary = stringResource(
+                                R.string.zl_misc_motion_expressive_summary
+                            ),
                             icon = Icons.Rounded.Bolt
                         )
                     ),
@@ -130,7 +132,7 @@ fun MiscSettingsScreen(
                     onSelect = { motionStyle = it }
                 )
                 SettingSlider(
-                    title = "Response",
+                    title = stringResource(R.string.zl_misc_response),
                     value = motionResponse,
                     min = 50,
                     max = 200,
@@ -139,15 +141,14 @@ fun MiscSettingsScreen(
                     onValueChange = { motionResponse = it }
                 )
                 SettingSwitch(
-                    title = "Bouncy animations",
-                    subtitle = "Rubber band overscroll when you pull past the end of the home " +
-                        "screen or the app drawer. Restarts the launcher",
+                    title = stringResource(R.string.zl_misc_bouncy),
+                    subtitle = stringResource(R.string.zl_misc_bouncy_summary),
                     checked = bouncy,
                     onCheckedChange = { bouncy = it },
                     icon = Icons.Rounded.Animation
                 )
                 SettingSlider(
-                    title = "Bounce strength",
+                    title = stringResource(R.string.zl_misc_bounce_strength),
                     value = bouncyStrength,
                     min = 25,
                     max = 200,
@@ -157,7 +158,7 @@ fun MiscSettingsScreen(
                     enabled = bouncy
                 )
                 SettingSlider(
-                    title = "Animation speed",
+                    title = stringResource(R.string.zl_misc_animation_speed),
                     value = bouncySpeed,
                     min = 50,
                     max = 200,
@@ -188,11 +189,11 @@ fun MiscSettingsScreen(
 
             if (blurSupported) {
                 SettingsCard(
-                    title = "Visual render effects",
+                    title = stringResource(R.string.zl_misc_render_effects),
                     icon = Icons.Rounded.BlurOn
                 ) {
                     SettingSlider(
-                        title = "Background blur radius",
+                        title = stringResource(R.string.zl_misc_blur_radius),
                         value = blurDepth,
                         min = 0,
                         max = 175,
@@ -204,14 +205,16 @@ fun MiscSettingsScreen(
             }
 
             SettingsCard(
-                title = "Transparency",
+                title = stringResource(R.string.zl_misc_transparency),
                 icon = Icons.Rounded.BlurOn
             ) {
                 // One scale on top of every per-surface opacity the launcher already had, so the
                 // whole phone can be made lighter or more solid in one place without the drawer,
                 // the hotseat and recents drifting apart.
+                val solidLabel = stringResource(R.string.zl_misc_translucency_solid)
+                val defaultLabel = stringResource(R.string.icon_pack_default_label)
                 SettingSlider(
-                    title = "Surface translucency",
+                    title = stringResource(R.string.zl_misc_translucency),
                     value = translucency,
                     min = 0,
                     max = 150,
@@ -220,16 +223,15 @@ fun MiscSettingsScreen(
                     onValueChange = { translucency = it },
                     valueLabel = { value ->
                         when {
-                            value == 0 -> "Solid"
-                            value == 100 -> "Default"
+                            value == 0 -> solidLabel
+                            value == 100 -> defaultLabel
                             value < 100 -> "$value%"
                             else -> "$value%"
                         }
                     }
                 )
                 Text(
-                    text = "Scales the app drawer, hotseat and recents together. Each surface " +
-                        "keeps its own opacity, so the drawer stays lighter than the hotseat.",
+                    text = stringResource(R.string.zl_misc_translucency_summary),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 4.dp)
@@ -237,17 +239,17 @@ fun MiscSettingsScreen(
             }
 
             SettingsCard(
-                title = "OLED hardware care",
+                title = stringResource(R.string.zl_misc_oled),
                 icon = Icons.Rounded.Security
             ) {
                 SettingSwitch(
-                    title = "Navigation bar burn-in protection",
-                    subtitle = "Micro-shift navbar pill pixels periodically to prevent OLED image retention",
+                    title = stringResource(R.string.zl_misc_burn_in),
+                    subtitle = stringResource(R.string.zl_misc_burn_in_summary),
                     checked = burnInProtection,
                     onCheckedChange = { burnInProtection = it }
                 )
                 SettingSlider(
-                    title = "Pixel shift interval",
+                    title = stringResource(R.string.zl_misc_burn_in_interval),
                     value = burnInInterval,
                     min = 15,
                     max = 300,
@@ -259,24 +261,24 @@ fun MiscSettingsScreen(
             }
 
             SettingsCard(
-                title = "Maintenance",
+                title = stringResource(R.string.zl_misc_maintenance),
                 icon = Icons.Rounded.Tune
             ) {
                 NavRow(
-                    title = "Back up layout & settings",
-                    summary = "Save the home screen layout and every ZeroLauncher setting to a file",
+                    title = stringResource(R.string.zl_misc_backup),
+                    summary = stringResource(R.string.zl_misc_backup_summary),
                     icon = Icons.Rounded.Save,
                     onClick = { context.findActivity()?.let { LayoutBackup.pickBackupFile(it) } }
                 )
                 NavRow(
-                    title = "Restore from a backup",
-                    summary = "Replace the layout and settings with a saved backup",
+                    title = stringResource(R.string.zl_misc_restore),
+                    summary = stringResource(R.string.zl_misc_restore_summary),
                     icon = Icons.Rounded.Restore,
                     onClick = { showRestoreDialog = true }
                 )
                 NavRow(
-                    title = "Restart ZeroLauncher",
-                    summary = "Reinitialize workspace, reload icon caches, and flush memory",
+                    title = stringResource(R.string.zl_misc_restart),
+                    summary = stringResource(R.string.zl_misc_restart_summary),
                     icon = Icons.Rounded.Refresh,
                     onClick = { showRestartDialog = true }
                 )
@@ -286,11 +288,10 @@ fun MiscSettingsScreen(
         if (showRestoreDialog) {
             AlertDialog(
                 onDismissRequest = { showRestoreDialog = false },
-                title = { Text("Restore a backup?") },
+                title = { Text(stringResource(R.string.zl_misc_restore_dialog_title)) },
                 text = {
                     Text(
-                        "The current home screen layout and settings are replaced by the " +
-                            "backup you pick, then ZeroLauncher restarts.",
+                        stringResource(R.string.zl_misc_restore_dialog_message),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 },
@@ -301,12 +302,15 @@ fun MiscSettingsScreen(
                             context.findActivity()?.let { LayoutBackup.pickRestoreFile(it) }
                         }
                     ) {
-                        Text("Pick a backup", color = MaterialTheme.colorScheme.error)
+                        Text(
+                            stringResource(R.string.zl_misc_restore_dialog_pick),
+                            color = MaterialTheme.colorScheme.error
+                        )
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showRestoreDialog = false }) {
-                        Text("Cancel")
+                        Text(stringResource(android.R.string.cancel))
                     }
                 }
             )
@@ -315,10 +319,10 @@ fun MiscSettingsScreen(
         if (showRestartDialog) {
             AlertDialog(
                 onDismissRequest = { showRestartDialog = false },
-                title = { Text("Restart ZeroLauncher?") },
+                title = { Text(stringResource(R.string.zl_misc_restart_dialog_title)) },
                 text = {
                     Text(
-                        "The launcher process will restart immediately to reload all resources and configurations.",
+                        stringResource(R.string.zl_misc_restart_dialog_message),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 },
@@ -329,12 +333,15 @@ fun MiscSettingsScreen(
                             LauncherPrefsBridge.restart(context)
                         }
                     ) {
-                        Text("Restart", color = MaterialTheme.colorScheme.error)
+                        Text(
+                            stringResource(R.string.pref_restart_title),
+                            color = MaterialTheme.colorScheme.error
+                        )
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showRestartDialog = false }) {
-                        Text("Cancel")
+                        Text(stringResource(android.R.string.cancel))
                     }
                 }
             )

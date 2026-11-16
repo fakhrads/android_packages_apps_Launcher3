@@ -42,8 +42,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.android.launcher3.R
 import com.android.launcher3.allapps.DrawerTabs
 import com.android.launcher3.settings.compose.components.NavRow
 import com.android.launcher3.settings.compose.components.ScreenScaffold
@@ -65,7 +68,7 @@ fun DrawerTabsScreen(
     var showAddDialog by remember { mutableStateOf(false) }
 
     ScreenScaffold(
-        title = "Drawer tabs",
+        title = stringResource(R.string.zl_settings_drawer_tabs),
         onBack = onBack
     ) {
         Column(
@@ -76,20 +79,18 @@ fun DrawerTabsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             SettingsCard(
-                title = "Tabs",
+                title = stringResource(R.string.zl_tabs_card),
                 icon = Icons.Rounded.Tab
             ) {
                 SettingSwitch(
-                    title = "Show tabs",
-                    subtitle = "A row of tabs under the app drawer search bar. " +
-                        "Long press a tab to come back here.",
+                    title = stringResource(R.string.zl_tabs_show),
+                    subtitle = stringResource(R.string.zl_tabs_show_summary),
                     checked = showTabs,
                     onCheckedChange = { showTabs = it }
                 )
                 SettingSwitch(
-                    title = "Category tabs",
-                    subtitle = "One more tab per app category, the same categories " +
-                        "Smart Auto-Organize uses",
+                    title = stringResource(R.string.zl_tabs_category),
+                    subtitle = stringResource(R.string.zl_tabs_category_summary),
                     checked = categoryTabs,
                     onCheckedChange = { categoryTabs = it },
                     enabled = showTabs
@@ -97,21 +98,21 @@ fun DrawerTabsScreen(
             }
 
             SettingsCard(
-                title = "Your tabs",
+                title = stringResource(R.string.zl_tabs_yours),
                 icon = Icons.Rounded.Folder
             ) {
                 for (tab in tabs) {
                     val count = tab.apps.size
                     NavRow(
                         title = tab.name,
-                        summary = if (count == 1) "1 app" else "$count apps",
+                        summary = pluralStringResource(R.plurals.zl_tabs_app_count, count, count),
                         icon = Icons.Rounded.Folder,
                         onClick = { onEditTab(tab.id) }
                     )
                 }
                 NavRow(
-                    title = "Add a tab",
-                    summary = "Name it, then pick its apps",
+                    title = stringResource(R.string.zl_tabs_add),
+                    summary = stringResource(R.string.zl_tabs_add_summary),
                     icon = Icons.Rounded.Add,
                     onClick = { showAddDialog = true }
                 )
@@ -121,9 +122,9 @@ fun DrawerTabsScreen(
 
     if (showAddDialog) {
         TabNameDialog(
-            title = "New tab",
+            title = stringResource(R.string.zl_tabs_new),
             initialName = "",
-            confirmLabel = "Add",
+            confirmLabel = stringResource(R.string.widget_add_button_label),
             onDismiss = { showAddDialog = false },
             onConfirm = { name ->
                 showAddDialog = false
@@ -174,15 +175,20 @@ fun DrawerTabAppsScreen(
                         .horizontalScroll(rememberScrollState())
                         .padding(bottom = 8.dp)
                 ) {
-                    TextButton(onClick = { showRenameDialog = true }) { Text("Rename") }
+                    TextButton(onClick = { showRenameDialog = true }) {
+                        Text(stringResource(R.string.home_screen_files_context_menu_rename_label))
+                    }
                     TextButton(onClick = { DrawerTabs.moveCustomTab(context, tabId, -1) }) {
-                        Text("Move left")
+                        Text(stringResource(R.string.zl_tabs_move_left))
                     }
                     TextButton(onClick = { DrawerTabs.moveCustomTab(context, tabId, 1) }) {
-                        Text("Move right")
+                        Text(stringResource(R.string.zl_tabs_move_right))
                     }
                     TextButton(onClick = { showDeleteDialog = true }) {
-                        Text("Delete", color = MaterialTheme.colorScheme.error)
+                        Text(
+                            stringResource(R.string.zl_settings_delete),
+                            color = MaterialTheme.colorScheme.error
+                        )
                     }
                 }
             }
@@ -216,9 +222,9 @@ fun DrawerTabAppsScreen(
 
     if (showRenameDialog) {
         TabNameDialog(
-            title = "Rename tab",
+            title = stringResource(R.string.zl_tabs_rename),
             initialName = name,
-            confirmLabel = "Rename",
+            confirmLabel = stringResource(R.string.home_screen_files_context_menu_rename_label),
             onDismiss = { showRenameDialog = false },
             onConfirm = { newName ->
                 showRenameDialog = false
@@ -230,10 +236,10 @@ fun DrawerTabAppsScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete \"$name\"?") },
+            title = { Text(stringResource(R.string.zl_tabs_delete_title, name)) },
             text = {
                 Text(
-                    "The tab goes away. Its apps stay in the app drawer.",
+                    stringResource(R.string.zl_tabs_delete_message),
                     style = MaterialTheme.typography.bodyMedium
                 )
             },
@@ -243,11 +249,16 @@ fun DrawerTabAppsScreen(
                     DrawerTabs.deleteCustomTab(context, tabId)
                     onBack()
                 }) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text(
+                        stringResource(R.string.zl_settings_delete),
+                        color = MaterialTheme.colorScheme.error
+                    )
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(stringResource(android.R.string.cancel))
+                }
             }
         )
     }
@@ -270,7 +281,7 @@ private fun TabNameDialog(
                 value = name,
                 onValueChange = { name = it.take(40) },
                 singleLine = true,
-                label = { Text("Name") },
+                label = { Text(stringResource(R.string.zl_settings_name)) },
                 modifier = Modifier.fillMaxWidth()
             )
         },
@@ -281,7 +292,7 @@ private fun TabNameDialog(
             ) { Text(confirmLabel) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) }
         }
     )
 }
