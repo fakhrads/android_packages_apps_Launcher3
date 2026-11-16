@@ -248,4 +248,11 @@
     <string name="zl_misc_restore_dialog_pick">Pick a backup</string>
     <string name="zl_misc_restart_dialog_title">Restart ZeroLauncher?</string>
     <string name="zl_misc_restart_dialog_message">The launcher process will restart immediately to reload all resources and configurations.</string>
+
+    <!-- App drawer search: the section headers and the contacts permission row -->
+    <string name="zl_search_contacts">Contacts</string>
+    <string name="zl_search_contacts_permission">Show contacts in search</string>
+    <string name="zl_search_contacts_permission_summary">Allow access to your contacts</string>
+    <!-- The Settings section header, used only when the label of the Settings app cannot be read -->
+    <string name="zl_search_settings_fallback">Settings</string>
 </resources>

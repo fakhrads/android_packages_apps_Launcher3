@@ -246,4 +246,11 @@
     <string name="zl_misc_restore_dialog_pick">Pilih cadangan</string>
     <string name="zl_misc_restart_dialog_title">Mulai ulang ZeroLauncher?</string>
     <string name="zl_misc_restart_dialog_message">Proses launcher akan langsung dimulai ulang untuk memuat ulang semua resource dan konfigurasi.</string>
+
+    <!-- App drawer search: the section headers and the contacts permission row -->
+    <string name="zl_search_contacts">Kontak</string>
+    <string name="zl_search_contacts_permission">Tampilkan kontak di penelusuran</string>
+    <string name="zl_search_contacts_permission_summary">Izinkan akses ke kontak Anda</string>
+    <!-- The Settings section header, used only when the label of the Settings app cannot be read -->
+    <string name="zl_search_settings_fallback">Setelan</string>
 </resources>

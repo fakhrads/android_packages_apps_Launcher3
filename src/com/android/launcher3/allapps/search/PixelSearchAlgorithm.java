@@ -42,6 +42,7 @@ import android.view.View;
 
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.allapps.search.PixelSearchAdapterProvider.SearchRow;
@@ -325,9 +326,11 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
                 }
             }
         }
-        addSection(result, keep, mRows[SRC_SHORTCUTS], "Shortcuts");
+        addSection(result, keep, mRows[SRC_SHORTCUTS],
+                mContext.getString(R.string.shortcuts_popup_menu_button));
         addSection(result, keep, mRows[SRC_SETTINGS], settingsLabel());
-        addSection(result, keep, mRows[SRC_CONTACTS], "Contacts");
+        addSection(result, keep, mRows[SRC_CONTACTS],
+                mContext.getString(R.string.zl_search_contacts));
         addSection(result, keep, mRows[SRC_SERVICE], null);
         if (mAddNoResultsMessage && result.isEmpty()) {
             AdapterItem empty = new AdapterItem(VIEW_TYPE_EMPTY_SEARCH);
@@ -368,7 +371,7 @@ public class PixelSearchAlgorithm extends DefaultAppSearchAlgorithm {
                 mSettingsLabel = mContext.getPackageManager().getApplicationLabel(mContext
                         .getPackageManager().getApplicationInfo("com.android.settings", 0));
             } catch (Exception e) {
-                mSettingsLabel = "Settings";
+                mSettingsLabel = mContext.getString(R.string.zl_search_settings_fallback);
             }
         }
         return mSettingsLabel;

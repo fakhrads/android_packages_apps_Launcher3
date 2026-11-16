@@ -43,6 +43,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.AppFilter;
+import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.PixelSearchAdapterProvider.SearchRow;
 
 import java.io.InputStream;
@@ -174,8 +175,10 @@ final class DeviceSearchSources {
         if (context.checkSelfPermission(Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
             if (!prefs(context).getBoolean(PREF_CONTACTS_ASKED, false)) {
-                rows.add(new SearchRow("contacts:permission", false, "Show contacts in search",
-                        "Allow access to your contacts", c -> contactsIcon(c),
+                rows.add(new SearchRow("contacts:permission", false,
+                        context.getString(R.string.zl_search_contacts_permission),
+                        context.getString(R.string.zl_search_contacts_permission_summary),
+                        c -> contactsIcon(c),
                         (view, launcher) -> askContacts(view.getContext(), launcher),
                         false, false));
             }

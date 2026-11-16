@@ -406,4 +406,9 @@
     <string name="action_lock">Kunci/Buka kunci aplikasi</string>
     <string name="unlock_app">Aplikasi terbuka di daftar aplikasi terbaru</string>
     <string name="lock_app">Aplikasi terkunci di daftar aplikasi terbaru</string>
+    <!-- Hide app shortcut -->
+    <string name="hide_app_label">Sembunyikan aplikasi</string>
+    <string name="hide_app_toast"><xliff:g id="app" example="Kalender">%1$s</xliff:g> disembunyikan. Tampilkan lagi di setelan ZeroLauncher, Laci aplikasi, Aplikasi tersembunyi</string>
+    <!-- Drawer tabs: the first tab, which shows every app -->
+    <string name="drawer_tab_all">Semua</string>
 </resources>
