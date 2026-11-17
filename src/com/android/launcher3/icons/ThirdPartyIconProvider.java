@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ComponentInfo;
 import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 
@@ -15,7 +16,7 @@ import com.android.launcher3.util.ComponentKey;
 
 import javax.inject.Inject;
 
-import static com.android.launcher3.icons.BaseIconFactory.CONFIG_HINT_NO_WRAP;
+import static com.android.launcher3.graphics.IconLoader.CONFIG_HINT_NO_WRAP;
 
 @LauncherAppSingleton
 public class ThirdPartyIconProvider extends LauncherIconProvider {
@@ -45,6 +46,12 @@ public class ThirdPartyIconProvider extends LauncherIconProvider {
             return fallback.get();
         }
         if (!(icon instanceof AdaptiveIconDrawable)) {
+            // DerpFest's icon factory leaves icon pack artwork unwrapped (no adaptive mask,
+            // shadow or fill) when it comes as an ExtendedBitmapDrawable from an icon pack. The
+            // hint is set after wrapping: IconLoader reads it from the drawable it gets.
+            if (icon instanceof BitmapDrawable) {
+                icon = ExtendedBitmapDrawable.wrap(mContext.getResources(), icon, true);
+            }
             icon.setChangingConfigurations(icon.getChangingConfigurations() | CONFIG_HINT_NO_WRAP);
         }
         return icon;
