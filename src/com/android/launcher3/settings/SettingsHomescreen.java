@@ -232,6 +232,7 @@ public class SettingsHomescreen extends CollapsingToolbarBaseActivity
             mAutoAddIconsPref = screen.findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY);
             updateIsGoogleAppEnabled();
             updateAutoAddIconsPreferenceState();
+            hideUnresolvedIntents(screen);
 
             if (!VibratorWrapper.INSTANCE.get(getContext()).hasVibrator()) {
                 PreferenceCategory generalCategory = (PreferenceCategory) findPreference(KEY_GENERAL_CATEGORY);
@@ -261,6 +262,25 @@ public class SettingsHomescreen extends CollapsingToolbarBaseActivity
 
             getPreferenceManager().getSharedPreferences()
                     .registerOnSharedPreferenceChangeListener(this);
+        }
+
+        /**
+         * Hides the entries that open another app's screen when that app is not installed, such as
+         * the weather settings on a ROM without OmniJaws: tapping one would throw
+         * ActivityNotFoundException and take the settings down.
+         */
+        private void hideUnresolvedIntents(PreferenceGroup group) {
+            for (int i = 0; i < group.getPreferenceCount(); i++) {
+                Preference pref = group.getPreference(i);
+                if (pref instanceof PreferenceGroup) {
+                    hideUnresolvedIntents((PreferenceGroup) pref);
+                }
+                Intent intent = pref.getIntent();
+                if (intent != null && intent.getComponent() != null
+                        && getContext().getPackageManager().resolveActivity(intent, 0) == null) {
+                    pref.setVisible(false);
+                }
+            }
         }
 
         private boolean isKeyInPreferenceGroup(String targetKey, PreferenceGroup parent) {

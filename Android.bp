@@ -588,12 +588,13 @@ phony {
 }
 
 // Build rule for Quickstep app.
-// Named apart from Launcher3QuickStep: the GApps NexusLauncherRelease overrides Launcher3QuickStep
-// while this app overrides NexusLauncherRelease, and Make drops both modules of such a pair.
-// zerolauncher.mk adds it to PRODUCT_PACKAGES.
+// Named apart from Launcher3QuickStep, which DerpFest puts in PRODUCT_PACKAGES and this app
+// overrides. zerolauncher.mk adds it to PRODUCT_PACKAGES. On DerpFest it keeps the Launcher3
+// package (com.android.launcher3): the framework's recents component, the GMS overlays'
+// notification listener access and the platform privapp allowlist all name that package, and
+// DerpFest ships no Pixel Launcher to take the place of.
 android_app {
     name: "ZeroLauncher",
-    package_name: "com.google.android.apps.nexuslauncher",
     static_libs: ["Launcher3QuickStepLib"],
     optimize: {
         proguard_flags_files: [":launcher-proguard-rules"],

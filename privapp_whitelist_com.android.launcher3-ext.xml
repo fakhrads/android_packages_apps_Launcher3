@@ -30,6 +30,7 @@
         <permission name="android.permission.GET_INTENT_SENDER_INTENT"/>
         <permission name="com.android.alarm.permission.SET_ALARM"/>
         <permission name="com.libremobileos.permission.START_FREEFORM"/>
+        <permission name="android.permission.READ_SEARCH_INDEXABLES"/>
     </privapp-permissions>
     <privapp-permissions package="com.google.android.apps.nexuslauncher">
         <permission name="android.permission.SUSPEND_APPS"/>
