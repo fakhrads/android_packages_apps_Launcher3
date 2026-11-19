@@ -68,7 +68,13 @@ public class CachedEventDispatcher {
     /** Should be called once this dispatcher is no longer needed. */
     public void clearConsumerAndCache() {
         mConsumer = null;
-        mCache = null;
+        if (mCache != null) {
+            for (int i = 0; i < mCache.size(); i++) {
+                mCache.get(i).recycle();
+            }
+            mCache = null;
+        }
+        mLastEvent = null;
     }
 
     public boolean hasConsumer() {

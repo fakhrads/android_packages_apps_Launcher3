@@ -311,6 +311,10 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
                     super.dispatchTouchEvent(ev);
                     ev.setAction(action);
                 }
+                // View-dispatching takes over any stale proxy-dispatching (e.g. if a previous
+                // gesture lost focus to QS shade or DT2S without delivering ACTION_CANCEL).
+                mTouchDispatchState &= ~TOUCH_DISPATCHING_FROM_PROXY;
+                mProxyTouchController = null;
                 mTouchDispatchState |= TOUCH_DISPATCHING_FROM_VIEW
                         | TOUCH_DISPATCHING_TO_VIEW_IN_PROGRESS;
 

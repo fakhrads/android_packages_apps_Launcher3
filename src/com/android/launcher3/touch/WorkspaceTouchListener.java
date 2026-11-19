@@ -89,6 +89,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
     private final ScaleGestureDetector mScaleDetector;
     private float mPinchScale = 1f;
     private boolean mPinchHandled;
+    private boolean mDoubleTapHandled;
     private MotionEvent mCurrentEvent;
 
     public WorkspaceTouchListener(Launcher launcher, Workspace<?> workspace) {
@@ -142,12 +143,22 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
             mBoxSelectionHelper.onTouchEvent(ev);
         }
 
-        mGestureDetector.onTouchEvent(ev);
-
         int action = ev.getActionMasked();
         if (action == ACTION_DOWN) {
             mPinchHandled = false;
+            mDoubleTapHandled = false;
         }
+
+        mGestureDetector.onTouchEvent(ev);
+
+        if (mDoubleTapHandled) {
+            if (action == ACTION_UP || action == ACTION_CANCEL) {
+                mDoubleTapHandled = false;
+                cancelLongPress();
+            }
+            return true;
+        }
+
         if (!HomeGestureActions.NONE.equals(
                 LauncherPrefs.PINCH_ACTION.get(mWorkspace.getContext()))) {
             mCurrentEvent = ev;
@@ -291,6 +302,9 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     @Override
     public boolean onDoubleTap(MotionEvent event) {
+        if (!canHandleLongPress()) {
+            return false;
+        }
         Context context = mWorkspace.getContext();
         // SLEEP_GESTURE switches the double tap on; DOUBLE_TAP_ACTION picks what it does
         if (!LauncherPrefs.SLEEP_GESTURE.get(context)) {
@@ -303,6 +317,11 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
         if (LauncherPrefs.SLEEP_GESTURE_HAPTIC.get(context)) {
             VibratorWrapper.INSTANCE.get(context).vibrate(VibratorWrapper.EFFECT_CLICK);
         }
-        return HomeGestureActions.perform(mLauncher, action, event);
+        if (HomeGestureActions.perform(mLauncher, action, event)) {
+            mDoubleTapHandled = true;
+            mLongPressState = STATE_COMPLETED;
+            return true;
+        }
+        return false;
     }
 }

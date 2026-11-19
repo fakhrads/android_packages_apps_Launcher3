@@ -89,6 +89,7 @@ public class StatusBarTouchController implements TouchController {
     public final boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getActionMasked();
         if (action == ACTION_DOWN) {
+            cleanupAfterGesture();
             mCanIntercept = canInterceptTouch(ev);
             if (!mCanIntercept) {
                 return false;
@@ -128,7 +129,7 @@ public class StatusBarTouchController implements TouchController {
 
     @Override
     public final boolean onControllerTouchEvent(MotionEvent ev) {
-        int action = ev.getAction();
+        int action = ev.getActionMasked();
         mEventDispatcher.dispatchEvent(ev);
         if (action == ACTION_UP || action == ACTION_CANCEL) {
             mLauncher.getStatsLogManager().logger()
