@@ -108,7 +108,9 @@ public class SysUiScrim implements View.OnAttachStateChangeListener,
         mTopMaskHeight = ResourceUtils.pxFromDp(TOP_MASK_HEIGHT_DP, dm);
         mBottomMaskHeight = ResourceUtils.pxFromDp(BOTTOM_MASK_HEIGHT_DP, dm);
         mShowSysUiScrim = LauncherPrefs.SHOW_TOP_SHADOW.get(view.getContext());
+        mSysUiAnimMultiplier.value = 1f;
         createMaskBitmaps();
+        reapplySysUiAlphaNoInvalidate();
 
         if (mShowSysUiScrim) {
             view.addOnAttachStateChangeListener(this);
@@ -222,7 +224,7 @@ public class SysUiScrim implements View.OnAttachStateChangeListener,
         mTopMaskBitmap = mShowSysUiScrim ? createDitheredAlphaMask(mTopMaskHeight,
                 new int[]{0x3DFFFFFF, 0x0AFFFFFF, 0x00FFFFFF},
                 new float[]{0f, 0.7f, 1f}) : null;
-        mTopMaskPaint.setColor(0xFF222222);
+        mTopMaskPaint.setColor(0xFF000000);
         mBottomMaskBitmap = mShowSysUiScrim ? createDitheredAlphaMask(mBottomMaskHeight,
                 new int[]{0x00FFFFFF, 0x2FFFFFFF},
                 new float[]{0f, 1f}) : null;
