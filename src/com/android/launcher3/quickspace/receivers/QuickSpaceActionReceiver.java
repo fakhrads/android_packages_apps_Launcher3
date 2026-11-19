@@ -73,14 +73,27 @@ public class QuickSpaceActionReceiver {
     }
 
     private void openGoogleWeather(View view) {
+        Intent pixelWeather = mContext.getPackageManager()
+                .getLaunchIntentForPackage("com.google.android.apps.weather");
+        if (pixelWeather != null) {
+            pixelWeather.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            try {
+                Launcher.getLauncher(mContext).startActivitySafely(view, pixelWeather, null);
+                return;
+            } catch (Exception ignored) {
+                // Fall through to Google app weather trampoline
+            }
+        }
         Intent intent = new Intent("android.intent.action.VIEW");
         intent.setData(Uri.parse("dynact://velour/weather/ProxyActivity"));
         intent.setComponent(new ComponentName("com.google.android.googlequicksearchbox", "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"));
         try {
             Launcher.getLauncher(mContext).startActivitySafely(view, intent, null);
-        } catch (ActivityNotFoundException ex) {
-            mLauncherApps.startAppDetailsActivity(new ComponentName("com.google.android.googlequicksearchbox",
-                    "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"), Process.myUserHandle(), null, null);
+        } catch (Exception ex) {
+            try {
+                mLauncherApps.startAppDetailsActivity(new ComponentName("com.google.android.googlequicksearchbox",
+                        "com.google.android.apps.gsa.velour.DynamicActivityTrampoline"), Process.myUserHandle(), null, null);
+            } catch (Exception ignored) {}
         }
     }
 

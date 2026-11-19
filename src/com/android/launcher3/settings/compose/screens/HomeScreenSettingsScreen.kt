@@ -70,7 +70,10 @@ fun HomeScreenSettingsScreen(
     val weatherIntent = remember {
         Intent(Intent.ACTION_MAIN).setComponent(
             ComponentName(OMNIJAWS_PACKAGE, "$OMNIJAWS_PACKAGE.SettingsActivity")
-        ).takeIf { it.resolveActivity(context.packageManager) != null }
+        ).takeIf { intent ->
+            val info = context.packageManager.resolveActivity(intent, 0)?.activityInfo
+            info != null && info.exported
+        }
     }
 
     var lockLayout by rememberBooleanPref("pref_workspace_lock", false)
@@ -344,7 +347,7 @@ fun HomeScreenSettingsScreen(
                         title = stringResource(R.string.weather_settings_title),
                         summary = stringResource(R.string.weather_settings_summary),
                         icon = Icons.Rounded.Cloud,
-                        onClick = { context.startActivity(intent) }
+                        onClick = { runCatching { context.startActivity(intent) } }
                     )
                 }
                 SettingSwitch(

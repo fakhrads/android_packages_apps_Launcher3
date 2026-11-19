@@ -118,8 +118,22 @@ object SettingsSearchIndex {
             s(R.string.quickspace_now_playing_summary), "music song")
         add(home, quickspace, s(R.string.zl_home_glance_google),
             s(R.string.zl_home_glance_google_summary), "smartspace pixel google events")
-        add(home, quickspace, s(R.string.weather_settings_title),
-            s(R.string.weather_settings_summary), "location provider")
+        val hasOmniJaws =
+            android.content.Intent(android.content.Intent.ACTION_MAIN)
+                .setComponent(
+                    android.content.ComponentName(
+                        "org.omnirom.omnijaws",
+                        "org.omnirom.omnijaws.SettingsActivity",
+                    )
+                )
+                .let { intent ->
+                    val info = context.packageManager.resolveActivity(intent, 0)?.activityInfo
+                    info != null && info.exported
+                }
+        if (hasOmniJaws) {
+            add(home, quickspace, s(R.string.weather_settings_title),
+                s(R.string.weather_settings_summary), "location provider")
+        }
         add(home, quickspace, s(R.string.quick_event_ambient_weather_title),
             s(R.string.quick_event_ambient_weather_summary), "temperature")
         add(home, quickspace, s(R.string.quick_event_weather_city_title),
