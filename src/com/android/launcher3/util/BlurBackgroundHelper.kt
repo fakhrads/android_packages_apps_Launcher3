@@ -45,4 +45,25 @@ constructor() {
     open fun applyPopupBlurBackground(view: View) {}
 
     open fun getPopupBlurSurfaceColor(fallbackColor: Int) = fallbackColor
+
+    /** Applies the glass or frosted-blur capsule background to a dock or compact search pill. */
+    open fun applyDockPillBackground(view: View, style: String, cornerRadiusPx: Float) {
+        view.background = DockStyle.createSurfaceDrawable(
+            context = view.context,
+            style = style,
+            cornerRadiusPx = cornerRadiusPx,
+            blurEnabled = false,
+        )
+    }
+
+    /** Updates corner radius, effective alpha, and visibility of a dock/search pill background. */
+    open fun updateDockPillBackground(
+        view: View,
+        style: String,
+        cornerRadiusPx: Float,
+        effectiveAlpha: Float,
+        visible: Boolean,
+    ) {
+        DockStyle.updateSurfaceCornerRadius(view.background, cornerRadiusPx)
+    }
 }

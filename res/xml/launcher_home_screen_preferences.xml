@@ -297,6 +297,15 @@
             launcher:iconSpaceReserved="false" />
 
 
+        <ListPreference
+            android:key="pref_dock_style"
+            android:title="@string/zl_home_dock_style"
+            android:summary="%s"
+            android:entries="@array/zl_home_dock_style_entries"
+            android:entryValues="@array/zl_home_dock_style_values"
+            android:defaultValue="default"
+            launcher:iconSpaceReserved="false" />
+
         <SwitchPreferenceCompat
             android:key="pref_show_hotseat_bg"
             android:title="@string/hotseat_bg_title"

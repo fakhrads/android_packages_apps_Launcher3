@@ -21,6 +21,7 @@ import androidx.compose.material.icons.rounded.Feed
 import androidx.compose.material.icons.rounded.Apps
 import androidx.compose.material.icons.rounded.Bedtime
 import androidx.compose.material.icons.rounded.Block
+import androidx.compose.material.icons.rounded.BlurOn
 import androidx.compose.material.icons.rounded.Layers
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Notifications
@@ -42,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.util.DockStyle
 import com.android.launcher3.touch.HomeGestureActions
 import com.android.launcher3.settings.compose.components.ChoiceItem
 import com.android.launcher3.settings.compose.components.ChoiceList
@@ -119,8 +121,31 @@ fun HomeScreenSettingsScreen(
     var qsbSpace by rememberIntPref("pref_hotseat_qsb_space", 22)
     var musicSearch by rememberBooleanPref("pref_dock_music_search", false)
     var dockTheme by rememberBooleanPref("pref_dock_theme", false)
+    var dockStyle by rememberStringPref("pref_dock_style", DockStyle.DEFAULT)
+    val isPillDock = DockStyle.isPill(dockStyle)
     var hotseatBg by rememberBooleanPref("pref_show_hotseat_bg", false)
     var hotseatOpacity by rememberIntPref("pref_hotseat_opacity", 40)
+
+    val dockStyleChoices = listOf(
+        ChoiceItem(
+            value = DockStyle.DEFAULT,
+            title = stringResource(R.string.zl_home_dock_style_default),
+            summary = stringResource(R.string.zl_home_dock_style_default_summary),
+            icon = Icons.Rounded.Dashboard
+        ),
+        ChoiceItem(
+            value = DockStyle.GLASS,
+            title = stringResource(R.string.zl_home_dock_style_glass),
+            summary = stringResource(R.string.zl_home_dock_style_glass_summary),
+            icon = Icons.Rounded.Layers
+        ),
+        ChoiceItem(
+            value = DockStyle.BLUR,
+            title = stringResource(R.string.zl_home_dock_style_blur),
+            summary = stringResource(R.string.zl_home_dock_style_blur_summary),
+            icon = Icons.Rounded.BlurOn
+        )
+    )
 
     val notSystemSummary = stringResource(R.string.google_app_not_system_summary)
 
@@ -414,7 +439,7 @@ fun HomeScreenSettingsScreen(
                     step = 5,
                     unit = "%",
                     onValueChange = { qsbOpacity = it },
-                    enabled = dockSearch
+                    enabled = dockSearch && !isPillDock
                 )
                 SettingSlider(
                     title = stringResource(R.string.hotseat_qsb_space_title),
@@ -429,14 +454,14 @@ fun HomeScreenSettingsScreen(
                     subtitle = stringResource(R.string.zl_home_music_search_summary),
                     checked = musicSearch,
                     onCheckedChange = { musicSearch = it },
-                    enabled = gsaEnabled && dockSearch
+                    enabled = gsaEnabled && dockSearch && !isPillDock
                 )
                 SettingSwitch(
                     title = stringResource(R.string.dock_theme_title),
                     subtitle = stringResource(R.string.dock_theme_summary),
                     checked = dockTheme,
                     onCheckedChange = { dockTheme = it },
-                    enabled = gsaEnabled
+                    enabled = gsaEnabled && !isPillDock
                 )
             }
 
@@ -444,11 +469,17 @@ fun HomeScreenSettingsScreen(
                 title = stringResource(R.string.zl_home_dock),
                 icon = Icons.Rounded.Dashboard
             ) {
+                ChoiceList(
+                    choices = dockStyleChoices,
+                    selected = dockStyle,
+                    onSelect = { dockStyle = it }
+                )
                 SettingSwitch(
                     title = stringResource(R.string.hotseat_bg_title),
                     subtitle = stringResource(R.string.hotseat_bg_summary),
                     checked = hotseatBg,
-                    onCheckedChange = { hotseatBg = it }
+                    onCheckedChange = { hotseatBg = it },
+                    enabled = !isPillDock
                 )
                 SettingSlider(
                     title = stringResource(R.string.background_opacity_title),
@@ -458,7 +489,7 @@ fun HomeScreenSettingsScreen(
                     step = 5,
                     unit = "%",
                     onValueChange = { hotseatOpacity = it },
-                    enabled = hotseatBg
+                    enabled = hotseatBg && !isPillDock
                 )
             }
         }

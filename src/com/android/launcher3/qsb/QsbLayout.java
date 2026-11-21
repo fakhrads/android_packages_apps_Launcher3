@@ -58,11 +58,7 @@ public class QsbLayout extends FrameLayout implements Reorderable, SharedPrefere
         setIcons();
         LauncherPrefs.getPrefs(mContext).registerOnSharedPreferenceChangeListener(this);
 
-        String searchPackage = Utilities.getSearchWidgetPackageName(mContext);
-        setOnClickListener(view -> {
-            if (opensLauncherSearch() && openDrawerSearch()) return;
-            if (searchPackage != null) launchSearchActivity(searchPackage);
-        });
+        setOnClickListener(view -> openSearch(mContext));
 
         if (Utilities.isGSAEnabled(mContext)) {
             enableLensIcon();
@@ -131,8 +127,15 @@ public class QsbLayout extends FrameLayout implements Reorderable, SharedPrefere
         }
     }
 
-    private boolean opensLauncherSearch() {
-        return LauncherPrefs.getPrefs(mContext).getBoolean(PREF_DOCK_SEARCH_LAUNCHER,
+    /** Opens drawer search or the configured search app, respecting user preferences. */
+    public static void openSearch(Context context) {
+        if (opensLauncherSearch(context) && openDrawerSearch(context)) return;
+        String searchPackage = Utilities.getSearchWidgetPackageName(context);
+        if (searchPackage != null) launchSearchActivity(context, searchPackage);
+    }
+
+    private static boolean opensLauncherSearch(Context context) {
+        return LauncherPrefs.getPrefs(context).getBoolean(PREF_DOCK_SEARCH_LAUNCHER,
                 PREF_DOCK_SEARCH_LAUNCHER_DEFAULT);
     }
 
@@ -140,8 +143,8 @@ public class QsbLayout extends FrameLayout implements Reorderable, SharedPrefere
      * Opens the app drawer with its search field focused, like the Pixel Search provider. False
      * when there is no drawer to open (the iOS drawer style), so the bar opens the search app.
      */
-    private boolean openDrawerSearch() {
-        ActivityContext activityContext = ActivityContext.lookupContext(mContext);
+    private static boolean openDrawerSearch(Context context) {
+        ActivityContext activityContext = ActivityContext.lookupContext(context);
         if (!(activityContext instanceof Launcher launcher)) return false;
         if (!launcher.canOpenAllApps()) return false;
         try {
@@ -158,13 +161,13 @@ public class QsbLayout extends FrameLayout implements Reorderable, SharedPrefere
         }
     }
 
-    private void launchSearchActivity(String searchPackage) {
+    private static void launchSearchActivity(Context context, String searchPackage) {
         // Try GLOBAL_SEARCH first (standard Android search intent)
         try {
             Intent intent = new Intent("android.search.action.GLOBAL_SEARCH")
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     .setPackage(searchPackage);
-            mContext.startActivity(intent);
+            context.startActivity(intent);
             return;
         } catch (ActivityNotFoundException e) {
             // GLOBAL_SEARCH not supported, try fallback approaches
@@ -173,10 +176,10 @@ public class QsbLayout extends FrameLayout implements Reorderable, SharedPrefere
 
         // Fallback 1: Try launching the app's main launcher activity
         try {
-            Intent intent = mContext.getPackageManager().getLaunchIntentForPackage(searchPackage);
+            Intent intent = context.getPackageManager().getLaunchIntentForPackage(searchPackage);
             if (intent != null) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                mContext.startActivity(intent);
+                context.startActivity(intent);
                 return;
             }
         } catch (ActivityNotFoundException e) {
@@ -188,14 +191,14 @@ public class QsbLayout extends FrameLayout implements Reorderable, SharedPrefere
             Intent intent = new Intent(Intent.ACTION_VIEW)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     .setPackage(searchPackage);
-            mContext.startActivity(intent);
+            context.startActivity(intent);
             return;
         } catch (ActivityNotFoundException e) {
             Log.d("QsbLayout", "ACTION_VIEW not found for " + searchPackage);
         }
 
         // If all fallbacks fail, show a toast message
-        Toast.makeText(mContext, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
         Log.e("QsbLayout", "No search activity found for package: " + searchPackage);
     }
 

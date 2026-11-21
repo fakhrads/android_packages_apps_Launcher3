@@ -34,6 +34,7 @@ import com.android.launcher3.model.DatabaseHelper
 import com.android.launcher3.model.ModelDbController
 import com.android.launcher3.qsb.QsbLayout
 import com.android.launcher3.util.CustomAppNameStore
+import com.android.launcher3.util.DockStyle
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -250,6 +251,7 @@ object LayoutBackup {
             LauncherPrefs.RECENTS_SCROLL_VIBRATE, LauncherPrefs.ROW_HEIGHT,
             LauncherPrefs.SHORT_PARALLAX, LauncherPrefs.SHOW_DESKTOP_LABELS,
             LauncherPrefs.SHOW_DRAWER_LABELS, LauncherPrefs.SHOW_HOTSEAT_BG,
+            LauncherPrefs.DOCK_STYLE,
             LauncherPrefs.SHOW_QUICKSPACE, LauncherPrefs.SHOW_QUICKSPACE_ALT,
             LauncherPrefs.SHOW_QUICKSPACE_CLOCK, LauncherPrefs.QUICKSPACE_CLOCK_COLOR,
             LauncherPrefs.SHOW_QUICKSPACE_PSONALITY, LauncherPrefs.SHOW_QUICKSPACE_NOWPLAYING,
@@ -305,6 +307,8 @@ object LayoutBackup {
         val gridName = PrefSpec("s") { GRID_NAME_PATTERN.matches(it as String) }
         specs[LauncherPrefs.GRID_NAME.sharedPrefKey] = gridName
         specs[LauncherPrefs.NON_FIXED_LANDSCAPE_GRID_NAME.sharedPrefKey] = gridName
+        specs[LauncherPrefs.DOCK_STYLE.sharedPrefKey] =
+            PrefSpec("s") { DockStyle.isSupported(it as String) }
         specs[LauncherPrefs.DB_FILE.sharedPrefKey] =
             PrefSpec("s") { it == "" || it in LauncherFiles.GRID_DB_FILES }
         specs[LauncherPrefs.DRAWER_CUSTOM_TABS.sharedPrefKey] = PrefSpec("s") {

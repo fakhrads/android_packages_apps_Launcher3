@@ -1224,7 +1224,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         mHotseat = findViewById(R.id.hotseat);
         mHotseat.setWorkspace(mWorkspace);
 
-        if (LauncherPrefs.SHOW_HOTSEAT_BG.get(this)) {
+        if (!com.android.launcher3.util.DockStyle.isPill(this)
+                && LauncherPrefs.SHOW_HOTSEAT_BG.get(this)) {
             mHotseat.setBackgroundResource(R.drawable.bkg_appseat);
             mHotseat.getBackground().setAlpha(
                     Translucency.opacity(this, LauncherPrefs.HOTSEAT_OPACITY.get(this))

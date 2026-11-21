@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 Fakhri Adi Saputra
+     SPDX-License-Identifier: Apache-2.0
+-->
+<com.android.launcher3.qsb.DockSearchPillView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_container_hotseat"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/dock_pill_qsb_height"
+    android:minWidth="112dp"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:clickable="true"
+    android:focusable="true"
+    android:contentDescription="@string/zl_dock_search_pill_label">
+
+    <ImageView
+        android:id="@+id/dock_search_pill_icon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginEnd="6dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_allapps_search" />
+
+    <TextView
+        android:id="@+id/dock_search_pill_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:text="@string/zl_dock_search_pill_label"
+        android:textSize="13.5sp" />
+
+</com.android.launcher3.qsb.DockSearchPillView>

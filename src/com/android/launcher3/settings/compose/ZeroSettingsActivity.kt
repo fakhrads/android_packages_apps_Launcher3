@@ -133,6 +133,7 @@ class ZeroSettingsActivity : ComponentActivity() {
         val RESTART_KEYS = setOf(
             // SettingsHomescreen
             LauncherPrefs.SHOW_HOTSEAT_BG,
+            LauncherPrefs.DOCK_STYLE,
             LauncherPrefs.HOTSEAT_OPACITY,
             LauncherPrefs.DOCK_SEARCH,
             LauncherPrefs.DOCK_THEME,

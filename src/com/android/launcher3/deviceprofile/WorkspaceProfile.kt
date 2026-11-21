@@ -282,6 +282,7 @@ data class WorkspaceProfile(
                 }
                 else -> {
                     (iconSizePx +
+                        hotseatProfile.dockPillVerticalExtraPx +
                         hotseatQsbSpace +
                         hotseatProfile.qsbVisualHeight +
                         hotseatBarBottomSpacePx)

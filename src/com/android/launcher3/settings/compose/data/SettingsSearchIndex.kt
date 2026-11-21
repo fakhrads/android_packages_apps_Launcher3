@@ -154,6 +154,8 @@ object SettingsSearchIndex {
         add(home, searchFeed, s(R.string.dock_theme_title), s(R.string.dock_theme_summary),
             "theme")
         val dock = s(R.string.zl_home_dock)
+        add(home, dock, s(R.string.zl_home_dock_style), s(R.string.zl_home_dock_style_summary),
+            "dock style glass liquid blur ios 18 floating pill search")
         add(home, dock, s(R.string.hotseat_bg_title), s(R.string.hotseat_bg_summary), "hotseat")
         add(home, dock, s(R.string.background_opacity_title), null, "hotseat transparency")
 

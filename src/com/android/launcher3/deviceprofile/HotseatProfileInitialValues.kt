@@ -28,6 +28,7 @@ import com.android.launcher3.deviceprofile.parser.DeviceTypedMap.INDEX_TWO_PANEL
 import com.android.launcher3.responsive.CalculatedCellSpec
 import com.android.launcher3.responsive.CalculatedHotseatSpec
 import com.android.launcher3.testing.shared.ResourceUtils.pxFromDp
+import com.android.launcher3.util.DockStyle
 import kotlin.math.max
 
 /**
@@ -38,7 +39,7 @@ import kotlin.math.max
  * but the HotseatProfile also depends on the values of the WorkspaceProfile. So to break this
  * circular dependency and make this relationship obvious we created this class.
  */
-data class HotseatProfileInitialValues(
+data class HotseatProfileInitialValues @JvmOverloads constructor(
     val areNavButtonsInline: Boolean,
     val navButtonsLayoutWidthPx: Int,
     val inlineNavButtonsEndSpacingPx: Int,
@@ -56,6 +57,7 @@ data class HotseatProfileInitialValues(
     val qsbSpace: Int,
     val barSizePx: Int,
     val isQsbInline: Boolean,
+    val dockPillVerticalExtraPx: Int = 0,
 ) {
 
     companion object Factory {
@@ -70,13 +72,14 @@ data class HotseatProfileInitialValues(
             barBottomSpacePx: Int,
             qsbSpace: Int,
             isQsbInline: Boolean,
+            dockPillVerticalExtraPx: Int = 0,
         ): Int {
             if (isVerticalBarLayout) {
                 return (hotseatIconSizePx + barEdgePaddingPx + barWorkspaceSpacePx)
             } else if (isQsbInline) {
                 return (max(hotseatIconSizePx, qsbVisualHeight) + barBottomSpacePx)
             } else {
-                return (hotseatIconSizePx + qsbSpace + qsbVisualHeight + barBottomSpacePx)
+                return (hotseatIconSizePx + dockPillVerticalExtraPx + qsbSpace + qsbVisualHeight + barBottomSpacePx)
             }
         }
 
@@ -170,8 +173,19 @@ data class HotseatProfileInitialValues(
                     )
                 else res.getDimensionPixelSize(R.dimen.spring_loaded_hotseat_top_margin)
 
+            val isPillDock =
+                DockStyle.isPill(inv.getLauncherPrefs().get(LauncherPrefs.DOCK_STYLE)) &&
+                    !isVerticalBarLayout &&
+                    !isQsbInline &&
+                    !inv.isFixedLandscape &&
+                    !deviceProperties.taskbarConfiguration.isTaskbarPresent
+            val dockPillVerticalExtraPx =
+                if (isPillDock) res.getDimensionPixelSize(R.dimen.dock_pill_vertical_extra) else 0
+
             val hotseatQsbHeight = qsbHeight
-            val hotseatQsbShadowHeight = if (qsbHeight > 0) res.getDimensionPixelSize(R.dimen.qsb_shadow_height) else 0
+            val hotseatQsbShadowHeight =
+                if (qsbHeight > 0 && !isPillDock) res.getDimensionPixelSize(R.dimen.qsb_shadow_height)
+                else 0
 
             var hotseatQsbSpace: Int = if (qsbHeight > 0) responsiveHotseatSpec.hotseatQsbSpace else 0
             val prefQsbSpace = inv.getLauncherPrefs().get(LauncherPrefs.HOTSEAT_QSB_SPACE)
@@ -179,7 +193,9 @@ data class HotseatProfileInitialValues(
                 hotseatQsbSpace = pxFromDp(prefQsbSpace.toFloat(), res.displayMetrics)
             }
             val hotseatBarBottomSpace: Int = responsiveHotseatSpec.edgePadding
-            val minQsbMargin = if (qsbHeight > 0) res.getDimensionPixelSize(R.dimen.min_qsb_margin) else 0
+            val minQsbMargin =
+                if (qsbHeight > 0 || isPillDock) res.getDimensionPixelSize(R.dimen.min_qsb_margin)
+                else 0
 
             var barBottomSpacePx = 0
             // Lift the QSB above the navigation bar / gesture inset, but do NOT steal from the
@@ -223,8 +239,10 @@ data class HotseatProfileInitialValues(
                         barBottomSpacePx = barBottomSpacePx,
                         qsbSpace = hotseatQsbSpace,
                         isQsbInline = isQsbInline,
+                        dockPillVerticalExtraPx = dockPillVerticalExtraPx,
                     ),
                 isQsbInline = isQsbInline,
+                dockPillVerticalExtraPx = dockPillVerticalExtraPx,
             )
         }
 
@@ -283,8 +301,19 @@ data class HotseatProfileInitialValues(
                 }
             val hotseatBarWorkspaceSpacePx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding)
+            val isPillDock =
+                DockStyle.isPill(inv.getLauncherPrefs().get(LauncherPrefs.DOCK_STYLE)) &&
+                    !isVerticalBarLayout &&
+                    !isQsbInline &&
+                    !inv.isFixedLandscape &&
+                    !deviceProperties.taskbarConfiguration.isTaskbarPresent
+            val dockPillVerticalExtraPx =
+                if (isPillDock) res.getDimensionPixelSize(R.dimen.dock_pill_vertical_extra) else 0
+
             val hotseatQsbHeight = qsbHeight
-            val hotseatQsbShadowHeight = if (qsbHeight > 0) res.getDimensionPixelSize(R.dimen.qsb_shadow_height) else 0
+            val hotseatQsbShadowHeight =
+                if (qsbHeight > 0 && !isPillDock) res.getDimensionPixelSize(R.dimen.qsb_shadow_height)
+                else 0
 
             var hotseatQsbSpace = if (qsbHeight > 0) pxFromDp(inv.hotseatQsbSpace[typeIndex], metrics) else 0
             val prefQsbSpace = inv.getLauncherPrefs().get(LauncherPrefs.HOTSEAT_QSB_SPACE)
@@ -293,7 +322,9 @@ data class HotseatProfileInitialValues(
             }
             var hotseatBarBottomSpace = pxFromDp(inv.hotseatBarBottomSpace[typeIndex], metrics)
 
-            val minQsbMargin = if (qsbHeight > 0) res.getDimensionPixelSize(R.dimen.min_qsb_margin) else 0
+            val minQsbMargin =
+                if (qsbHeight > 0 || isPillDock) res.getDimensionPixelSize(R.dimen.min_qsb_margin)
+                else 0
 
             var barBottomSpacePx = 0
             // Lift the QSB above the navigation bar / gesture inset, but do NOT steal from the
@@ -341,8 +372,10 @@ data class HotseatProfileInitialValues(
                         barBottomSpacePx = barBottomSpacePx,
                         qsbSpace = hotseatQsbSpace,
                         isQsbInline = isQsbInline,
+                        dockPillVerticalExtraPx = dockPillVerticalExtraPx,
                     ),
                 isQsbInline = isQsbInline,
+                dockPillVerticalExtraPx = dockPillVerticalExtraPx,
             )
         }
     }

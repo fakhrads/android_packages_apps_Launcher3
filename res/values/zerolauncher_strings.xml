@@ -115,6 +115,26 @@
     <string name="zl_home_music_search">Music recognition button</string>
     <string name="zl_home_music_search_summary">Quick sound search on dock bar</string>
     <string name="zl_home_dock">Dock</string>
+    <string name="zl_dock_search_pill_label">Search</string>
+    <string name="zl_home_dock_style">Dock &amp; search style</string>
+    <string name="zl_home_dock_style_summary">Choose between the stock dock, Liquid Glass, or iOS 18 frosted blur</string>
+    <string name="zl_home_dock_style_default">Default</string>
+    <string name="zl_home_dock_style_default_summary">Pixel-style full-width search bar below the dock</string>
+    <string name="zl_home_dock_style_glass">Glass</string>
+    <string name="zl_home_dock_style_glass_summary">Floating capsule dock and compact search pill with clear glass blur and rim</string>
+    <string name="zl_home_dock_style_blur">Blur (iOS 18)</string>
+    <string name="zl_home_dock_style_blur_summary">Floating capsule dock and compact search pill with soft frosted blur</string>
+
+    <string-array name="zl_home_dock_style_entries" translatable="false">
+        <item>@string/zl_home_dock_style_default</item>
+        <item>@string/zl_home_dock_style_glass</item>
+        <item>@string/zl_home_dock_style_blur</item>
+    </string-array>
+    <string-array name="zl_home_dock_style_values" translatable="false">
+        <item>default</item>
+        <item>glass</item>
+        <item>blur</item>
+    </string-array>
 
     <!-- Icons and theming settings -->
     <string name="zl_icons_live_preview">Live preview</string>

@@ -34,7 +34,7 @@ data class HotseatWithBorderAndSpace(
     var borderSpace: Int,
 )
 
-data class HotseatProfile(
+data class HotseatProfile @JvmOverloads constructor(
     val areNavButtonsInline: Boolean,
     val navButtonsLayoutWidthPx: Int,
     val inlineNavButtonsEndSpacingPx: Int,
@@ -58,6 +58,7 @@ data class HotseatProfile(
     val qsbWidth: Int, // only used when isQsbInline
     val borderSpace: Int,
     val isQsbInline: Boolean,
+    val dockPillVerticalExtraPx: Int = 0,
 ) {
 
     fun recalculateHotseatWidthAndBorderSpace(
@@ -85,6 +86,7 @@ data class HotseatProfile(
                 qsbSpace = qsbSpace,
                 barSizePx = barSizePx,
                 isQsbInline = isQsbInline,
+                dockPillVerticalExtraPx = dockPillVerticalExtraPx,
             )
 
         val hotseatWithBorderAndSpace =
@@ -417,6 +419,7 @@ data class HotseatProfile(
                         barBottomSpacePx = hotseatProfileInitialValues.barBottomSpacePx,
                         qsbSpace = hotseatProfileInitialValues.qsbSpace,
                         isQsbInline = hotseatProfileInitialValues.isQsbInline,
+                        dockPillVerticalExtraPx = hotseatProfileInitialValues.dockPillVerticalExtraPx,
                     ),
                 widthPx = hotseatWithBorderAndSpace.widthPx,
                 numShownIcons = hotseatWithBorderAndSpace.numShownIcons,
@@ -424,6 +427,7 @@ data class HotseatProfile(
                 qsbWidth = hotseatWithBorderAndSpace.qsbWidth,
                 borderSpace = hotseatWithBorderAndSpace.borderSpace,
                 isQsbInline = hotseatProfileInitialValues.isQsbInline,
+                dockPillVerticalExtraPx = hotseatProfileInitialValues.dockPillVerticalExtraPx,
             )
         }
     }

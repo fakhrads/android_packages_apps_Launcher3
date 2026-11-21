@@ -270,4 +270,73 @@ constructor(
             ColorUtils.setAlphaComponent(color, (0.60f * 255).toInt())
         }
     }
+
+    override fun applyDockPillBackground(view: View, style: String, cornerRadiusPx: Float) {
+        val blurEnabled = isBlurEnabled()
+        val viewRoot = if (blurEnabled) {
+            view.viewRootImpl ?: activityContext.dragLayer.viewRootImpl
+        } else {
+            null
+        }
+        val blurDrawable = viewRoot?.createBackgroundBlurDrawable()?.apply {
+            setBlurRadius(scaledDockBlurRadius(style))
+            setCornerRadius(cornerRadiusPx)
+            setVisible(view.isShown && view.alpha > 0.02f, false)
+        }
+        val surface = DockStyle.createSurfaceDrawable(
+            context = view.context,
+            style = style,
+            cornerRadiusPx = cornerRadiusPx,
+            blurEnabled = blurDrawable != null,
+        )
+        view.background = if (blurDrawable != null) {
+            LayerDrawable(arrayOf(blurDrawable, surface))
+        } else {
+            surface
+        }
+        view.invalidate()
+    }
+
+    override fun updateDockPillBackground(
+        view: View,
+        style: String,
+        cornerRadiusPx: Float,
+        effectiveAlpha: Float,
+        visible: Boolean,
+    ) {
+        val bg = view.background
+        if (bg == null) {
+            applyDockPillBackground(view, style, cornerRadiusPx)
+        } else if (isBlurEnabled() && !hasBlurLayer(bg)) {
+            // View may have received fallback surface before ViewRootImpl was ready; upgrade now.
+            if ((view.viewRootImpl ?: activityContext.dragLayer.viewRootImpl) != null) {
+                applyDockPillBackground(view, style, cornerRadiusPx)
+            }
+        }
+        val currentBg = view.background ?: return
+        DockStyle.updateSurfaceCornerRadius(currentBg, cornerRadiusPx)
+        val blurDrawable = extractBlurLayer(currentBg) ?: return
+        val clampedAlpha = effectiveAlpha.coerceIn(0f, 1f)
+        val shouldShow = visible && isBlurEnabled() && clampedAlpha > 0.02f
+        val radius = if (shouldShow) {
+            (scaledDockBlurRadius(style) * clampedAlpha).toInt()
+        } else {
+            0
+        }
+        blurDrawable.setCornerRadius(cornerRadiusPx)
+        blurDrawable.setBlurRadius(radius)
+        blurDrawable.setVisible(shouldShow && radius > 0, false)
+    }
+
+    private fun scaledDockBlurRadius(style: String): Int =
+        (DockStyle.baseBlurRadiusPx(context, style) * blurScale).toInt().coerceAtLeast(0)
+
+    private fun hasBlurLayer(drawable: Drawable): Boolean = extractBlurLayer(drawable) != null
+
+    private fun extractBlurLayer(drawable: Drawable): BackgroundBlurDrawable? {
+        if (drawable is LayerDrawable && drawable.numberOfLayers > 0) {
+            return drawable.getDrawable(0) as? BackgroundBlurDrawable
+        }
+        return null
+    }
 }

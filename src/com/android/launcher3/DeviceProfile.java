@@ -67,6 +67,7 @@ import com.android.launcher3.responsive.ResponsiveCellSpecsProvider;
 import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType;
 import com.android.launcher3.responsive.ResponsiveSpec.DimensionType;
 import com.android.launcher3.responsive.ResponsiveSpecsProvider;
+import com.android.launcher3.util.DockStyle;
 import com.android.launcher3.util.IconSizeSteps;
 import com.android.launcher3.util.ResourceHelper;
 import com.android.launcher3.util.WindowBounds;
@@ -141,6 +142,7 @@ public class DeviceProfile {
     private boolean allAppsIconText;
 
     public boolean isQsbVisible;
+    private final boolean mIsPillDockStyle;
 
     // Meminfo in overview
     public int memInfoHeight;
@@ -196,6 +198,7 @@ public class DeviceProfile {
         mMetrics = null;
         mIconSizeSteps = null;
         isQsbVisible = true;
+        mIsPillDockStyle = false;
         mIsScalableGrid = false;
         mTypeIndex = 0;
         mIsResponsiveGrid = false;
@@ -297,8 +300,15 @@ public class DeviceProfile {
                 R.dimen.meminfo_claimed_height) : 0;
 
         isQsbVisible = Utilities.showQSB(context);
+        mIsPillDockStyle = DockStyle.isPill(context)
+                && !isVerticalBarLayout()
+                && !mDeviceProperties.getTaskbarConfiguration().isTaskbarPresent()
+                && !inv.isFixedLandscape;
 
-        int qsbHeight = isQsbVisible ? res.getDimensionPixelSize(R.dimen.qsb_widget_height) : 0;
+        int qsbHeight = !isQsbVisible ? 0
+                : res.getDimensionPixelSize(mIsPillDockStyle
+                        ? R.dimen.dock_pill_qsb_height
+                        : R.dimen.qsb_widget_height);
 
         HotseatProfileInitialValues hotseatProfileInitialValues =
                 HotseatProfileInitialValues.Factory.createHotseatProfileInitialValues(
@@ -949,10 +959,16 @@ public class DeviceProfile {
                     (mDeviceProperties.getAvailableWidthPx() - (
                             mHotseatProfile.getQsbWidth() + iconExtraSpacePx))
                             / 2;
+            int hotseatBarBottomPadding = getHotseatBarBottomPadding();
+            int hotseatBarTopPadding = isPillDockStyle()
+                    ? Math.max(0, mHotseatProfile.getBarSizePx()
+                            - hotseatBarBottomPadding
+                            - mHotseatProfile.getCellHeightPx())
+                    : 0;
             hotseatBarPadding.set(sideSpacing,
-                    0,
+                    hotseatBarTopPadding,
                     sideSpacing,
-                    getHotseatBarBottomPadding());
+                    hotseatBarBottomPadding);
         } else {
             // We want the edges of the hotseat to line up with the edges of the workspace, but the
             // icons in the hotseat are a different size, and so don't line up perfectly. To account
@@ -962,15 +978,21 @@ public class DeviceProfile {
             float hotseatCellWidth = (float) mDeviceProperties.getWidthPx()
                     / mHotseatProfile.getNumShownIcons();
             int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
+            int hotseatBarBottomPadding = getHotseatBarBottomPadding();
+            int hotseatBarTopPadding = isPillDockStyle()
+                    ? Math.max(0, mHotseatProfile.getBarSizePx()
+                            - hotseatBarBottomPadding
+                            - mHotseatProfile.getCellHeightPx())
+                    : 0;
             hotseatBarPadding.set(
                     hotseatAdjustment + mWorkspaceProfile.getWorkspacePadding().left
                             + mWorkspaceProfile.getCellLayoutPaddingPx().left
                             + mDeviceProperties.getInsets().left,
-                    0,
+                    hotseatBarTopPadding,
                     hotseatAdjustment + mWorkspaceProfile.getWorkspacePadding().right
                             + mWorkspaceProfile.getCellLayoutPaddingPx().right
                             + mDeviceProperties.getInsets().right,
-                    getHotseatBarBottomPadding());
+                    hotseatBarBottomPadding);
         }
         return hotseatBarPadding;
     }
@@ -1030,6 +1052,11 @@ public class DeviceProfile {
                 + additionalQsbSpace;
     }
 
+    /** True when using the floating Glass or iOS 18 Blur capsule dock + compact top search pill. */
+    public boolean isPillDockStyle() {
+        return mIsPillDockStyle && (mHotseatProfile == null || !mHotseatProfile.isQsbInline());
+    }
+
     /**
      * Returns the number of pixels the QSB is translated from the bottom of the screen.
      */
@@ -1039,7 +1066,8 @@ public class DeviceProfile {
             return getHotseatBarBottomPadding()
                     - ((getHotseatProfile().getQsbHeight()
                     - mHotseatProfile.getCellHeightPx()) / 2);
-        } else if (mDeviceProperties.getTaskbarConfiguration().isTaskbarPresent()) { // QSB on top
+        } else if (mDeviceProperties.getTaskbarConfiguration().isTaskbarPresent()
+                || isPillDockStyle()) { // QSB on top
             return mHotseatProfile.getBarSizePx() - getHotseatProfile().getQsbHeight()
                     + getHotseatProfile().getQsbShadowHeight();
         } else {
@@ -1051,6 +1079,12 @@ public class DeviceProfile {
      * Returns the number of pixels the hotseat is translated from the bottom of the screen.
      */
     private int getHotseatBarBottomPadding() {
+        if (isPillDockStyle()) {
+            int extraV = mHotseatProfile.getDockPillVerticalExtraPx();
+            int pillHeight = getWorkspaceProfile().getIconSizePx() + extraV;
+            int padBelowIcons = Math.max(0, (pillHeight - mHotseatProfile.getCellHeightPx()) / 2);
+            return mHotseatProfile.getBarBottomSpacePx() + padBelowIcons;
+        }
         // QSB on top or inline
         if (mDeviceProperties.getTaskbarConfiguration().isTaskbarPresent()
                 || mHotseatProfile.isQsbInline()) {
